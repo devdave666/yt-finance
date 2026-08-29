@@ -3,16 +3,20 @@
 # explainer vs skit, and writes a full script YAML. Edit this file to steer the
 # channel; everything downstream is hands-off.
 
+channel: "Anti Broke (@AntiBrokee)"
+
 niche: >
-  Personal finance education for a general US audience. One money concept per
-  short, explained in plain English -- no jargon, no hype, no doom. The kind of
-  thing a smart friend would explain over coffee. This niche is chosen for
-  monetisation: finance has among the highest ad RPMs on YouTube, the topics are
-  evergreen, and the content is advertiser-safe.
+  Personal finance for people who want to stop being broke. One money concept
+  per short, explained in plain English -- no jargon, no doom, no get-rich
+  nonsense. The angle: the basics nobody taught you, laid out clearly so you can
+  actually use them. Chosen for monetisation -- finance has among the highest ad
+  RPMs on YouTube, topics are evergreen, and the content is advertiser-safe.
 
 voice: >
-  Calm, clear, lightly conversational. Confident but never breathless. Explains
-  how things WORK; does not tell the viewer what to buy.
+  Direct, sharp, a little bit of an edge -- like a friend who's tired of watching
+  you make the same money mistake. Confident, never breathless, never hypey.
+  Explains how things WORK and what to DO about it; never tells the viewer which
+  specific product to buy.
 
 # Hard rules the generator must follow (also enforced in generate.py):
 rules:

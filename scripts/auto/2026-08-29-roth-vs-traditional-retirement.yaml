@@ -1,0 +1,103 @@
+title: 'Roth vs. Traditional: What''s the Real Difference?'
+slug: 2026-08-29-roth-vs-traditional-retirement
+format: short
+caption_style: explainer
+cast:
+  host:
+    look: friendly stick figure, thick even black outline, round white head, two black
+      dot eyes, small simple smile, a single wavy line for a moustache, no body fill,
+      single-line arms and legs, small round hands
+    anchor: center
+    voice: en-US-Neural2-D
+scenes:
+  void:
+    color: '#ffffff'
+beats:
+- id: b01
+  scene: void
+  who: host
+  say: Choosing a retirement account all comes down to one simple question.
+  cast:
+    host: standing, hands on hips, looking at camera, confident
+  props: []
+- id: b02
+  scene: void
+  who: host
+  say: When do you want to pay the income tax on that money?
+  cast:
+    host: standing, pointing forward with one hand, questioning expression
+  props: []
+- id: b03
+  scene: void
+  who: host
+  say: With a traditional account, you get a tax deduction on your contributions today.
+  cast:
+    host: standing left of prop, pointing at it, explaining expression
+  props:
+  - tax-form-deduction
+- id: b04
+  scene: void
+  who: host
+  say: With a Roth account, you contribute money that has already been taxed.
+  cast:
+    host: standing left of prop, pointing at it, explaining expression
+  props:
+  - tax-form-paid
+- id: b05
+  scene: void
+  who: host
+  say: In both accounts, your investments can grow completely tax-free over the years.
+  cast:
+    host: standing, gesturing with both hands towards two props, smiling
+  props:
+  - growing-jar-traditional
+  - growing-jar-roth
+- id: b06
+  scene: void
+  who: host
+  say: When you withdraw from a traditional account in retirement, you pay taxes then.
+  cast:
+    host: standing, pointing at prop with a concerned look
+  props:
+  - traditional-withdrawal-tax
+- id: b07
+  scene: void
+  who: host
+  say: But when you withdraw from a Roth, that money is all yours, tax-free.
+  cast:
+    host: standing, pointing at prop with a happy, relieved look
+  props:
+  - roth-withdrawal-free
+- id: b08
+  scene: void
+  who: host
+  say: So the decision is about your tax rate now versus in retirement.
+  cast:
+    host: standing, arms crossed, thinking expression
+  props:
+  - tax-seesaw
+- id: b09
+  scene: void
+  who: host
+  say: Think your tax rate will be lower later? Traditional might be the better fit.
+  cast:
+    host: standing, pointing to the 'later' side of the seesaw
+  props:
+  - tax-seesaw
+- id: b10
+  scene: void
+  who: host
+  say: Think your tax rate will be higher in the future? Roth could make more sense.
+  cast:
+    host: standing, pointing to the 'now' side of the seesaw
+  props:
+  - tax-seesaw
+- id: b11
+  scene: void
+  who: host
+  say: You're not avoiding taxes, just choosing when you want to pay the bill.
+  cast:
+    host: standing, neutral expression, hands at sides, calm
+  props: []
+narrator:
+  voice: en-US-Neural2-D

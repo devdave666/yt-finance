@@ -1,0 +1,66 @@
+title: "Compound Interest, Explained Fast"
+slug: explainer-compound-interest
+format: short
+caption_style: explainer
+narrator: { voice: en-US-Neural2-D }
+# music: assets/lofi.mp3
+
+cast:
+  host:
+    voice: en-US-Neural2-D
+    look: >
+      stick figure, thick 6px solid black outline, round white head, dot eyes,
+      small friendly smile, a simple wavy line moustache, no fill on the body,
+      single-line arms and legs
+    anchor: left
+
+scenes:
+  void:
+    color: "#ffffff"
+
+beats:
+  - id: hook
+    scene: void
+    say: "Let me show you why time matters more than money."
+    cast: { host: "standing, one arm gesturing out, friendly" }
+
+  - id: setup
+    scene: void
+    say: "You put in one thousand dollars. It grows ten percent a year."
+    cast: { host: "standing, pointing down at a jar" }
+    props: [money jar]
+
+  - id: year1
+    scene: void
+    say: "After one year: eleven hundred."
+    cast: { host: "standing, pointing" }
+    props: [bar chart with one bar]
+
+  - id: year2
+    scene: void
+    say: "Year two, the ten percent is on the bigger number. Twelve hundred ten."
+    cast: { host: "standing, arms open" }
+    props: [bar chart with two bars]
+
+  - id: snowball
+    scene: void
+    say: "Every year the gain is bigger than the last. That is the snowball."
+    cast: { host: "standing, watching, surprised" }
+    props: [snowball rolling downhill]
+
+  - id: forty
+    scene: void
+    say: "Leave it forty years and that thousand becomes over forty five thousand."
+    cast: { host: "standing older with a cane, satisfied" }
+    props: [steep exponential curve going up]
+
+  - id: lesson
+    scene: void
+    say: "Same deposit. The only difference was time."
+    cast: { host: "standing, holding a small coin and a big hourglass" }
+
+  - id: cta
+    scene: void
+    say: "The best day to start was years ago. The second best day is today."
+    cast: { host: "walking through a doorway marked start" }
+    emphasis: true

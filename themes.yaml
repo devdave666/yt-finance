@@ -1,0 +1,53 @@
+# The channel's content space. The generator reads this, picks the next topic
+# (round-robin, skipping anything used in the last `cooldown` videos), decides
+# explainer vs skit, and writes a full script YAML. Edit this file to steer the
+# channel; everything downstream is hands-off.
+
+niche: >
+  Personal finance education for a general US audience. One money concept per
+  short, explained in plain English -- no jargon, no hype, no doom. The kind of
+  thing a smart friend would explain over coffee. This niche is chosen for
+  monetisation: finance has among the highest ad RPMs on YouTube, the topics are
+  evergreen, and the content is advertiser-safe.
+
+voice: >
+  Calm, clear, lightly conversational. Confident but never breathless. Explains
+  how things WORK; does not tell the viewer what to buy.
+
+# Hard rules the generator must follow (also enforced in generate.py):
+rules:
+  - Never recommend a specific stock, crypto, fund ticker, or financial product to buy.
+  - Never promise returns or use hype ("get rich", "this one trick", "banks hate this").
+  - No individualized investment, tax, or legal advice -- general education only.
+  - Keep it accurate. If a number is used, it must be roughly right.
+  - Every video ends on a calm, non-pushy takeaway (not a hard sell).
+
+formats: [explainer, skit]     # the generator picks one per video based on the topic
+cooldown: 12                   # don't reuse a topic until this many videos have passed
+
+topics:
+  - Compound interest, and why starting early beats starting with more
+  - How a credit score is actually calculated
+  - Roth vs traditional retirement accounts, the real difference
+  - Why low-cost index funds beat most active investors over time
+  - How credit card APR and minimum payments really work
+  - The 50/30/20 budget, and where it breaks down
+  - What an emergency fund is for and how big it should be
+  - How inflation quietly shrinks money left in checking
+  - Debt snowball vs debt avalanche
+  - Why "buy now, pay later" can quietly cost more
+  - How a 401k employer match is basically free money
+  - High-yield savings accounts, and why yours might not be one
+  - How marginal tax brackets work -- earning more never lowers your take-home
+  - Dollar-cost averaging, explained simply
+  - The true cost of a car loan that's too big
+  - Lifestyle creep, and why raises don't feel like raises
+  - How overdraft fees are designed to stack up
+  - Renting vs buying -- the break-even math, honestly
+  - What "pay yourself first" actually means in practice
+  - Why paying only the minimum on a card can take decades
+  - How a mortgage amortization schedule front-loads interest
+  - The difference between saving and investing
+  - What an APR is versus an APY
+  - Why an emergency fund goes in savings, not the stock market
+  - How "free" checking accounts actually make money

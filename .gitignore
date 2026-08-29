@@ -1,0 +1,16 @@
+build/
+__pycache__/
+*.pyc
+.venv/
+venv/
+.env
+credentials*.json
+service-account*.json
+*.still.png
+
+# local working material only — frame grids of third-party reference videos.
+# The pipeline doesn't need these at runtime; keep them off a public repo.
+refs/
+
+# media/ IS committed on purpose — that's how videos get a public URL for Buffer.
+# state/ and scripts/auto/ are committed too — that's the hands-off memory.

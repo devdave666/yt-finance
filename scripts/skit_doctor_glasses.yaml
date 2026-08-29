@@ -1,0 +1,68 @@
+title: "Who's Calling Me Stupid Now"
+slug: skit-doctor-glasses
+format: short
+caption_style: title
+title_card: 'POV: "Who calls me stupid now?" 😂'
+# music: assets/lofi.mp3
+
+cast:
+  patient:
+    voice: en-US-Neural2-D
+    look: >
+      stick figure, thick 8px solid black outline, perfectly round white head,
+      two small black dot eyes, simple black line mouth, plain yellow t-shirt,
+      thin black-outline arms and legs, small mitten hands
+    anchor: left
+  doctor:
+    voice: en-US-Neural2-A
+    look: >
+      stick figure, thick 8px solid black outline, perfectly round white head,
+      two dot eyes, calm line mouth, white lab coat over a light-blue collar,
+      a small grey stethoscope around the neck
+    anchor: right
+
+scenes:
+  office:
+    bg: >
+      clean flat 2D vector doctor's office interior seen straight on: a wooden
+      desk with a monitor and keyboard, a patient chair, framed certificates on
+      the wall, a bookshelf of binders, muted beige walls and light-wood tones,
+      soft flat shading
+
+beats:
+  - id: b1
+    scene: office
+    who: patient
+    say: "Doctor, I can't read anything up close any more. Is my brain broken?"
+    cast:
+      patient: "sitting on the chair, leaning forward, worried face"
+      doctor: "sitting at the desk, listening, neutral face"
+
+  - id: b2
+    scene: office
+    who: doctor
+    say: "No. Your brain is fine. Try these."
+    cast:
+      patient: "sitting, blank neutral face"
+      doctor: "sitting, holding out a pair of glasses in one hand, faint smile"
+    props: [glasses]
+
+  - id: b3
+    scene: office
+    who: patient
+    say: "Wait. So I just needed glasses this whole time?"
+    cast:
+      patient: "sitting, holding the glasses up, examining them, curious face"
+      doctor: "sitting, neutral face"
+
+  - id: b4
+    scene: office
+    who: patient
+    say: "Who's calling me stupid now?"
+    cast:
+      patient: "standing, arms crossed, wearing the glasses, smug grin"
+      doctor: "sitting, confused face, one eyebrow raised"
+
+  # Optional live-action reaction cutaway to cap the joke:
+  # - id: b5
+  #   live: { src: "C:/Users/Dev/Downloads/reaction.mp4", trim: "0:00-0:03" }

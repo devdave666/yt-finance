@@ -1,0 +1,93 @@
+title: How Your Credit Score Is Actually Calculated
+slug: 2026-08-29-how-credit-scores-are-calculated
+format: short
+caption_style: explainer
+cast:
+  host:
+    look: friendly stick figure, thick even black outline, round white head, two black
+      dot eyes, small simple smile, a single wavy line for a moustache, no body fill,
+      single-line arms and legs, small round hands
+    anchor: center
+    voice: en-US-Neural2-D
+scenes:
+  void:
+    color: '#ffffff'
+beats:
+- id: b01
+  scene: void
+  who: host
+  say: Ever wonder what actually goes into your three-digit credit score?
+  cast:
+    host: standing, looking at camera, hands by side, curious expression
+  props: []
+- id: b02
+  scene: void
+  who: host
+  say: It’s not a mystery, but a recipe with five main ingredients.
+  cast:
+    host: standing, gesturing to the right with one hand, explaining
+  props:
+  - pie_chart
+- id: b03
+  scene: void
+  who: host
+  say: The biggest part, at thirty-five percent, is your payment history.
+  cast:
+    host: pointing at pie chart, neutral expression
+  props:
+  - pie_chart
+- id: b04
+  scene: void
+  who: host
+  say: This simply tracks if you pay your bills on time.
+  cast:
+    host: standing, hands clasped in front, calm expression
+  props: []
+- id: b05
+  scene: void
+  who: host
+  say: Next, at thirty percent, is how much money you owe.
+  cast:
+    host: pointing at the second slice of the pie chart
+  props:
+  - pie_chart
+- id: b06
+  scene: void
+  who: host
+  say: Using less of your available credit limit is generally better.
+  cast:
+    host: making a 'small amount' gesture with thumb and forefinger
+  props: []
+- id: b07
+  scene: void
+  who: host
+  say: Fifteen percent of your score comes from your credit history length.
+  cast:
+    host: pointing at the third slice of the pie chart
+  props:
+  - pie_chart
+- id: b08
+  scene: void
+  who: host
+  say: New credit applications make up ten percent of the score.
+  cast:
+    host: pointing at the fourth slice of the pie chart
+  props:
+  - pie_chart
+- id: b09
+  scene: void
+  who: host
+  say: And the final ten percent is your mix of credit types.
+  cast:
+    host: pointing at the last slice of the pie chart, smiling lightly
+  props:
+  - pie_chart
+- id: b10
+  scene: void
+  who: host
+  say: It's about showing you can manage credit responsibly over time.
+  cast:
+    host: standing, looking at camera, calm and confident expression, hands at side
+  props: []
+narrator:
+  voice: en-US-Neural2-D

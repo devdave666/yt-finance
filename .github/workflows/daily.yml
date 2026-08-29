@@ -1,0 +1,75 @@
+name: Daily Short
+
+on:
+  schedule:
+    - cron: "0 15 * * *"        # 15:00 UTC daily -- placeholder time, tune once there's data
+  workflow_dispatch:
+    inputs:
+      autopublish:
+        description: "Post to YouTube (otherwise build + commit only)"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write        # commit the video + state back
+  id-token: write        # Workload Identity Federation OIDC exchange
+
+concurrency:
+  group: daily-short
+  cancel-in-progress: false
+
+jobs:
+  daily-short:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud (WIF)
+        uses: google-github-actions/auth@v2
+        with:
+          project_id: "project-58f4f689-36b9-406b-bfa"
+          workload_identity_provider: "projects/584573644858/locations/global/workloadIdentityPools/github-pool/providers/github-provider"
+          service_account: "vertex-ai-runner@project-58f4f689-36b9-406b-bfa.iam.gserviceaccount.com"
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install ffmpeg
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+
+      - name: Cache pip + rembg model
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/pip
+            ~/.u2net
+          key: deps-${{ runner.os }}-${{ hashFiles('requirements.txt') }}
+
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt
+
+      - name: Configure git
+        run: |
+          git config user.name "stickfin bot"
+          git config user.email "automation@users.noreply.github.com"
+
+      - name: Build (and maybe publish) today's short
+        env:
+          BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
+          BUFFER_YOUTUBE_CHANNEL_ID: ${{ secrets.BUFFER_YOUTUBE_CHANNEL_ID }}
+          STICKFIN_AUTOPUBLISH: ${{ (github.event_name == 'schedule' || inputs.autopublish) && '1' || '0' }}
+        run: python run_daily.py
+
+      - name: Upload build as artifact (always, so paid work is never lost)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: short-${{ github.run_id }}
+          path: |
+            build/**/*.mp4
+            build/**/timeline.json
+            build/**/publish.json
+            scripts/auto/*
+          if-no-files-found: warn
+          retention-days: 14

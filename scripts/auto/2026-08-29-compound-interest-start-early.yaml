@@ -1,0 +1,117 @@
+title: 'Compound Interest: Why Starting Early Beats Starting Big'
+slug: 2026-08-29-compound-interest-start-early
+format: short
+caption_style: explainer
+cast:
+  host:
+    look: Standard stick figure. Medium outline. Round head. Simple dot eyes and a
+      line for a mouth. Neutral shirt.
+    anchor: center
+    voice: en-US-Neural2-D
+scenes:
+  void:
+    color: '#FFFFFF'
+beats:
+- id: b01
+  scene: void
+  who: host
+  say: The secret to building wealth isn't always how much you invest.
+  cast:
+    host: standing, looking at camera, neutral expression
+  props: []
+- id: b02
+  scene: void
+  who: host
+  say: It's how much time your money has to grow.
+  cast:
+    host: standing, gesturing towards a simple clock icon
+  props:
+  - a simple clock icon
+- id: b03
+  scene: void
+  who: host
+  say: This is because of a powerful idea called compound interest.
+  cast:
+    host: standing, hands clasped, looking thoughtful
+  props: []
+- id: b04
+  scene: void
+  who: host
+  say: It means you earn interest not just on your initial money...
+  cast:
+    host: pointing to a small stack of coins labeled 'Principal'
+  props:
+  - a small stack of coins labeled 'Principal'
+- id: b05
+  scene: void
+  who: host
+  say: '...but also on the interest you''ve already earned.'
+  cast:
+    host: pointing to a second, smaller stack of coins labeled 'Interest'
+  props:
+  - the first stack of coins, plus a second smaller stack labeled 'Interest'
+- id: b06
+  scene: void
+  who: host
+  say: Think of it like a snowball rolling downhill.
+  cast:
+    host: standing aside, watching a snowball grow
+  props:
+  - a small snowball rolling down a slope, getting larger
+- id: b07
+  scene: void
+  who: host
+  say: Let's imagine two investors, Alex and Ben.
+  cast:
+    host: standing between two simple character icons
+  props:
+  - a simple icon of a person labeled 'Alex'
+  - a simple icon of a person labeled 'Ben'
+- id: b08
+  scene: void
+  who: host
+  say: Alex invests one hundred dollars a month starting at age twenty-five.
+  cast:
+    host: pointing to a timeline graph showing small contributions starting early
+  props:
+  - a timeline graph with small bars starting at 'Age 25'
+- id: b09
+  scene: void
+  who: host
+  say: Ben invests double, but starts ten years later at thirty-five.
+  cast:
+    host: pointing to the same graph, now with larger bars starting at 'Age 35'
+  props:
+  - the timeline graph now also showing larger bars starting at 'Age 35'
+- id: b10
+  scene: void
+  who: host
+  say: Ben actually invests more total money out of pocket.
+  cast:
+    host: standing, hands open, explaining
+  props: []
+- id: b11
+  scene: void
+  who: host
+  say: But by retirement, Alex's early start means their money has grown larger.
+  cast:
+    host: pointing to a final bar chart showing Alex's total is higher
+  props:
+  - a two-bar chart comparing 'Alex' and 'Ben', with Alex's bar taller
+- id: b12
+  scene: void
+  who: host
+  say: That extra decade gave Alex's money much more time to compound.
+  cast:
+    host: standing next to the chart, smiling lightly
+  props:
+  - the final two-bar chart
+- id: b13
+  scene: void
+  who: host
+  say: When it comes to compounding, time can be your greatest asset.
+  cast:
+    host: standing, looking at camera, calm and confident
+  props: []
+narrator:
+  voice: en-US-Neural2-D

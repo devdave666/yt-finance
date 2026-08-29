@@ -1,0 +1,7 @@
+google-genai>=2.19
+google-cloud-texttospeech>=2.16
+rembg[cpu]>=2.0            # transparent cutouts (pulls onnxruntime; ~180MB model on first run)
+Pillow>=10.0
+PyYAML>=6.0
+requests>=2.31            # Buffer publish
+# ffmpeg + ffprobe must be on PATH (system install, not pip)

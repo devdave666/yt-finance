@@ -282,6 +282,14 @@ def generate(out_dir: Path | None = None, dry_topic: str | None = None) -> tuple
         script_obj = cand["script"]
         script_obj["slug"] = f"{date}-{_slugify(cand.get('slug') or topic)}"
         script_obj["title"] = cand.get("title") or script_obj.get("title") or topic
+        # a slug colliding with an already-published video means the model
+        # (or a reworded themes.yaml entry) landed on essentially the same
+        # short again -- overwriting it would silently re-render + re-publish
+        # a duplicate, which is worse than burning one more LLM call.
+        if script_obj["slug"] in published:
+            print(f"  slug collides with an already-published video "
+                 f"(attempt {attempt + 1}): {script_obj['slug']}")
+            continue
         _inject_identity(script_obj)
         path = AUTO_DIR / f"{script_obj['slug']}.yaml"
         path.write_text(yaml.safe_dump(script_obj, sort_keys=False, allow_unicode=True),
@@ -294,7 +302,7 @@ def generate(out_dir: Path | None = None, dry_topic: str | None = None) -> tuple
             print(f"  invalid script (attempt {attempt + 1}): {e}")
             path.unlink(missing_ok=True)
     if obj is None:
-        raise RuntimeError(f"could not produce a valid script for: {topic}")
+        raise RuntimeError(f"could not produce a valid, non-duplicate script for: {topic}")
 
     meta = {
         "topic": topic,

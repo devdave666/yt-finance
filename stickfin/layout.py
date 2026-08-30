@@ -17,8 +17,15 @@ from . import config
 Box = tuple[int, int, int, int]          # x, y, w, h  (top-left origin)
 
 # fractions of the canvas
-SIDE_MARGIN = 0.035
-BOTTOM_MARGIN = 0.02
+# Reels/TikTok/Shorts render a fixed 9:16 (1080x1920) canvas, but most phone
+# screens aren't exactly 9:16 -- the player "cover"-scales to fill the real
+# screen and crops the excess, usually off the LEFT/RIGHT edges (a device
+# noticeably taller than 9:16, e.g. 19.5:9, crops ~9% off each side to fill).
+# 3.5% wasn't enough margin to survive that; a real short shipped with a
+# headline letter and a character's arm clipped by exactly this. 11% clears
+# it with room to spare.
+SIDE_MARGIN = 0.11
+BOTTOM_MARGIN = 0.05
 CAPTION_BAND = 0.27                       # top strip reserved for captions
 FEET = config.CHAR_BASELINE_FRAC
 

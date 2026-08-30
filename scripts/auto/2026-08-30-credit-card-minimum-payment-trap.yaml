@@ -1,0 +1,90 @@
+title: Why Minimum Payments Double Your Credit Card Debt
+slug: 2026-08-30-credit-card-minimum-payment-trap
+format: short
+caption_style: explainer
+cast:
+  host:
+    look: 'the ''Anti Broke'' host: a minimalist black-marker stick figure with a
+      round OPEN white head, four or five short spiky lines of hair on top, two small
+      dot eyes, two short sharp angled eyebrows, and always a visible mouth that shows
+      the expression (flat, frown, grimace, open shout). The body is ONE single straight
+      vertical black line (spine), with four more single straight black lines for
+      the two arms and two legs, dot hands, short line feet -- plus one small thin
+      necktie shape (a short strip + a little triangle) hanging at the neck. NO torso
+      shape, NO filled body, NO solid black wedge, NO shirt block -- the figure is
+      a head, spiky hair, five thin lines and a skinny tie. It is never a black silhouette.'
+    anchor: center
+    voice: Orus
+scenes:
+  stage:
+    color: '#f4efe4'
+beats:
+- id: b01
+  scene: stage
+  who: host
+  say: Paying the minimum on a $5,000 card takes 27 years.
+  cast:
+    host: standing, arms wide, looking alarmed
+  headline: 27 YEARS.
+  props: []
+- id: b02
+  scene: stage
+  who: host
+  say: The minimum is usually 1% of the balance plus interest.
+  cast:
+    host: standing, holding prop in right hand, neutral
+  props:
+  - credit-card
+- id: b03
+  scene: stage
+  who: host
+  say: At 24% interest, your first payment is mostly fees.
+  cast:
+    host: standing, pointing left, unimpressed
+  props:
+  - percent
+- id: b04
+  scene: stage
+  who: host
+  say: Of your one-hundred-fifty dollar payment, one hundred goes to interest.
+  cast:
+    host: standing, gesturing towards chart, serious
+  chart:
+    type: hbar
+    title: First $150 Payment
+    labels:
+    - Interest
+    - Principal
+    values:
+    - 100
+    - 50
+    unit: $
+    highlight: 0
+    note: 67% Interest
+  props: []
+- id: b05
+  scene: stage
+  who: host
+  say: Only fifty dollars actually paid down your five thousand dollar debt.
+  cast:
+    host: shrugging, frustrated expression
+  props:
+  - arrow-down
+- id: b06
+  scene: stage
+  who: host
+  say: By the end, you've paid over eleven thousand dollars total.
+  cast:
+    host: standing, arms crossed, serious
+  props:
+  - coins-stack
+- id: b07
+  scene: stage
+  who: host
+  say: The minimum payment is designed to keep you paying forever.
+  cast:
+    host: standing, hands on hips, unimpressed
+  props:
+  - padlock
+narrator:
+  voice: Orus

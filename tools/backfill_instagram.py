@@ -155,6 +155,11 @@ def main(argv: list[str]) -> int:
             print(f"  {c['service']:12} {c['id']}  {c.get('name', '')}  ({c.get('_org', '')})")
         return 0
 
+    if argv[0] == "--status":
+        for pid in argv[1:]:
+            _report_status(token, pid, pid)
+        return 0
+
     channel = os.environ.get("BUFFER_INSTAGRAM_CHANNEL_ID")
     if not channel:
         print("BUFFER_INSTAGRAM_CHANNEL_ID not set. Connected channels:")

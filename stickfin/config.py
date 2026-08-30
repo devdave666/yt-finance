@@ -84,6 +84,16 @@ TTS_SPEAKING_RATE = 1.17       # quick -- shorter Shorts + more energy
 BEAT_GAP_S = 0.03            # near-zero: dead air between lines was the #1 complaint
 TTS_TRIM_SILENCE = True      # strip leading/trailing silence from each beat clip
 
+# ---- Publishing (Buffer) ---------------------------------------------------
+# Both channels live on one Buffer account (org "My organization"). Channel ids
+# aren't secret -- only BUFFER_API_KEY is -- so they carry a default and the
+# daily cron posts to both with no extra setup. Env vars override.
+# (`or` not a default arg -- CI passes the var through as "" when the secret is unset)
+BUFFER_YOUTUBE_CHANNEL_ID = (
+    os.environ.get("BUFFER_YOUTUBE_CHANNEL_ID") or "6a935542ccaf649a674104fd")   # "Anti Broke"
+BUFFER_INSTAGRAM_CHANNEL_ID = (
+    os.environ.get("BUFFER_INSTAGRAM_CHANNEL_ID") or "6a93569eccaf649a6741110c")  # @antibrokee
+
 # ---- Ken Burns (off by default; the reference style has a static camera) ----
 KENBURNS = os.environ.get("STICKFIN_KENBURNS", "0") == "1"
 

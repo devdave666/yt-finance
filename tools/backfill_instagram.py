@@ -160,7 +160,7 @@ def main(argv: list[str]) -> int:
             _report_status(token, pid, pid)
         return 0
 
-    channel = os.environ.get("BUFFER_INSTAGRAM_CHANNEL_ID")
+    channel = os.environ.get("BUFFER_INSTAGRAM_CHANNEL_ID") or publish_mod.config.BUFFER_INSTAGRAM_CHANNEL_ID
     if not channel:
         print("BUFFER_INSTAGRAM_CHANNEL_ID not set. Connected channels:")
         for c in list_channels(token):

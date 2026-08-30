@@ -22,6 +22,8 @@ import os
 import subprocess
 from pathlib import Path
 
+from . import config
+
 YT_CATEGORY_EDUCATION = "27"
 
 _CREATE_POST = """
@@ -112,7 +114,7 @@ def buffer_post(video_url: str, text: str, channel_id: str, platform: str,
 
 # backwards-compatible alias
 def publish_youtube(video_url: str, title: str, description: str) -> str:
-    return buffer_post(video_url, description, os.environ["BUFFER_YOUTUBE_CHANNEL_ID"],
+    return buffer_post(video_url, description, config.BUFFER_YOUTUBE_CHANNEL_ID,
                        "youtube", title=title)
 
 
@@ -131,11 +133,11 @@ def publish(script, meta: dict, repo_root: Path) -> dict:
     desc = meta.get("description") or script.title
 
     out["youtube_post_id"] = buffer_post(
-        url, desc, os.environ["BUFFER_YOUTUBE_CHANNEL_ID"], "youtube", title=title)
+        url, desc, config.BUFFER_YOUTUBE_CHANNEL_ID, "youtube", title=title)
     out["published"] = True
     print(f"[publish] YouTube post id: {out['youtube_post_id']}")
 
-    ig_channel = os.environ.get("BUFFER_INSTAGRAM_CHANNEL_ID")
+    ig_channel = config.BUFFER_INSTAGRAM_CHANNEL_ID
     if ig_channel:
         try:
             out["instagram_post_id"] = buffer_post(url, desc, ig_channel, "instagram")
@@ -143,6 +145,6 @@ def publish(script, meta: dict, repo_root: Path) -> dict:
         except Exception as e:  # non-fatal: YouTube already went out
             print(f"[publish] Instagram post FAILED (non-fatal): {e}")
     else:
-        print("[publish] BUFFER_INSTAGRAM_CHANNEL_ID not set -- skipping Instagram")
+        print("[publish] no Instagram channel configured -- skipping Instagram")
 
     return out

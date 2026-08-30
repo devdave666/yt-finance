@@ -45,24 +45,25 @@ gcloud projects add-iam-policy-binding "$PROJECT_ID" \
 gcloud services enable texttospeech.googleapis.com --project "$PROJECT_ID"
 ```
 
-## 3. Buffer channels (YouTube + Instagram)
+## 3. Buffer (YouTube + Instagram)
 
-1. Create the YouTube channel; connect it in Buffer (same Buffer account as
-   core-decor is fine).
-2. Connect the Instagram account in Buffer too (must be a Business/Creator
-   account for Buffer to publish via API — a personal account only gets a
-   reminder, no auto-post).
-3. Get each channel's id: `python tools/backfill_instagram.py --list` with
-   `BUFFER_API_KEY` set, or read it out of the Buffer dashboard URL.
-4. Repo → Settings → Secrets and variables → Actions:
-   - `BUFFER_API_KEY` — your Buffer personal token (can be the same one)
-   - `BUFFER_YOUTUBE_CHANNEL_ID` — the YouTube channel's id
-   - `BUFFER_INSTAGRAM_CHANNEL_ID` — the Instagram channel's id (optional; the
-     daily run just skips Instagram if it's unset)
+The "Anti Broke" YouTube channel and the `@antibrokee` Instagram account are
+both connected on one Buffer account. Their channel ids are **not secret** and
+are baked into `stickfin/config.py` (`BUFFER_*_CHANNEL_ID`), so the daily cron
+posts to both with no extra setup. The only secret you need is:
 
-To push an already-built short to Instagram after the fact (e.g. one that was
-posted before Instagram was wired up), run the **Backfill Instagram** workflow
-with the slug, or `python tools/backfill_instagram.py <slug>` locally.
+- `BUFFER_API_KEY` — the Buffer personal (public API) token.
+
+Overrides, if a channel ever changes: set `BUFFER_YOUTUBE_CHANNEL_ID` /
+`BUFFER_INSTAGRAM_CHANNEL_ID` as env vars or Actions secrets. List the current
+ids any time with `python tools/backfill_instagram.py --list` (needs
+`BUFFER_API_KEY`). Instagram video posts go out as Reels
+(`shouldShareToFeed: true`); the account must be Business/Creator for Buffer to
+publish via API.
+
+To push an already-built short to Instagram after the fact, run the **Backfill
+Instagram** workflow with the slug, or `python tools/backfill_instagram.py
+<slug>` locally.
 
 ## 4. First runs
 

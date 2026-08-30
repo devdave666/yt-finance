@@ -81,6 +81,24 @@ def _dig_channels(obj) -> list[dict]:
     return []
 
 
+def _rest_profiles(token: str) -> tuple[list[dict], str]:
+    """Buffer's legacy v1 REST -- personal tokens that can't read org channels
+    over GraphQL can usually still list profiles here."""
+    for base in ("https://api.bufferapp.com/1/profiles.json",
+                 "https://api.buffer.com/1/profiles.json"):
+        try:
+            r = requests.get(base, params={"access_token": token}, timeout=60)
+            data = r.json()
+        except Exception as e:  # noqa: BLE001
+            return [], f"  GET {base} -> {e}"
+        if isinstance(data, list):
+            return ([{"id": p.get("id"), "service": p.get("service"),
+                      "name": p.get("formatted_username") or p.get("service_username")}
+                     for p in data], "")
+        return [], f"  GET {base} -> {data}"
+    return [], ""
+
+
 def list_channels(token: str) -> list[dict]:
     attempts = []
     for q in _CHANNELS_QUERIES:
@@ -89,6 +107,11 @@ def list_channels(token: str) -> list[dict]:
         if chans:
             return chans
         attempts.append(f"  {q}\n    -> {body}")
+    rest, err = _rest_profiles(token)
+    if rest:
+        return rest
+    if err:
+        attempts.append(err)
     raise SystemExit("could not read channels from Buffer. Tried:\n" + "\n".join(attempts))
 
 

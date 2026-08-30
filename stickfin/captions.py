@@ -108,30 +108,39 @@ def _groups(words: list[str]) -> list[tuple[int, int]]:
     return out
 
 
-def _reveal(text: str, start: float, end: float) -> list[str]:
+def _reveal(text: str, start: float, speech_end: float, hold_until: float) -> list[str]:
+    """Word-by-word reveal between `start` and `speech_end`; the last group then
+    holds (still) until `hold_until`. NOTHING is emitted past `hold_until` -- that
+    is the next beat's caption start, so there's never two caption lines stacked."""
     words = [w for w in text.split() if w]
     if not words:
         return []
-    times = _word_times(words, start, end)
+    times = _word_times(words, start, speech_end)
+    groups = _groups(words)
     events = []
-    for lo, hi in _groups(words):
-        g_end = times[hi - 1][1] + 0.10
+    for gi, (lo, hi) in enumerate(groups):
+        # this group holds until the next one starts (no gap, no overlap); the
+        # final group holds to the beat boundary
+        next_start = min(times[hi][0], hold_until) if hi < len(words) else hold_until
         for j in range(lo, hi):
-            e_start = times[j][0]
-            e_end = g_end if j == hi - 1 else times[j + 1][0]
+            e_start = min(times[j][0], hold_until - 0.08)
+            e_end = next_start if j == hi - 1 else min(times[j + 1][0], hold_until)
             shown = []
             for k in range(lo, j + 1):
                 w = words[k]
-                if k == j:                       # newest word: green + a quick pop
-                    shown.append(r"{\c" + _GREEN + r"\fscx122\fscy122"
-                                 r"\t(0,90,\fscx100\fscy100)}" + w + r"{\c" + _WHITE + "}")
+                if k == j:                       # newest word: green + a quick scale-in
+                    shown.append(r"{\c" + _GREEN + r"\fscx118\fscy118"
+                                 r"\t(0,80,\fscx100\fscy100)}" + w + r"{\c" + _WHITE + "}")
                 elif _key(w):
                     shown.append(r"{\c" + _GREEN + "}" + w + r"{\c" + _WHITE + "}")
                 else:
                     shown.append(w)
-            body = r"{\fad(50,0)}" + " ".join(shown)
-            events.append(f"Dialogue: 0,{_ts(e_start)},{_ts(max(e_end, e_start + 0.12))},"
-                          f"Cap,,0,0,0,,{body}")
+            # fade ONLY on the first frame of a group; within a group the line
+            # is solid and only the new word animates (no per-word flicker)
+            fade = r"{\fad(70,0)}" if j == lo else ""
+            e_end = min(max(e_end, e_start + 0.10), hold_until)
+            events.append(f"Dialogue: 0,{_ts(e_start)},{_ts(e_end)},"
+                          f"Cap,,0,0,0,,{fade}" + " ".join(shown))
     return events
 
 
@@ -165,7 +174,10 @@ def build(script, out_path):
             lines.append(f"Dialogue: 0,{_ts(t)},{_ts(t + max(d - 0.04, 0.2))},Cap,,0,0,0,,"
                          f"{{\\fad(90,60)}}{_wrap(beat.say.upper(), 22)}")
         else:
-            lines.extend(_reveal(beat.say, t + s0, t + min(s1 + 0.10, d)))
+            # reveal tracks the voice (s0..s1); the last group then holds to the
+            # beat boundary minus a hair, so it clears before the next beat's
+            # first word fades in (no cross-fade collision)
+            lines.extend(_reveal(beat.say, t + s0, t + s1, t + d - 0.03))
         t += d
 
     out_path.write_text("\n".join(lines) + "\n", encoding="utf-8")

@@ -9,13 +9,15 @@ resumes rather than re-spending. Set STICKFIN_AUTOPUBLISH=1 to actually post
 from __future__ import annotations
 
 import json
+import os
 import sys
 import traceback
 from pathlib import Path
 
 from stickfin import (assemble, assets as assets_mod, captions as captions_mod,
                       compositor, generate as generate_mod, publish as publish_mod,
-                      script_model, sfx as sfx_mod, timeline as timeline_mod, tts)
+                      qa as qa_mod, script_model, sfx as sfx_mod,
+                      timeline as timeline_mod, tts)
 
 REPO = Path(__file__).resolve().parent
 
@@ -44,6 +46,25 @@ def main() -> int:
     out = assemble.mux(script, silent, script.build_dir / "voiceover.wav",
                        cap, script.music, sfx=sfx_track)
     print(f"       {out}")
+
+    print("[qa]")
+    autopublish = os.environ.get("STICKFIN_AUTOPUBLISH") == "1"
+    report = qa_mod.check(script, run_critique=autopublish)
+    for w in report.warnings:
+        print(f"       warn: {w}")
+    if report.critique:
+        sc = report.critique.get("scores", {})
+        print(f"       critique {sc.get('overall')}/10 "
+              f"(hook {sc.get('hook')}, pace {sc.get('pacing')}, "
+              f"caps {sc.get('captions')}, audio {sc.get('clarity_of_audio')}) "
+              f"-- {report.critique.get('first_impression', '')}")
+        for p in report.critique.get("top_problems", []):
+            print(f"         - {p}")
+    if not report.ok:
+        for b in report.blockers:
+            print(f"       BLOCK: {b}")
+        print("[qa] failed QA -- NOT publishing. Build kept in the artifact for review.")
+        return 2
 
     print("[publish]")
     result = publish_mod.publish(script, meta, REPO)

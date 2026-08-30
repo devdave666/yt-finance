@@ -76,15 +76,19 @@ TTS_STYLE = os.environ.get("STICKFIN_TTS_STYLE", (
     "You explain money and markets on a channel called Anti Broke. Deliver this "
     "like a sharp market analyst walking someone through the case: calm, "
     "confident, a little skeptical, faintly amused at how rigged the fine print "
-    "is. Brisk and clear -- keep it moving, hit the key numbers and the turn, "
-    "then land the last line flat. No hype, no goofiness, and never draggy or "
+    "is. Use a natural, steady conversational pace -- the pace of someone "
+    "explaining something clearly to a friend across a table. Not rushed, not "
+    "draggy, and DEAD STEADY from the first word to the last: do not speed up or "
+    "slow down partway through. Enunciate the numbers. No hype, no goofiness, no "
     "sing-song."
 ))
 TTS_SAMPLE_RATE = 48000
 TTS_TARGET_LUFS = -15.0
-TTS_SPEAKING_RATE = 1.16       # base pace hint to Gemini-TTS
-TTS_MIN_WPS = 2.85           # hard floor: any beat slower than this gets sped up with atempo
-BEAT_GAP_S = 0.03            # near-zero: dead air between lines was the #1 complaint
+TTS_SPEAKING_RATE = 1.1        # mild base hint (Gemini-TTS leans on the prompt; the
+                              # retry loop re-rolls outliers instead of hard-stretching)
+TTS_TARGET_WPS = 2.9          # ~174 wpm: natural brisk narration, not slow
+TTS_WPS_BAND = (2.5, 3.4)    # a beat outside this gets re-synthesised (up to 3 takes)
+BEAT_GAP_S = 0.04
 TTS_TRIM_SILENCE = True      # strip leading/trailing silence from each beat clip
 
 # ---- Publishing (Buffer) ---------------------------------------------------

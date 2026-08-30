@@ -72,6 +72,9 @@ jobs:
           path: |
             build/**/*.mp4
             build/**/timeline.json
+            build/**/narration.json
+            build/**/qa.json
+            build/**/qa_critique.json
             build/**/publish.json
             scripts/auto/*
           if-no-files-found: warn

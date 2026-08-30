@@ -102,7 +102,7 @@ def _norm(src: Path, dst: Path, extra_af: str = "") -> None:
             "detection=peak,areverse,"
             "silenceremove=start_periods=1:start_silence=0.04:start_threshold=-42dB:"
             "detection=peak,areverse,"
-            "silenceremove=stop_periods=-1:stop_duration=0.30:stop_threshold=-40dB:"
+            "silenceremove=stop_periods=-1:stop_duration=0.55:stop_threshold=-40dB:"
             "detection=peak")
     if extra_af:
         chain.append(extra_af)
@@ -113,26 +113,30 @@ def _norm(src: Path, dst: Path, extra_af: str = "") -> None:
                f"normalize {dst.name}")
 
 
-def _enforce_pace(path: Path, n_words: int) -> None:
-    """If a beat came back slower than TTS_MIN_WPS, speed it up with atempo
-    (pitch-preserving). Gemini-TTS ignores the rate hint on some lines and
-    drags -- this is the hard floor."""
-    floor = getattr(config, "TTS_MIN_WPS", 0)
-    if floor <= 0 or n_words < 2:
-        return
+def _wps(path: Path, n_words: int) -> float:
     speech = max(probe_duration(path) - config.BEAT_GAP_S, 0.1)
-    wps = n_words / speech
-    if wps >= floor:
-        return
-    # a normal slow line just needs a nudge; wps below ~1.5 means the synth
-    # itself is broken (huge internal drag) -- allow a bigger stretch there.
-    cap = 1.4 if wps > 1.5 else 2.0
-    factor = min(cap, round(floor / wps, 3))
+    return n_words / speech
+
+
+def _polish_pace(path: Path, n_words: int) -> float:
+    """Nudge a beat toward TTS_TARGET_WPS with a GENTLE atempo (0.85x-1.18x).
+    Anything needing more than that should have been re-synthesised."""
+    if n_words < 2:
+        return _wps(path, n_words)
+    target = config.TTS_TARGET_WPS
+    wps = _wps(path, n_words)
+    factor = target / wps
+    if 0.97 <= factor <= 1.03:
+        return wps
+    # atempo stays clean for speech up to ~1.2x; past that it warbles, so a
+    # bigger miss than that should have been caught by the re-roll instead
+    factor = min(1.18, max(0.85, round(factor, 3)))
     tmp = path.with_suffix(".pace.wav")
     run_ffmpeg(["-i", path, "-af", f"atempo={factor}",
                 "-ar", config.TTS_SAMPLE_RATE, "-ac", "1", tmp],
-               f"speed up {path.name} x{factor} ({wps:.1f}->{floor} wps)")
+               f"polish pace {path.name} x{factor} ({wps:.2f} wps)")
     tmp.replace(path)
+    return _wps(path, n_words)
 
 
 def _speech_span(path: Path, total: float) -> tuple[float, float]:
@@ -168,10 +172,12 @@ def synthesize(script, force: bool = False) -> dict:
     audio_dir = script.build_dir / "audio"
     audio_dir.mkdir(parents=True, exist_ok=True)
 
+    lo_wps, hi_wps = config.TTS_WPS_BAND
     client = None
     entries = []
     for i, beat in enumerate(script.beats):
         final = audio_dir / f"{beat.id}.wav"
+        n_words = len(beat.say.split())
 
         if force or not final.exists():
             raw = audio_dir / f"{beat.id}.raw.wav"
@@ -181,16 +187,34 @@ def synthesize(script, force: bool = False) -> dict:
                 if hi is not None:
                     seg += ["-t", str(hi - lo)]
                 run_ffmpeg(seg + [raw], f"live audio {beat.id}")
+                _norm(raw, final)
             else:
                 if client is None:
                     client = _client()
                 hint = (" This is the opening hook -- punch it, make them stop "
                         "scrolling." if i == 0 else "")
-                _synth_raw(client, beat.say, script.voice_for(beat), raw,
-                           style=config.TTS_STYLE + hint)
-            _norm(raw, final)
-            if not beat.is_live:
-                _enforce_pace(final, len(beat.say.split()))
+                # re-roll the take until its pace lands in band (Gemini-TTS is
+                # stochastic -- a fresh take fixes a rushed/draggy line far
+                # better than time-stretching one)
+                best_wps = None
+                for take in range(3):
+                    _synth_raw(client, beat.say, script.voice_for(beat), raw,
+                               style=config.TTS_STYLE + hint)
+                    cand = audio_dir / f"{beat.id}.take.wav"
+                    _norm(raw, cand)
+                    w = _wps(cand, n_words)
+                    if best_wps is None or abs(w - config.TTS_TARGET_WPS) < abs(best_wps - config.TTS_TARGET_WPS):
+                        cand.replace(final)
+                        best_wps = w
+                    else:
+                        cand.unlink(missing_ok=True)
+                    if lo_wps <= w <= hi_wps:
+                        break
+                    if take < 2:
+                        print(f"    {beat.id}: take {take + 1} was {w:.2f} wps "
+                              f"(want {lo_wps}-{hi_wps}), re-rolling")
+                w = _polish_pace(final, n_words)
+                print(f"    {beat.id}: {w:.2f} wps")
             raw.unlink(missing_ok=True)
 
         dur = round(probe_duration(final), 3)
@@ -199,7 +223,8 @@ def synthesize(script, force: bool = False) -> dict:
         else:
             s0, s1 = _speech_span(final, dur)
         entries.append({"id": beat.id, "wav": str(final), "duration_s": dur,
-                        "speech_start_s": s0, "speech_end_s": s1})
+                        "speech_start_s": s0, "speech_end_s": s1,
+                        "wps": round(n_words / max(s1 - s0, 0.1), 2) if n_words > 1 else None})
 
     listfile = audio_dir / "_concat.txt"
     listfile.write_text(
@@ -210,7 +235,14 @@ def synthesize(script, force: bool = False) -> dict:
                 script.build_dir / "voiceover.wav"], "concat voiceover")
     listfile.unlink(missing_ok=True)
 
+    spoken = [e["wps"] for e in entries if e.get("wps")]
+    spread = round(max(spoken) / min(spoken), 2) if len(spoken) >= 2 else 1.0
+    if spread > 1.7:
+        print(f"    ! pace inconsistent across beats (spread {spread}x): "
+              + ", ".join(f"{e['id']}={e['wps']}" for e in entries if e.get('wps')))
+
     manifest = {"total_s": round(sum(e["duration_s"] for e in entries), 3),
+                "wps_spread": spread,
                 "beats": entries}
     (script.build_dir / "narration.json").write_text(json.dumps(manifest, indent=2))
     return manifest

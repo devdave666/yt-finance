@@ -23,14 +23,18 @@ def main(path: str) -> None:
 
     beats, total = [], 0.0
     for b in s.beats:
-        speech = 3.0 if b.is_live else max(1.2, len(b.say.split()) / WORDS_PER_SEC)
+        n = len(b.say.split())
+        speech = 3.0 if b.is_live else max(1.2, n / WORDS_PER_SEC)
         secs = speech + config.BEAT_GAP_S
         beats.append({"id": b.id, "wav": "", "duration_s": round(secs, 3),
-                      "speech_start_s": 0.0, "speech_end_s": round(speech, 3)})
+                      "speech_start_s": 0.0, "speech_end_s": round(speech, 3),
+                      "wps": round(n / speech, 2) if (n > 1 and not b.is_live) else None})
         total += secs
 
+    spoken = [x["wps"] for x in beats if x.get("wps")]
+    spread = round(max(spoken) / min(spoken), 2) if len(spoken) >= 2 else 1.0
     (s.build_dir / "narration.json").write_text(json.dumps(
-        {"total_s": round(total, 3), "beats": beats}, indent=2))
+        {"total_s": round(total, 3), "wps_spread": spread, "beats": beats}, indent=2))
     subprocess.run(
         ["ffmpeg", "-y", "-hide_banner", "-loglevel", "error", "-f", "lavfi",
          "-i", f"anullsrc=r={config.TTS_SAMPLE_RATE}:cl=mono", "-t", f"{total:.3f}",

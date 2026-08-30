@@ -94,6 +94,9 @@ def buffer_post(video_url: str, text: str, channel_id: str, platform: str,
         post_input["metadata"] = {"youtube": {"title": title,
                                               "categoryId": YT_CATEGORY_EDUCATION,
                                               "privacy": "public"}}
+    elif platform == "instagram":
+        # a video post to IG is a Reel; Buffer rejects it without an explicit type
+        post_input["metadata"] = {"instagram": {"type": "reel"}}
 
     r = requests.post(
         "https://api.buffer.com/graphql",

@@ -1,0 +1,87 @@
+title: The Credit Card Grace Period Trap You Fell For
+slug: 2026-08-30-credit-card-grace-period-trap
+format: short
+caption_style: explainer
+cast:
+  host:
+    look: 'a classic minimalist stick figure drawn with a black marker: a round OPEN
+      white head (thin black outline, two small dot eyes, tiny smile, clean-shaven,
+      no facial hair), then ONE single straight vertical black line for the entire
+      body/spine, plus four more single straight black lines for the two arms and
+      two legs, ending in tiny round dot hands and short line feet. The whole figure
+      is nothing but a head outline and five thin lines. It has NO torso shape, NO
+      filled body, NO solid black wedge, NO clothing -- it is never a black silhouette.'
+    anchor: center
+    voice: Charon
+scenes:
+  stage:
+    bg: a plain soft warm off-white backdrop with a very subtle paper texture and
+      a gentle vignette darkening the corners slightly. Completely empty and even
+      -- NO floor line, NO horizon line, NO ground, NO shadow, NO objects, no furniture,
+      no text.
+beats:
+- id: b01
+  scene: stage
+  who: host
+  say: Carrying a credit card balance? Here's the trap.
+  cast:
+    host: standing, pointing at camera, knowing smirk
+  props:
+  - credit-card
+- id: b02
+  scene: stage
+  who: host
+  say: Usually, new purchases get an interest-free 'grace period'.
+  cast:
+    host: standing, hands open, explaining
+  props:
+  - calendar
+- id: b03
+  scene: stage
+  who: host
+  say: But that disappears if you don't pay in full.
+  cast:
+    host: shaking head, disappointed expression
+  props:
+  - padlock
+- id: b04
+  scene: stage
+  who: host
+  say: Now, new purchases collect interest from day one.
+  cast:
+    host: pointing to the right, looking serious
+  props:
+  - chart-up
+- id: b05
+  scene: stage
+  who: host
+  say: That coffee you just bought? It's already costing extra.
+  cast:
+    host: shrugging, sarcastic expression
+  props:
+  - receipt
+- id: b06
+  scene: stage
+  who: host
+  say: Your old balance poisons all your new spending.
+  cast:
+    host: making a 'mixing' motion with hands
+  props:
+  - warning
+- id: b07
+  scene: stage
+  who: host
+  say: To get the grace period back, clear the balance.
+  cast:
+    host: making a 'wiping clean' gesture with one hand
+  props:
+  - shield
+- id: b08
+  scene: stage
+  who: host
+  say: The grace period is a reward for paying in full.
+  cast:
+    host: standing neutral, arms crossed, looking at camera
+  props: []
+narrator:
+  voice: Charon

@@ -27,9 +27,9 @@ def _layers_for(script, beat, n_holds: int) -> list[dict]:
     layers: list[dict] = []
     front_cutouts = [c for c in beat.cutouts if not c.behind]
     has_objects = bool(beat.props or front_cutouts)
-    # a small prop can pop in on hold 2 for a mini-reveal; a chart reflows the
-    # whole frame, so it must be present from the start of the beat.
-    obj_hold = 1 if (n_holds > 1 and not beat.chart) else 0
+    # objects are present for the whole beat -- staggering them onto a later
+    # hold makes the figure jump when the layout reflows around the new element.
+    obj_hold = 0
 
     for co in beat.cutouts:
         if co.behind:
@@ -85,7 +85,11 @@ def plan(script, narration: dict) -> dict:
         if beat.is_live:
             n_holds = 1
         else:
-            n_holds = max(1, math.ceil((d - 1e-3) / config.MAX_HOLD_S))
+            # every hold of a beat currently shows the same composite, so extra
+            # holds are just redundant cuts -- only split when the line is really
+            # long (the karaoke caption carries the motion inside one hold).
+            hold_max = config.MAX_HOLD_S * 2.0
+            n_holds = max(1, math.ceil((d - 1e-3) / hold_max))
             while n_holds > 1 and (beat_frames / n_holds) / fps < config.MIN_HOLD_S:
                 n_holds -= 1
 

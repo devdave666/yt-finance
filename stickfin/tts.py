@@ -119,8 +119,8 @@ def _wps(path: Path, n_words: int) -> float:
 
 
 def _polish_pace(path: Path, n_words: int) -> float:
-    """Nudge a beat toward TTS_TARGET_WPS with a GENTLE atempo (0.85x-1.18x).
-    Anything needing more than that should have been re-synthesised."""
+    """Bring a beat to TTS_TARGET_WPS with a pitch-preserving atempo (0.85x-1.28x).
+    Gemini-TTS delivers this voice slow, so this is normally a ~1.2x speed-up."""
     if n_words < 2:
         return _wps(path, n_words)
     target = config.TTS_TARGET_WPS
@@ -128,9 +128,10 @@ def _polish_pace(path: Path, n_words: int) -> float:
     factor = target / wps
     if 0.97 <= factor <= 1.03:
         return wps
-    # atempo stays clean for speech up to ~1.2x; past that it warbles, so a
-    # bigger miss than that should have been caught by the re-roll instead
-    factor = min(1.18, max(0.85, round(factor, 3)))
+    # Gemini-TTS runs slow with this voice, so the usual move is a ~1.2x speed-up;
+    # verified clean by ear + critique. Cap at 1.28x (past that atempo warbles);
+    # a slower raw take just lands a little under target, which is fine.
+    factor = min(1.28, max(0.85, round(factor, 3)))
     tmp = path.with_suffix(".pace.wav")
     run_ffmpeg(["-i", path, "-af", f"atempo={factor}",
                 "-ar", config.TTS_SAMPLE_RATE, "-ac", "1", tmp],

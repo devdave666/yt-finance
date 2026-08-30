@@ -77,6 +77,14 @@ def check(script, run_critique: bool = True) -> QAResult:
         if b.get("wps") and (b["speech_end_s"] - b["speech_start_s"]) < 0.25:
             res.blockers.append(f"beat {b['id']} has words but no detected speech")
 
+    # ---- dead frames: a composite beat with nothing on screen but the host ----
+    dead = sorted({s["beat_id"] for s in timeline["shots"]
+                   if s.get("kind") == "composite" and s.get("layers")
+                   and all(l["type"] == "character" for l in s["layers"])})
+    if len(dead) >= 2:
+        res.warnings.append(f"{len(dead)} talking-head beats with no prop/chart/headline "
+                            f"({', '.join(dead)})")
+
     # ---- assets present ----
     adir = bd / "assets"
     for shot in timeline["shots"]:

@@ -128,6 +128,9 @@ SCHEMA_DOC = """Return ONLY a JSON object, no prose, with this shape:
       // Middle beats: each one must carry a real number, a concrete image, or a sharp turn -- no filler
       //   transition lines. Name the villain: the fine print, the default setting, the fee schedule.
       // Last beat: a memorable one-liner the viewer could repeat -- not a summary, not a call to action.
+      // EVERY beat needs something on screen besides the host: a prop, a chart, or (beat 1) the headline.
+      //   A beat that is just the host talking is a dead frame -- give the last beat a prop too (the
+      //   villain object: the contract, the fine print, the fee schedule, the default toggle).
       // At most one prop OR one chart per beat. 1-2 beats with a chart is ideal
       //   for a data topic; the chart's numbers MUST be ones the narration states
       //   and MUST be roughly accurate. A beat with a chart should not also list a prop.

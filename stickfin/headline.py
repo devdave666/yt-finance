@@ -62,18 +62,23 @@ def render(text: str, out: Path, width_px: int = 1180) -> Path:
 
     y = pad
     line_words = [ln.split(" ") for ln in lines]
+    text_l, text_r = width_px, 0.0
     for lw in line_words:
         widths = [d.textlength(w + " ", font=font) for w in lw]
-        x = (width_px - sum(widths)) / 2
+        row_w = sum(widths)
+        x = (width_px - row_w) / 2
+        text_l = min(text_l, x)
+        text_r = max(text_r, x + row_w - d.textlength(" ", font=font))
         for w, wdt in zip(lw, widths):
             col = GREEN if _key(w) else WHITE
             d.text((x, y), w, font=font, fill=col, stroke_width=stroke, stroke_fill=INK)
             x += wdt
         y += lh
 
-    # rough green underline below the whole text block
+    # rough green underline spanning the actual text block (+ a small overhang)
     uy = pad + lh * len(lines) + int(size * 0.16)
-    d.line([(width_px * 0.15, uy), (width_px * 0.85, uy + int(size * 0.05))],
+    over = size * 0.12
+    d.line([(text_l - over, uy), (text_r + over, uy + int(size * 0.05))],
            fill=GREEN, width=max(8, size // 9))
 
     img = img.rotate(-3, expand=True, resample=Image.BICUBIC)

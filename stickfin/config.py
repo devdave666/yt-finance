@@ -74,20 +74,19 @@ DEFAULT_VOICE = os.environ.get("STICKFIN_VOICE", "Orus")
 # credible analyst, dry and a little skeptical, NOT a comedian, NOT hype.
 TTS_STYLE = os.environ.get("STICKFIN_TTS_STYLE", (
     "You explain money and markets on a channel called Anti Broke. Deliver this "
-    "like a sharp market analyst walking someone through the case: calm, "
-    "confident, a little skeptical, faintly amused at how rigged the fine print "
-    "is. Use a natural, steady conversational pace -- the pace of someone "
-    "explaining something clearly to a friend across a table. Not rushed, not "
-    "draggy, and DEAD STEADY from the first word to the last: do not speed up or "
-    "slow down partway through. Enunciate the numbers. No hype, no goofiness, no "
-    "sing-song."
+    "like a sharp market analyst walking someone through the case: confident, a "
+    "little skeptical, faintly amused at how rigged the fine print is. Brisk and "
+    "clear -- a confident clip, keep it moving. Hold that same brisk pace from "
+    "the first word to the last: never rush a single phrase and never let one "
+    "drag out. Enunciate the numbers. No hype, no goofiness, no sing-song."
 ))
 TTS_SAMPLE_RATE = 48000
 TTS_TARGET_LUFS = -15.0
-TTS_SPEAKING_RATE = 1.1        # mild base hint (Gemini-TTS leans on the prompt; the
-                              # retry loop re-rolls outliers instead of hard-stretching)
-TTS_TARGET_WPS = 2.9          # ~174 wpm: natural brisk narration, not slow
-TTS_WPS_BAND = (2.5, 3.4)    # a beat outside this gets re-synthesised (up to 3 takes)
+TTS_SPEAKING_RATE = 1.22       # base pace hint (Gemini-TTS mostly ignores it and
+                              # delivers ~2.4 wps; _polish_pace does the brisk-ening)
+TTS_TARGET_WPS = 3.05         # ~183 wpm: brisk short-form narration
+TTS_WPS_BAND = (2.3, 3.6)    # re-synth only a genuinely broken take (dragged/rushed);
+                             # a normal ~2.4 wps take is fine, _polish_pace speeds it up
 BEAT_GAP_S = 0.04
 TTS_TRIM_SILENCE = True      # strip leading/trailing silence from each beat clip
 

@@ -101,6 +101,7 @@ SCHEMA_DOC = """Return ONLY a JSON object, no prose, with this shape:
         "say": "ONE short spoken sentence, <= 10 words, punchy",
         "cast": { "<name>": "pose and facial expression, e.g. 'standing, pointing to the right, neutral'" },
         "props": ["at most ONE prop per beat, chosen ONLY from the PROP VOCAB below (exact name), or omit"],
+        "headline": "BEAT 1 ONLY, REQUIRED there: the hook as 2-5 words of huge on-screen text -- a number or a punch (\"$35. EVERY TIME.\", \"YOU'RE LOSING MONEY.\", \"$2.9 TRILLION.\"). Not a full sentence. Omit on every other beat.",
         "chart": {   // OPTIONAL -- use on a beat that cites a trend or 2+ real numbers, INSTEAD of a prop
           "type": "bar" | "line" | "hbar",
           "title": "<= 6 word chart title",
@@ -114,13 +115,16 @@ SCHEMA_DOC = """Return ONLY a JSON object, no prose, with this shape:
       // 6 to 8 beats, targeting 20-28 seconds of narration total. Every character
       // mentioned in a beat's cast must be in the top-level cast.
       //
-      // BEAT 1 is the whole game. It must be ONE of:
-      //   - a shocking specific number ("Your bank makes about thirty five dollars every time you overdraft.")
-      //   - the trick, stated plainly ("Your card company can reorder your purchases so more of them bounce.")
-      //   - a claim that sounds wrong but isn't ("Paying the minimum on a five thousand dollar card takes over twenty years.")
-      //   - money you're losing right now ("If you carry a balance, you're paying interest on things you already paid off.")
-      //   NEVER a definition, NEVER "let me explain", NEVER a yes/no question the viewer could shrug at.
-      //   Open on the payoff. Do not build up to it.
+      // BEAT 1 is the whole game -- it decides whether anyone watches beat 2.
+      //   `say`: the spoken hook, <= 12 words, ONE of:
+      //     - a shocking specific number ("Your bank makes about thirty-five dollars every time you overdraft.")
+      //     - the trick stated plainly ("Your card company can reorder your purchases so more of them bounce.")
+      //     - a claim that sounds wrong but isn't ("Paying the minimum on a $5,000 card takes over twenty years.")
+      //     - loss framed at the viewer ("Right now you're paying interest on things you already paid off.")
+      //     - a stakes/aspiration flip ("Two people invest the same money. One ends up with double. Here's why.")
+      //   `headline`: 2-5 words of huge text that IS the hook visually -- the number or the punch.
+      //   `cast`: the host reacting to it (pointing at it, arms wide, unimpressed, alarmed).
+      //   NEVER a definition, NEVER "let me explain", NEVER a soft yes/no question. Open on the payoff.
       // Middle beats: each one must carry a real number, a concrete image, or a sharp turn -- no filler
       //   transition lines. Name the villain: the fine print, the default setting, the fee schedule.
       // Last beat: a memorable one-liner the viewer could repeat -- not a summary, not a call to action.
@@ -222,6 +226,15 @@ def _inject_identity(script_obj: dict) -> None:
     if allowed:
         for beat in script_obj.get("beats", []):
             beat["props"] = [p for p in (beat.get("props") or []) if p in allowed][:1]
+
+    # beat 1 must have a hook headline -- synthesise one from the line if missing
+    beats = script_obj.get("beats", [])
+    if beats and not beats[0].get("headline"):
+        say = beats[0].get("say", "")
+        m = re.search(r"\$?\d[\d,]*(?:\.\d+)?\s*(?:billion|trillion|million|percent|%|dollars?)?", say)
+        beats[0]["headline"] = (m.group(0).strip() if m
+                                else " ".join(say.split()[:4]).rstrip(".,"))
+        beats[0]["props"] = []
 
 
 def _slugify(s: str) -> str:

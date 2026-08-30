@@ -30,7 +30,7 @@ rules:
   - Every video ends on a calm, useful takeaway (dry, not a hard sell).
 
 formats: [explainer, skit]     # the generator picks one per video based on the topic
-cooldown: 14                   # don't reuse a topic until this many videos have passed
+cooldown: 26                   # don't reuse a topic until this many videos have passed
 
 # Ordered strongest-hook-first (the generator works down the list). Each one
 # should be genuinely "wait, WHAT" -- lead with the number or the trick.

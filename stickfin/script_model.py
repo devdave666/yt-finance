@@ -56,6 +56,7 @@ class Beat:
     props: list[str] = field(default_factory=list)        # generated prop names
     cutouts: list[Cutout] = field(default_factory=list)
     chart: dict | None = None    # {type, title, labels[], values[], unit, highlight, note}
+    headline: str | None = None  # big hook text on beat 1 (a number / short punch)
     live: dict | None = None     # {"src": ..., "trim": "0:00-0:03"}
     emphasis: bool = False
 
@@ -209,6 +210,7 @@ def load_script(path) -> Script:
             props=[str(p) for p in (raw.get("props") or [])],
             cutouts=[_parse_cutout(c) for c in (raw.get("cutouts") or [])],
             chart=_parse_chart(raw.get("chart"), bid),
+            headline=(str(raw["headline"]).strip()[:60] if raw.get("headline") else None),
             emphasis=bool(raw.get("emphasis")),
         ))
 

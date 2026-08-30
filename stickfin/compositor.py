@@ -23,7 +23,7 @@ def _img_size(path: Path) -> tuple[int, int]:
 
 def _resolve(layer: dict, adir: Path) -> Path | None:
     sub = {"character": "char", "prop": "prop", "cutout": "cutout",
-           "chart": "chart"}.get(layer["type"])
+           "chart": "chart", "headline": "headline"}.get(layer["type"])
     if sub is None:
         return None
     p = adir / sub / f"{layer['asset']}.png"

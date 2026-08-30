@@ -1,0 +1,68 @@
+title: "The Overdraft Reorder Trick"
+slug: test-hook
+format: short
+caption_style: explainer
+narrator: { voice: Orus }
+
+cast:
+  host:
+    voice: Orus
+    look: >
+      the Anti Broke host: a minimalist black-marker stick figure, round open
+      white head with a few spiky hair lines, dot eyes, sharp angled brows, one
+      vertical line body, single-line arms and legs, dot hands, a skinny necktie.
+      Never a filled silhouette.
+    anchor: center
+
+scenes:
+  stage:
+    color: "#f4efe4"
+
+beats:
+  - id: b1
+    scene: stage
+    who: host
+    say: "Your bank makes about thirty-five dollars every time you overdraft."
+    headline: "$35. EVERY TIME."
+    cast: { host: "standing, pointing up at the big number, unimpressed" }
+
+  - id: b2
+    scene: stage
+    who: host
+    say: "Say your account has exactly one hundred dollars."
+    cast: { host: "standing, holding up one finger, neutral" }
+    props: [bank]
+
+  - id: b3
+    scene: stage
+    who: host
+    say: "You buy coffee, lunch, then a ninety-dollar bill hits."
+    cast: { host: "standing, listing items on fingers" }
+    props: [receipt]
+
+  - id: b4
+    scene: stage
+    who: host
+    say: "Only that last big one should overdraft. One fee."
+    cast: { host: "standing, one hand raised, calm" }
+    chart:
+      type: bar
+      title: "Overdraft fees"
+      labels: ["Real order", "Bank's order"]
+      values: [35, 70]
+      unit: "$"
+      highlight: 1
+      note: "double"
+
+  - id: b5
+    scene: stage
+    who: host
+    say: "But the bank posts the big payment first. Now two bounce."
+    cast: { host: "standing, arms crossed, sharp brow" }
+    props: [arrow-down]
+
+  - id: b6
+    scene: stage
+    who: host
+    say: "It's called high-to-low posting. It's in the fine print."
+    cast: { host: "standing, looking at camera, flat" }

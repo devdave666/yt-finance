@@ -154,8 +154,8 @@ def build(script, out_path):
     for entry in narration["beats"]:
         d = entry["duration_s"]
         beat = beat_by_id[entry["id"]]
-        if beat.is_live or not beat.say:
-            t += d
+        if beat.is_live or not beat.say or beat.headline:
+            t += d          # the headline graphic is the on-screen text for that beat
             continue
         s0 = float(entry.get("speech_start_s", 0.0) or 0.0)
         s1 = float(entry.get("speech_end_s", d) or d)

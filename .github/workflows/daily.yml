@@ -1,8 +1,10 @@
 name: Daily Short
 
 on:
-  schedule:
-    - cron: "0 15 * * *"        # 15:00 UTC daily -- placeholder time, tune once there's data
+  schedule:                    # 3 shorts a day, spread across US daytime
+    - cron: "0 13 * * *"       # 13:00 UTC  (~9am ET / 6am PT)
+    - cron: "0 17 * * *"       # 17:00 UTC  (~1pm ET / 10am PT)
+    - cron: "0 21 * * *"       # 21:00 UTC  (~5pm ET / 2pm PT)
   workflow_dispatch:
     inputs:
       autopublish:

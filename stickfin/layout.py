@@ -22,7 +22,7 @@ BOTTOM_MARGIN = 0.02
 CAPTION_BAND = 0.27                       # top strip reserved for captions
 FEET = config.CHAR_BASELINE_FRAC
 
-_PRIORITY = {"chart": 3, "character": 2, "cutout": 1, "prop": 1}
+_PRIORITY = {"headline": 4, "chart": 3, "character": 2, "cutout": 1, "prop": 1}
 
 
 # --------------------------------------------------------------------------
@@ -102,10 +102,18 @@ def _regions(kinds: list[str], fmt: str) -> list[tuple[float, float, float, floa
     """A target region per element, same order as `kinds`."""
     chars = [i for i, k in enumerate(kinds) if k == "character"]
     charts = [i for i, k in enumerate(kinds) if k == "chart"]
+    heads = [i for i, k in enumerate(kinds) if k == "headline"]
     objs = [i for i, k in enumerate(kinds) if k in ("prop", "cutout")]
     R: list = [None] * len(kinds)
 
-    if charts:
+    if heads:
+        # the hook headline owns the top half; the figure reacts from a corner
+        R[heads[0]] = (0.06, CAPTION_BAND + 0.02, 0.94, 0.58)
+        if chars:
+            R[chars[0]] = (0.58, 0.56, 0.98, FEET)
+        for i in objs:
+            R[i] = (0.04, 0.60, 0.42, FEET)
+    elif charts:
         # chart dominates the upper stage; figure shrinks to a presenter
         R[charts[0]] = (0.05, CAPTION_BAND + 0.035, 0.95, 0.62)
         for j, i in enumerate(charts[1:]):

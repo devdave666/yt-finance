@@ -32,15 +32,11 @@ sys.path.insert(0, str(REPO))
 from stickfin import publish as publish_mod  # noqa: E402
 BUFFER_URL = "https://api.buffer.com/graphql"
 
-# Buffer's channel list lives in different places depending on how the token is
-# scoped -- try the known shapes in order.
-_CHANNELS_QUERIES = [
-    "query { channels { id service name } }",
-    "query { channels(input: {}) { id service name } }",
-    "query { account { currentOrganization { channels { id service name } } } }",
-    "query { viewer { channels { id service name } } }",
-    "query { account { channels { id service name } } }",
-]
+# Public API tokens can't read account.currentOrganization, but they CAN list
+# account.organizations and then channels(input: {organizationId}).
+_ORGS_QUERY = "query { account { organizations { id name } } }"
+_CHANNELS_QUERY = ('query($o: OrganizationId!) { channels(input: {organizationId: $o}) '
+                   '{ id service name } }')
 
 _INTROSPECT = ('query { __schema { queryType { fields { name args { name } '
                'type { name kind ofType { name kind } } } } } }')
@@ -61,11 +57,14 @@ def _branch() -> str:
                           capture_output=True, text=True).stdout.strip() or "main"
 
 
-def _gql(token: str, query: str) -> dict:
+def _gql(token: str, query: str, variables: dict | None = None) -> dict:
+    payload = {"query": query}
+    if variables:
+        payload["variables"] = variables
     r = requests.post(BUFFER_URL,
                       headers={"Authorization": f"Bearer {token}",
                                "Content-Type": "application/json"},
-                      json={"query": query}, timeout=60)
+                      json=payload, timeout=60)
     return r.json()
 
 
@@ -106,12 +105,23 @@ def _rest_profiles(token: str) -> tuple[list[dict], str]:
 
 def list_channels(token: str) -> list[dict]:
     attempts = []
-    for q in _CHANNELS_QUERIES:
-        body = _gql(token, q)
+    orgs_body = _gql(token, _ORGS_QUERY)
+    orgs = (((orgs_body.get("data") or {}).get("account") or {}).get("organizations")) or []
+    if not orgs:
+        attempts.append(f"  {_ORGS_QUERY}\n    -> {orgs_body}")
+    out: list[dict] = []
+    for org in orgs:
+        body = _gql(token, _CHANNELS_QUERY, {"o": org["id"]})
         chans = _dig_channels(body.get("data"))
         if chans:
-            return chans
-        attempts.append(f"  {q}\n    -> {body}")
+            for c in chans:
+                c["_org"] = org.get("name") or org["id"]
+            out.extend(chans)
+        else:
+            attempts.append(f"  channels(org={org.get('name') or org['id']})\n    -> {body}")
+    if out:
+        return out
+
     rest, err = _rest_profiles(token)
     if rest:
         return rest
@@ -142,14 +152,14 @@ def main(argv: list[str]) -> int:
 
     if not argv or argv[0] == "--list":
         for c in list_channels(token):
-            print(f"  {c['service']:12} {c['id']}  {c.get('name', '')}")
+            print(f"  {c['service']:12} {c['id']}  {c.get('name', '')}  ({c.get('_org', '')})")
         return 0
 
     channel = os.environ.get("BUFFER_INSTAGRAM_CHANNEL_ID")
     if not channel:
         print("BUFFER_INSTAGRAM_CHANNEL_ID not set. Connected channels:")
         for c in list_channels(token):
-            print(f"  {c['service']:12} {c['id']}  {c.get('name', '')}")
+            print(f"  {c['service']:12} {c['id']}  {c.get('name', '')}  ({c.get('_org', '')})")
         raise SystemExit("set BUFFER_INSTAGRAM_CHANNEL_ID to the instagram id above and re-run")
 
     repo, branch = _repo_slug(), _branch()

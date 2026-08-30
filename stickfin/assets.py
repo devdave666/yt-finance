@@ -37,8 +37,10 @@ CHAR_FLOOR = (
     "hair lines) plus five single straight lines for the body (spine, 2 arms, "
     "2 legs), dot hands, and one small skinny necktie at the neck. It has NO "
     "torso shape and is NEVER a filled black silhouette or a solid body wedge. "
-    "Open white head, dot eyes, sharp angled brows, one even black line weight. "
-    "Match the reference sheet exactly for proportions and construction."
+    "Open white head, one even black line weight. The face is ALWAYS complete: "
+    "two dot eyes, two sharp angled eyebrows, AND a clearly drawn mouth -- a "
+    "line, curve or open shape that reads the expression. Never leave the mouth "
+    "off. Match the reference sheet exactly for proportions and construction."
 )
 # Flat mid-grey keys out cleanly against both black outlines and white fills.
 MATTE_BG = "on a completely flat solid #8a8a8a grey background, no gradient, no shadow, no floor line, no horizon"
@@ -330,7 +332,10 @@ def generate_assets(script, plan: dict, force: bool = False) -> None:
         c = plan["characters"][spec["char"]]
         pose_prompt = (
             f"{STYLE_FLOOR}\n{CHAR_FLOOR}\n{LINE_LOCK}\n\nCHARACTER: {c['look']}\n"
-            f"POSE / EXPRESSION: {spec['state']}\n\n"
+            f"POSE / EXPRESSION: {spec['state']}\n"
+            f"Draw the whole face for that expression -- eyes, both eyebrows, and "
+            f"a mouth (flat line, frown, tight grimace, open shout, small smile). "
+            f"The mouth must be visible.\n\n"
             f"ONLY the single character, whole figure head to feet, centred, "
             f"filling most of the frame vertically, {MATTE_BG}. NO furniture, "
             "NO background objects, NO floor, NO other characters, NO text -- "

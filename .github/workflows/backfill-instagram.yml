@@ -11,6 +11,11 @@ on:
         type: string
         required: false
         default: ""
+      channel_id:
+        description: "Instagram Buffer channel id (overrides the secret; optional)."
+        type: string
+        required: false
+        default: ""
 
 permissions:
   contents: read
@@ -30,5 +35,5 @@ jobs:
       - name: Post to Instagram
         env:
           BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
-          BUFFER_INSTAGRAM_CHANNEL_ID: ${{ secrets.BUFFER_INSTAGRAM_CHANNEL_ID }}
+          BUFFER_INSTAGRAM_CHANNEL_ID: ${{ inputs.channel_id || secrets.BUFFER_INSTAGRAM_CHANNEL_ID }}
         run: python tools/backfill_instagram.py ${{ inputs.slug || '--list' }}

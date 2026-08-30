@@ -53,7 +53,7 @@ ICONS = {
     "credit-card": ("a plain credit card with a chip and a magnetic stripe", "blue"),
     "safe": ("a small closed vault door with a round combination dial", "dark grey"),
     "scale": ("a level two-pan balance scale", "black"),
-    "shield": ("a smooth simple heraldic shield shape with one bold white check mark centred on it", "solid blue shield, white check, black outline"),
+    "shield": ("a plain rounded shield shape filled completely with solid blue, with one thick white check mark drawn on top of the blue", "fully solid blue fill, thick white check, black outline"),
     "padlock": ("a closed padlock", "yellow body, grey shackle"),
     "question": ("a single large question mark", "blue"),
     "lightbulb": ("a lit lightbulb", "yellow"),

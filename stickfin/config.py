@@ -42,20 +42,33 @@ def aspect_ratio(fmt: str | None = None) -> str:
 # longer is split into that many holds (identical composite unless the beat
 # defines `steps`). Skit lines are naturally short; explainer beats lean on
 # phrase-by-phrase captions for motion during a hold.
-MAX_HOLD_S = float(os.environ.get("STICKFIN_MAX_HOLD_S", "1.8"))
-MIN_HOLD_S = float(os.environ.get("STICKFIN_MIN_HOLD_S", "0.9"))
+MAX_HOLD_S = float(os.environ.get("STICKFIN_MAX_HOLD_S", "1.5"))
+MIN_HOLD_S = float(os.environ.get("STICKFIN_MIN_HOLD_S", "0.8"))
 
 # ---- Character layout (fraction of canvas) ---------------------------------
-CHAR_HEIGHT_FRAC = 0.56       # default figure height vs canvas height
-CHAR_BASELINE_FRAC = 0.94     # where feet sit
-ANCHOR_X = {"left": 0.28, "center": 0.5, "right": 0.72}
+CHAR_HEIGHT_FRAC = 0.54       # default figure height vs canvas height
+CHAR_BASELINE_FRAC = 0.95     # where feet sit
+ANCHOR_X = {"left": 0.30, "center": 0.5, "right": 0.70}
+
+# When a shot has props/cutouts, the speaking character slides here and the
+# objects take the other side, so nothing lands on the figure's head.
+CHAR_ANCHOR_WITH_PROPS = "left"
+PROP_ZONE_AT = "right-low"    # beside the figure at hand height, clear of the head
+PROP_SCALE = 0.24
+
+# ---- Idle motion -------------------------------------------------------------
+# Gentle "moving hold" so shots aren't frozen (first review: "feels frozen").
+IDLE_BOB_PX = float(os.environ.get("STICKFIN_IDLE_BOB_PX", "7"))
+IDLE_BOB_HZ = 0.5
 
 # ---- Text-to-Speech ------------------------------------------------------
 TTS_LANGUAGE = "en-US"
-DEFAULT_VOICE = os.environ.get("STICKFIN_VOICE", "en-US-Neural2-D")
+# Chirp 3 HD reads far more naturally than Neural2 (first review: "flat and
+# robotic"). Chirp voices don't take SSML -- tts.py already handles that.
+DEFAULT_VOICE = os.environ.get("STICKFIN_VOICE", "en-US-Chirp3-HD-Charon")
 TTS_SAMPLE_RATE = 48000
-TTS_TARGET_LUFS = -16.0
-BEAT_GAP_S = 0.15
+TTS_TARGET_LUFS = -15.0
+BEAT_GAP_S = 0.12
 
 # ---- Ken Burns (off by default; the reference style has a static camera) ----
 KENBURNS = os.environ.get("STICKFIN_KENBURNS", "0") == "1"

@@ -15,7 +15,7 @@ from pathlib import Path
 
 from stickfin import (assemble, assets as assets_mod, captions as captions_mod,
                       compositor, generate as generate_mod, publish as publish_mod,
-                      script_model, timeline as timeline_mod, tts)
+                      script_model, sfx as sfx_mod, timeline as timeline_mod, tts)
 
 REPO = Path(__file__).resolve().parent
 
@@ -40,8 +40,9 @@ def main() -> int:
     print("[render]")
     silent = compositor.render_shots(script, tl)
     cap = captions_mod.build(script, script.build_dir / "captions.ass")
+    sfx_track = sfx_mod.build_track(script, tl, script.build_dir / "sfx.wav")
     out = assemble.mux(script, silent, script.build_dir / "voiceover.wav",
-                       cap, script.music)
+                       cap, script.music, sfx=sfx_track)
     print(f"       {out}")
 
     print("[publish]")

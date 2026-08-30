@@ -10,7 +10,7 @@ cast:
     voice: en-US-Neural2-D
     look: >
       stick figure, thick 6px solid black outline, round white head, dot eyes,
-      small friendly smile, a simple wavy line moustache, no fill on the body,
+      small friendly smile, clean-shaven with no facial hair, no fill on the body,
       single-line arms and legs
     anchor: left
 

@@ -20,24 +20,40 @@ from pathlib import Path
 
 import yaml
 
-from . import config, script_model
+from . import config, icons, script_model
 
 TEXT_MODELS = [("us-central1", "gemini-2.5-pro"), ("us-central1", "gemini-2.5-flash")]
 
-CHANNEL_VOICE = "en-US-Neural2-D"     # the narrator / first character, every video
-SECOND_VOICE = "en-US-Neural2-A"      # the other character in a skit
+CHANNEL_VOICE = "en-US-Chirp3-HD-Charon"    # narrator / first character, every video
+SECOND_VOICE = "en-US-Chirp3-HD-Aoede"      # the other character in a skit
+
+# Every explainer uses this one backdrop (generated once, reused) instead of
+# stark white -- first review called the white background "unappealing".
+STAGE_BG = (
+    "a very soft warm off-white studio backdrop, a faint horizon/floor line low "
+    "in the frame, a gentle vignette darkening the corners slightly, subtle "
+    "paper texture -- nothing else, no objects, no furniture, no text"
+)
 
 # The channel's recurring characters -- fixed here (not written by the model) so
 # the figure looks identical across every upload. The model still chooses poses
 # and expressions per beat.
 HOST_LOOK = (
-    "friendly stick figure, thick even black outline, round white head, two "
-    "black dot eyes, small simple smile, a single wavy line for a moustache, "
-    "no body fill, single-line arms and legs, small round hands"
+    "a classic minimalist stick figure drawn with a black marker: a round OPEN "
+    "white head (thin black outline, two small dot eyes, tiny smile, "
+    "clean-shaven, no facial hair), then ONE single straight vertical black "
+    "line for the entire body/spine, plus four more single straight black lines "
+    "for the two arms and two legs, ending in tiny round dot hands and short "
+    "line feet. The whole figure is nothing but a head outline and five thin "
+    "lines. It has NO torso shape, NO filled body, NO solid black wedge, NO "
+    "clothing -- it is never a black silhouette."
 )
 SECOND_LOOK = (
-    "stick figure, thick even black outline, round white head, two dot eyes, "
-    "plain teal t-shirt, single-line arms and legs, small round hands"
+    "a classic minimalist stick figure like the host but drawn slightly shorter, "
+    "same construction: round open white head, ONE straight vertical line for "
+    "the spine, single straight lines for arms and legs, dot hands. No torso "
+    "shape, no fill, no silhouette. A small plain teal collar is the only "
+    "difference from the host."
 )
 
 STATE = Path("state/topic_history.json")
@@ -68,7 +84,7 @@ SCHEMA_DOC = """Return ONLY a JSON object, no prose, with this shape:
     },
     "scenes": {
       "<name>": { "bg": "flat 2D vector background description, no characters, no text" }
-      // explainer: a single scene named "void" with { "color": "#ffffff" } instead of bg
+      // explainer: a single scene named "stage" -- OMIT its bg, the pipeline fills it
       // skit: 1-2 drawn scenes
     },
     "beats": [
@@ -76,14 +92,18 @@ SCHEMA_DOC = """Return ONLY a JSON object, no prose, with this shape:
         "id": "b01",
         "scene": "<scene name>",
         "who": "<character name>",       // the speaker; for explainer always "host"
-        "say": "ONE spoken sentence, <= 16 words, no numbers written as digits unless a real figure",
-        "cast": { "<name>": "pose and facial expression, e.g. 'standing, pointing at a bar chart, neutral'" },
-        "props": ["optional simple objects drawn in the same style, e.g. 'a jar of coins'"]
+        "say": "ONE spoken sentence, <= 12 words",
+        "cast": { "<name>": "pose and facial expression, e.g. 'standing, pointing to the right, neutral'" },
+        "props": ["at most ONE prop per beat, chosen ONLY from the PROP VOCAB below (exact name), or omit"]
       }
-      // 8 to 11 beats, targeting 20-35 seconds of narration total. Every character
+      // 7 to 9 beats, targeting 22-30 seconds of narration total. Every character
       // mentioned in a beat's cast must be in the top-level cast.
-      // First beat is a scroll-stopping hook. Last beat is a calm one-line takeaway (no hard sell).
-      // Re-use props across beats where natural (an evolving chart is the same prop name each time).
+      // Beat 1 MUST be a scroll-stopping hook: a pointed question, a surprising
+      //   number, or a "you're doing X wrong" -- NEVER a definition or "Let me explain".
+      // Last beat is a calm one-line takeaway (no hard sell).
+      // At most one prop per beat. Reuse the SAME prop name across beats when it's
+      //   the same object evolving. Props must be concrete and instantly readable
+      //   (a piggy bank, a padlock, a rising line chart) -- not abstract.
     ]
   }
 }
@@ -91,9 +111,9 @@ SCHEMA_DOC = """Return ONLY a JSON object, no prose, with this shape:
 Rules:
 - Accurate. Any figure used must be roughly correct.
 - No specific tickers, funds, apps, or products to buy. No promises of returns. No hype phrasing.
-- explainer = one narrator ("host") explaining to camera with props/charts.
+- explainer = one narrator ("host") explaining to camera; keep gestures simple ("pointing to the right", "shrugging", "arms open").
 - skit = two characters, a short situation, a punchline in the final beat.
-- Keep every `say` short enough to land in about 1-2 seconds of speech.
+- Every `say` must land in about 1-2 seconds of speech. Short. Punchy. Spoken, not written.
 """
 
 
@@ -128,8 +148,10 @@ def _ask(topic: str, themes: dict) -> dict:
     from google import genai
     from google.genai import types
 
+    vocab = ", ".join(icons.names()) or "(none available -- use no props)"
     prompt = (
         f"{SCHEMA_DOC}\n\n"
+        f"PROP VOCAB (use these exact names, nothing else):\n{vocab}\n\n"
         f"CHANNEL NICHE:\n{themes['niche']}\n\n"
         f"NARRATION VOICE:\n{themes['voice']}\n\n"
         f"HARD RULES:\n- " + "\n- ".join(themes.get("rules", [])) + "\n\n"
@@ -153,13 +175,29 @@ def _ask(topic: str, themes: dict) -> dict:
 
 
 def _inject_identity(script_obj: dict) -> None:
-    """Force the channel's fixed voices + character designs onto whatever the
-    model returned, so brand identity is stable across every upload."""
+    """Force the channel's fixed voices, character designs and backdrop onto
+    whatever the model returned, so brand identity is stable across uploads."""
     cast = script_obj.get("cast") or {}
     for i, name in enumerate(cast):
         cast[name]["voice"] = CHANNEL_VOICE if i == 0 else SECOND_VOICE
         cast[name]["look"] = HOST_LOOK if i == 0 else SECOND_LOOK
     script_obj.setdefault("narrator", {})["voice"] = CHANNEL_VOICE
+
+    if script_obj.get("caption_style") == "explainer":
+        scenes = script_obj.setdefault("scenes", {})
+        if not scenes:
+            scenes["stage"] = {}
+        for name in scenes:
+            scenes[name] = {"bg": STAGE_BG}      # one consistent backdrop
+        only = next(iter(scenes))
+        for beat in script_obj.get("beats", []):
+            beat["scene"] = only
+
+    # drop any prop the model invented that isn't in the committed icon library
+    allowed = set(icons.names())
+    if allowed:
+        for beat in script_obj.get("beats", []):
+            beat["props"] = [p for p in (beat.get("props") or []) if p in allowed][:1]
 
 
 def _slugify(s: str) -> str:

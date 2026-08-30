@@ -1,6 +1,7 @@
 build/
 __pycache__/
 *.pyc
+*.log
 .venv/
 venv/
 .env
@@ -14,3 +15,4 @@ refs/
 
 # media/ IS committed on purpose — that's how videos get a public URL for Buffer.
 # state/ and scripts/auto/ are committed too — that's the hands-off memory.
+assets/icons_contact.png

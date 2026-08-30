@@ -19,12 +19,13 @@ from __future__ import annotations
 import hashlib
 import json
 import re
+import shutil
 import time
 import urllib.request
 from io import BytesIO
 from pathlib import Path
 
-from . import config
+from . import config, icons
 
 STYLE_FLOOR = (
     "Hand-drawn / clean-vector explainer aesthetic. Thick consistent solid "
@@ -32,10 +33,12 @@ STYLE_FLOOR = (
     "rendering. Bold and legible."
 )
 CHAR_FLOOR = (
-    "Stick figure: perfectly circular head, thick even black outline, dot "
-    "eyes, simple line mouth. Limbs are single thick black lines. Keep the "
-    "figure EXACTLY on-model versus the reference sheet -- same proportions, "
-    "same line weight, same colours."
+    "The figure is pure LINE ART: an open round head outline plus exactly five "
+    "single straight lines (one spine, two arms, two legs) and dot hands. It "
+    "has NO torso shape and is NEVER a filled black silhouette or a solid body "
+    "wedge. Perfectly circular open white head, dot eyes, simple line mouth, "
+    "one even black line weight throughout. Match the reference sheet exactly "
+    "for proportions and construction."
 )
 # Flat mid-grey keys out cleanly against both black outlines and white fills.
 MATTE_BG = "on a completely flat solid #8a8a8a grey background, no gradient, no shadow, no floor line, no horizon"
@@ -128,6 +131,14 @@ def _pil_from(response):
     raise RuntimeError(f"no image in response: {response!r}"[:600])
 
 
+def _pil_or_none(response):
+    """PIL image, or None when the model answered with text instead of an image."""
+    try:
+        return _pil_from(response)
+    except RuntimeError:
+        return None
+
+
 _rembg_session = None
 
 
@@ -145,6 +156,33 @@ def _cutout(pil_rgb):
         out = out.crop((max(0, x0 - pad), max(0, y0 - pad),
                         min(out.width, x1 + pad), min(out.height, y1 + pad)))
     return out
+
+
+def _solidity(pil_img) -> float:
+    """Filled area as a fraction of the subject's bounding box.
+
+    A stick figure drawn as thin lines occupies ~0.10-0.30 of its bbox; a
+    filled black silhouette / solid torso wedge is ~0.40+. Works on both an
+    rembg cutout (uses alpha) and a raw generation on the grey matte (uses
+    'darker than the matte').
+    """
+    import numpy as np
+    a = np.asarray(pil_img.convert("RGBA"))
+    alpha = a[..., 3]
+    lum = a[..., :3].mean(axis=2)
+    has_alpha = int(alpha.max()) > 0 and int(alpha.min()) < 255
+    if has_alpha:
+        subject = alpha > 100                       # rembg cutout: the figure
+        ink_px = subject & (lum < 90)               # opaque near-black only
+    else:
+        subject = np.abs(lum - 138) > 28            # anything unlike the grey matte
+        ink_px = lum < 90
+    ys, xs = np.where(subject)
+    if len(ys) < 50:
+        return 0.0
+    y0, y1, x0, x1 = ys.min(), ys.max() + 1, xs.min(), xs.max() + 1
+    area = (y1 - y0) * (x1 - x0)
+    return float(ink_px[y0:y1, x0:x1].sum() / area)
 
 
 def _load_src(src: str):
@@ -195,16 +233,32 @@ def generate_assets(script, plan: dict, force: bool = False) -> None:
         print(f"  bg {name}")
 
     # ---- character reference sheets ----
+    # A filled black torso here poisons every pose, so retry until it's line art.
+    LINE_LOCK = (
+        "The whole figure is thin LINE ART: an open round head outline plus "
+        "exactly five separate thin straight lines (spine, 2 arms, 2 legs) and "
+        "two dot hands. NEVER a filled black body, NEVER a solid torso wedge, "
+        "NEVER a silhouette."
+    )
     sheets = {}
     for name, c in plan["characters"].items():
         out = a / "char" / f"_{name}.png"
         if not out.exists() or force:
-            resp = _generate(client, [
-                f"{STYLE_FLOOR}\n{CHAR_FLOOR}\n\nCHARACTER: {c['look']}\n\n"
-                f"Draw a reference sheet: this same character full-body, "
-                f"front and 3/4 views, {MATTE_BG}. No other characters, no text."], cfg)
-            _pil_from(resp).save(out)
-            print(f"  char sheet {name}")
+            prompt = (f"{STYLE_FLOOR}\n{CHAR_FLOOR}\n{LINE_LOCK}\n\n"
+                      f"CHARACTER: {c['look']}\n\nDraw a reference sheet: this "
+                      f"character full-body, front and 3/4 views, {MATTE_BG}. "
+                      f"No other characters, no text.")
+            img = _pil_or_none(_generate(client, [prompt], cfg))
+            if img is not None and _solidity(img) > 0.10:
+                alt = _pil_or_none(_generate(client, [
+                    prompt + "\n\nThe last drawing filled the body solid black. "
+                    "Redraw the body as ONE THIN LINE, not a shape."], cfg))
+                if alt is not None and _solidity(alt) < _solidity(img):
+                    img = alt
+            if img is None:
+                raise RuntimeError(f"char sheet {name}: no image returned")
+            img.save(out)
+            print(f"  char sheet {name} (solidity {_solidity(img):.2f})")
         sheets[name] = Image.open(out)
 
     # ---- poses (transparent) ----
@@ -213,32 +267,52 @@ def generate_assets(script, plan: dict, force: bool = False) -> None:
         if out.exists() and not force:
             continue
         c = plan["characters"][spec["char"]]
-        resp = _generate(client, [
-            f"{STYLE_FLOOR}\n{CHAR_FLOOR}\n\nCHARACTER: {c['look']}\n"
+        pose_prompt = (
+            f"{STYLE_FLOOR}\n{CHAR_FLOOR}\n{LINE_LOCK}\n\nCHARACTER: {c['look']}\n"
             f"POSE / EXPRESSION: {spec['state']}\n\n"
-            f"ONLY the single character -- the whole figure head to feet, "
-            f"centred, filling most of the frame vertically, {MATTE_BG}. "
-            "Absolutely NO furniture, NO chair, NO desk, NO background objects, "
-            "NO floor, NO other characters, and NO text -- just the figure "
-            "(plus a held prop only if the pose explicitly names one). The "
-            "first image is the reference sheet; stay exactly on-model.",
-            sheets[spec["char"]]], cfg)
-        cut = _cutout(_pil_from(resp))
-        if cut.width > cut.height * 1.15:
-            print(f"  ! pose {key} came out wide ({cut.width}x{cut.height}) "
-                  "-- likely grabbed furniture; consider --force re-gen")
+            f"ONLY the single character, whole figure head to feet, centred, "
+            f"filling most of the frame vertically, {MATTE_BG}. NO furniture, "
+            "NO background objects, NO floor, NO other characters, NO text -- "
+            "just the figure (plus a held prop only if the pose names one). "
+            "The first image is the reference sheet; stay exactly on-model.")
+        img = _pil_or_none(_generate(client, [pose_prompt, sheets[spec["char"]]], cfg))
+        if img is None:
+            print(f"  pose {key}: no image, using reference sheet crop as fallback")
+            img = sheets[spec["char"]]
+        cut = _cutout(img)
+        if _solidity(cut) > 0.13:
+            print(f"  pose {key}: body looks filled, retrying once")
+            retry = _pil_or_none(_generate(client, [
+                pose_prompt + "\n\nThe last try filled the body solid black -- "
+                "the body must be ONE THIN LINE.", sheets[spec["char"]]], cfg))
+            if retry is not None:
+                rcut = _cutout(retry)
+                if _solidity(rcut) < _solidity(cut):
+                    cut = rcut
         cut.save(out)
         print(f"  pose {key}")
 
     # ---- props (transparent) ----
+    any_sheet = next(iter(sheets.values()), None)
     for key, spec in plan["props"].items():
         out = a / "prop" / f"{key}.png"
         if out.exists() and not force:
             continue
-        resp = _generate(client, [
-            f"{STYLE_FLOOR}\n\nA single {spec['name']} -- one clean icon-like "
-            f"object, centered, {MATTE_BG}. No text, no hands, no character."], cfg)
-        _cutout(_pil_from(resp)).save(out)
+        lib = icons.path(key)
+        if lib is not None:
+            shutil.copyfile(lib, out)
+            print(f"  prop {key}  (icon library)")
+            continue
+        contents = [
+            f"{STYLE_FLOOR}\n\nDraw a single {spec['name']} as a flat 2-D doodle "
+            "in the EXACT same drawing style as the reference image: the same "
+            "thick even black ink outline and weight, at most one or two flat "
+            "solid fill colours, NO 3-D, NO shading, NO gloss or highlights, NO "
+            f"realism. One object only, centred, {MATTE_BG}. No text, no hands, "
+            "no character, no ground."]
+        if any_sheet is not None:
+            contents.append(any_sheet)
+        _cutout(_pil_from(_generate(client, contents, cfg))).save(out)
         print(f"  prop {key}")
 
     # ---- cutouts (ingested, transparent) ----

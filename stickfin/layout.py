@@ -29,10 +29,11 @@ def character_box(anchor: str, char_scale: float, asset_wh: tuple[int, int],
 
 def object_box(at: str, obj_scale: float, asset_wh: tuple[int, int],
                fmt: str) -> tuple[int, int, int, int]:
-    """Return (x, y, w, h) for a prop/cutout, centered on its anchor.
+    """Return (x, y, w, h) for a prop/cutout.
 
-    `at` may be an anchor name (left/center/right) or 'name-top' /
-    'name-bottom' to bias vertically.
+    `at` is `<h>` or `<h>-<v>` where h in left/center/right and v in
+    top/mid/bottom. Vertical bands are chosen to clear the caption strip at the
+    top and the character's head.
     """
     cw, ch = config.canvas(fmt)
     aw, ah = asset_wh
@@ -41,13 +42,11 @@ def object_box(at: str, obj_scale: float, asset_wh: tuple[int, int],
     w, h = round(aw * scale), round(ah * scale)
 
     base, _, vbias = at.partition("-")
-    x = round(_anchor_x(base, cw) - w / 2)
-    if vbias == "top":
-        y = round(ch * 0.14)
-    elif vbias == "bottom":
-        y = round(ch * 0.94 - h)
-    else:
-        y = round(ch * 0.52 - h / 2)
+    # nudge the right-side prop zone further right so it clears the figure
+    x_frac = {"left": 0.24, "center": 0.5, "right": 0.74}.get(base, 0.5)
+    x = round(x_frac * cw - w / 2)
+    y_center = {"top": 0.30, "mid": 0.46, "low": 0.66, "bottom": 0.80}.get(vbias, 0.5)
+    y = round(ch * y_center - h / 2)
     return x, y, w, h
 
 

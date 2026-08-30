@@ -16,7 +16,7 @@ import json
 import sys
 
 from . import assemble, assets as assets_mod, captions as captions_mod
-from . import compositor, script_model, timeline as timeline_mod, tts
+from . import compositor, script_model, sfx as sfx_mod, timeline as timeline_mod, tts
 
 STAGES = ["audio", "plan", "assets", "render"]
 
@@ -29,6 +29,7 @@ def main(argv=None) -> int:
     ap.add_argument("--only", help="comma-separated beat ids (cheap style test)")
     ap.add_argument("--music", help="background music file (ducked under VO)")
     ap.add_argument("--no-captions", action="store_true")
+    ap.add_argument("--no-sfx", action="store_true", help="skip sound effects")
     ap.add_argument("--force", action="store_true")
     args = ap.parse_args(argv)
 
@@ -81,9 +82,13 @@ def main(argv=None) -> int:
         cap = None
         if not args.no_captions:
             cap = captions_mod.build(script, script.build_dir / "captions.ass")
+        sfx_track = None
+        if not args.no_sfx:
+            sfx_track = sfx_mod.build_track(script, timeline,
+                                            script.build_dir / "sfx.wav")
         print("[render] mux ...")
         out = assemble.mux(script, silent, script.build_dir / "voiceover.wav",
-                           cap, args.music or script.music)
+                           cap, args.music or script.music, sfx=sfx_track)
         print(f"[done] {out}")
 
     return 0

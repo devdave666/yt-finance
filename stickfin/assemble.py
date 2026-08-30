@@ -1,4 +1,4 @@
-"""Final mux: silent composite video + voiceover (+ music bed) + burned captions."""
+"""Final mux: composite video + voiceover + SFX (+ music bed) + burned captions."""
 from __future__ import annotations
 
 from pathlib import Path
@@ -12,18 +12,29 @@ def _sub_arg(path: Path) -> str:
 
 
 def mux(script, silent: Path, voiceover: Path, captions: Path | None,
-        music: str | None) -> Path:
+        music: str | None, sfx: Path | None = None) -> Path:
     out = script.out_path
     args = ["-i", str(silent), "-i", str(voiceover)]
     filters: list[str] = []
-    vmap, amap = "0:v", "1:a"
+    vmap = "0:v"
+
+    # ---- audio graph: VO, then SFX on top, then duck a music bed under both ----
+    idx = 2
+    voice_bus = "[1:a]"
+    amap = "1:a"                     # raw-stream form for -map, unless a filter runs
+    if sfx:
+        args += ["-i", str(sfx)]
+        filters.append(f"{voice_bus}[{idx}:a]amix=inputs=2:normalize=0:"
+                       f"duration=first[vs]")
+        voice_bus, amap = "[vs]", "[vs]"
+        idx += 1
 
     if music:
         args += ["-stream_loop", "-1", "-i", str(music)]
-        filters.append("[2:a]volume=-21dB,afade=t=in:st=0:d=1.2[bed]")
-        filters.append("[1:a][bed]sidechaincompress=threshold=0.02:ratio=10:"
-                       "attack=5:release=300[duck]")
-        filters.append("[1:a][duck]amix=inputs=2:duration=first:"
+        filters.append(f"[{idx}:a]volume=-22dB,afade=t=in:st=0:d=1.2[bed]")
+        filters.append(f"{voice_bus}[bed]sidechaincompress=threshold=0.02:"
+                       "ratio=10:attack=5:release=300[duck]")
+        filters.append(f"{voice_bus}[duck]amix=inputs=2:duration=first:"
                        "dropout_transition=0[a]")
         amap = "[a]"
 

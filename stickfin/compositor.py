@@ -51,7 +51,7 @@ def _composite_clip(shot: dict, adir: Path, fmt: str, out: Path) -> None:
         inputs += ["-f", "lavfi", "-i", f"color=c=white:s={cw}x{ch}:r={fps}"]
         chains = ["[0:v]setsar=1[b0]"]
 
-    idx, last = 1, "b0"
+    idx, last, char_seen = 1, "b0", 0
     for layer in shot["layers"]:
         ap = _resolve(layer, adir)
         if ap is None:
@@ -61,7 +61,15 @@ def _composite_clip(shot: dict, adir: Path, fmt: str, out: Path) -> None:
         inputs += ["-loop", "1", "-i", str(ap)]
         cur = f"c{idx}"
         chains.append(f"[{idx}:v]scale={w}:{h}[s{idx}]")
-        chains.append(f"[{last}][s{idx}]overlay={x}:{y}:format=auto[{cur}]")
+
+        if layer["type"] == "character" and config.IDLE_BOB_PX > 0:
+            phase = char_seen * 3.14159
+            char_seen += 1
+            amp, hz = config.IDLE_BOB_PX, config.IDLE_BOB_HZ
+            ye = f"{y}+{amp}*sin(2*PI*{hz}*t+{phase:.3f})"
+            chains.append(f"[{last}][s{idx}]overlay={x}:'{ye}':format=auto[{cur}]")
+        else:
+            chains.append(f"[{last}][s{idx}]overlay={x}:{y}:format=auto[{cur}]")
         last, idx = cur, idx + 1
 
     run_ffmpeg(

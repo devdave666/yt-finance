@@ -18,24 +18,38 @@ from . import config
 from .assets import slug
 
 
+# prop slots beside the figure, clear of its head
+_PROP_SLOTS = ["right-low", "right-mid", "right-top", "center-bottom"]
+
+
 def _layers_for(script, beat) -> list[dict]:
     layers: list[dict] = []
+    front_cutouts = [c for c in beat.cutouts if not c.behind]
+    has_objects = bool(beat.props or front_cutouts)
+
     for co in beat.cutouts:
         if co.behind:
             layers.append({"type": "cutout", "asset": _cut_key(co.src),
                            "at": co.at, "scale": co.scale})
+
     for cname, state in beat.cast.items():
         ch = script.cast[cname]
+        # a centred solo speaker slides aside when objects share the frame
+        anchor = ch.anchor
+        if anchor == "center" and has_objects and len(beat.cast) == 1:
+            anchor = config.CHAR_ANCHOR_WITH_PROPS
         layers.append({"type": "character",
                        "asset": f"{cname}__{slug(state)}",
-                       "anchor": ch.anchor, "scale": ch.scale})
-    for p in beat.props:
+                       "anchor": anchor, "scale": ch.scale})
+
+    for i, p in enumerate(beat.props):
         layers.append({"type": "prop", "asset": slug(p),
-                       "at": "center", "scale": 0.14})
-    for co in beat.cutouts:
-        if not co.behind:
-            layers.append({"type": "cutout", "asset": _cut_key(co.src),
-                           "at": co.at, "scale": co.scale})
+                       "at": _PROP_SLOTS[i % len(_PROP_SLOTS)],
+                       "scale": config.PROP_SCALE})
+
+    for co in front_cutouts:
+        layers.append({"type": "cutout", "asset": _cut_key(co.src),
+                       "at": co.at, "scale": co.scale})
     return layers
 
 

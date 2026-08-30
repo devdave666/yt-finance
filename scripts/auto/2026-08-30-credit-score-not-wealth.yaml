@@ -1,0 +1,104 @@
+title: Why a Millionaire Can Have a Bad Credit Score
+slug: 2026-08-30-credit-score-not-wealth
+format: short
+caption_style: explainer
+cast:
+  host:
+    look: 'the ''Anti Broke'' host: a minimalist black-marker stick figure with a
+      round OPEN white head, four or five short spiky lines of hair on top, two small
+      dot eyes, two short sharp angled eyebrows, and always a visible mouth that shows
+      the expression (flat, frown, grimace, open shout). The body is ONE single straight
+      vertical black line (spine), with four more single straight black lines for
+      the two arms and two legs, dot hands, short line feet -- plus one small thin
+      necktie shape (a short strip + a little triangle) hanging at the neck. NO torso
+      shape, NO filled body, NO solid black wedge, NO shirt block -- the figure is
+      a head, spiky hair, five thin lines and a skinny tie. It is never a black silhouette.'
+    anchor: center
+    voice: Orus
+scenes:
+  stage:
+    color: '#f4efe4'
+beats:
+- id: b01
+  scene: stage
+  who: host
+  say: Your credit score cares zero percent about your income.
+  cast:
+    host: standing, pointing, serious expression
+  headline: 'INCOME: 0%'
+  props: []
+- id: b02
+  scene: stage
+  who: host
+  say: It doesn't care about your savings or investments either.
+  cast:
+    host: shrugging, palms up, looking unimpressed
+  props:
+  - safe
+- id: b03
+  scene: stage
+  who: host
+  say: 'A credit score only measures one thing: how you handle debt.'
+  cast:
+    host: standing, hands apart, defining a space
+  props:
+  - credit-card
+- id: b04
+  scene: stage
+  who: host
+  say: The formula is public, and payment history is king.
+  cast:
+    host: pointing, explaining
+  chart:
+    type: hbar
+    title: FICO Score Factors
+    labels:
+    - Payment History
+    - Amount Owed
+    - History Length
+    - New Credit
+    - Credit Mix
+    values:
+    - 35
+    - 30
+    - 15
+    - 10
+    - 10
+    unit: '%'
+    highlight: 0
+    note: 35% of score
+  props: []
+- id: b05
+  scene: stage
+  who: host
+  say: A millionaire who pays their bills late will have a bad score.
+  cast:
+    host: arms crossed, looking unimpressed
+  props:
+  - calendar
+- id: b06
+  scene: stage
+  who: host
+  say: Same for one who never borrows money at all.
+  cast:
+    host: shaking head slightly, neutral
+  props:
+  - arrow-down
+- id: b07
+  scene: stage
+  who: host
+  say: With no credit file, their score can be zero.
+  cast:
+    host: hands open, questioning expression
+  props:
+  - question
+- id: b08
+  scene: stage
+  who: host
+  say: Your score isn't a grade on you. It's a grade on your borrowing.
+  cast:
+    host: looking directly at camera, calm, hands down
+  props:
+  - shield
+narrator:
+  voice: Orus

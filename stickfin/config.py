@@ -69,16 +69,17 @@ TTS_LANGUAGE = "en-US"
 TTS_MODEL = os.environ.get("STICKFIN_TTS_MODEL", "gemini-2.5-flash-tts")
 DEFAULT_VOICE = os.environ.get("STICKFIN_VOICE", "Charon")
 TTS_STYLE = os.environ.get("STICKFIN_TTS_STYLE", (
-    "You are the host of a punchy personal-finance channel called Anti Broke. "
-    "Deliver this with energy and a little edge -- like a sharp friend who's "
-    "tired of watching people make the same money mistake. Conversational and "
-    "confident, lean hard into the key words, vary the pace, land the "
-    "punchlines. Never flat, never robotic, never over-excited."
+    "You host a personal-finance channel called Anti Broke. Deliver this "
+    "deadpan and quick, with dry sarcasm and a knowing smirk in your voice -- "
+    "like a sharp friend who thinks this stuff is genuinely funny and slightly "
+    "rigged. Hit the key words hard, throw away the setups, land the "
+    "punchlines flat. Fast, confident, a little amused. Never flat-robotic, "
+    "never hypey, never goofy."
 ))
 TTS_SAMPLE_RATE = 48000
 TTS_TARGET_LUFS = -15.0
-TTS_SPEAKING_RATE = 1.12       # a touch quick -- shorter Shorts + more energy
-BEAT_GAP_S = 0.08
+TTS_SPEAKING_RATE = 1.15       # quick -- shorter Shorts + more energy
+BEAT_GAP_S = 0.06
 
 # ---- Ken Burns (off by default; the reference style has a static camera) ----
 KENBURNS = os.environ.get("STICKFIN_KENBURNS", "0") == "1"

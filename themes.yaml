@@ -6,52 +6,59 @@
 channel: "Anti Broke (@AntiBrokee)"
 
 niche: >
-  Personal finance for people who want to stop being broke. One money concept
-  per short, explained in plain English -- no jargon, no doom, no get-rich
-  nonsense. The angle: the basics nobody taught you, laid out clearly so you can
-  actually use them. Chosen for monetisation -- finance has among the highest ad
-  RPMs on YouTube, topics are evergreen, and the content is advertiser-safe.
+  Personal finance for people who want to stop being broke -- but the LESS
+  obvious stuff. Not "what is a budget". The mechanics and gotchas most people
+  never had explained: how a rule actually works, the trap hidden in the fine
+  print, the counterintuitive thing that's true anyway. One sharp idea per
+  short. Chosen for monetisation -- finance has among the highest ad RPMs on
+  YouTube, the topics are evergreen, and the content is advertiser-safe.
 
 voice: >
-  Direct, sharp, a little bit of an edge -- like a friend who's tired of watching
-  you make the same money mistake. Confident, never breathless, never hypey.
-  Explains how things WORK and what to DO about it; never tells the viewer which
-  specific product to buy.
+  Dry, quick, a little sarcastic. The humour comes from calling out how absurd
+  or rigged the thing is -- not from jokes or puns. Punchy one-liners, a
+  knowing smirk, zero fluff. Confident, never hypey, never mean. Think a smart
+  friend who finds this stuff genuinely funny and slightly infuriating.
 
 # Hard rules the generator must follow (also enforced in generate.py):
 rules:
   - Never recommend a specific stock, crypto, fund ticker, or financial product to buy.
   - Never promise returns or use hype ("get rich", "this one trick", "banks hate this").
   - No individualized investment, tax, or legal advice -- general education only.
-  - Keep it accurate. If a number is used, it must be roughly right.
-  - Every video ends on a calm, non-pushy takeaway (not a hard sell).
+  - Keep it accurate. If a number or rule is cited, it must be correct.
+  - Sarcasm is aimed at systems and fine print, never at the viewer.
+  - Every video ends on a calm, useful takeaway (dry, not a hard sell).
 
 formats: [explainer, skit]     # the generator picks one per video based on the topic
-cooldown: 12                   # don't reuse a topic until this many videos have passed
+cooldown: 14                   # don't reuse a topic until this many videos have passed
 
 topics:
-  - Compound interest, and why starting early beats starting with more
-  - How a credit score is actually calculated
-  - Roth vs traditional retirement accounts, the real difference
-  - Why low-cost index funds beat most active investors over time
-  - How credit card APR and minimum payments really work
-  - The 50/30/20 budget, and where it breaks down
-  - What an emergency fund is for and how big it should be
-  - How inflation quietly shrinks money left in checking
-  - Debt snowball vs debt avalanche
-  - Why "buy now, pay later" can quietly cost more
-  - How a 401k employer match is basically free money
-  - High-yield savings accounts, and why yours might not be one
-  - How marginal tax brackets work -- earning more never lowers your take-home
-  - Dollar-cost averaging, explained simply
-  - The true cost of a car loan that's too big
-  - Lifestyle creep, and why raises don't feel like raises
-  - How overdraft fees are designed to stack up
-  - Renting vs buying -- the break-even math, honestly
-  - What "pay yourself first" actually means in practice
-  - Why paying only the minimum on a card can take decades
-  - How a mortgage amortization schedule front-loads interest
-  - The difference between saving and investing
-  - What an APR is versus an APY
-  - Why an emergency fund goes in savings, not the stock market
-  - How "free" checking accounts actually make money
+  - Carrying any card balance kills the interest-free grace period on new purchases
+  - The 0% long-term capital gains bracket -- selling winners tax-free in a low-income year
+  - An HSA is the only triple-tax-free account, and you can invest it instead of spending it
+  - FDIC insurance can cover far more than $250k at one bank via ownership categories
+  - Credit utilization is scored per card, not just across all your cards combined
+  - Deferred-interest store financing -- "same as cash" until you miss the date, then it all backdates
+  - The Rule of 72, and why 114 triples your money and 144 quadruples it
+  - Sequence-of-returns risk -- a crash early in retirement hurts far more than a later one
+  - Your 401k's expense ratio can quietly eat a third of your lifetime returns
+  - Target-date funds are great in a 401k and tax-messy in a regular brokerage account
+  - Money market funds vs high-yield savings -- similar yield, different risk and access
+  - Beneficiary designations on your accounts override whatever your will says
+  - I bonds -- government savings bonds whose rate tracks inflation, with a yearly cap
+  - The wash-sale rule -- no tax loss if you rebuy the same thing within 30 days
+  - Municipal bond interest is federal-tax-free, so a lower rate can still win
+  - A Roth's quiet superpower -- your contributions come back out anytime, penalty-free
+  - Card minimum payments are engineered so a balance can take decades to clear
+  - Balance transfers advertised at zero percent APR almost always carry a 3 to 5 percent upfront fee
+  - 401k match vesting -- leave too early and you forfeit part of the free money
+  - Investing a lump sum now beats dollar-cost-averaging it in, most of the time historically
+  - Your effective tax rate is way below your bracket, because brackets are marginal
+  - A credit score has nothing to do with your income or how much money you have
+  - Paying rent on time builds zero credit unless you specifically enrol it
+  - Closing your oldest credit card can drop your score by shortening your history
+  - How term and whole life insurance differ, and why term costs a fraction as much
+  - Overdraft "protection" is usually a very expensive loan you opted into
+  - The debt avalanche saves more; the debt snowball is just easier to stick with
+  - Brokered CDs pay more than bank CDs but can lose value if you sell early
+  - A 15-year vs 30-year mortgage -- the rate gap and the payment gap people miss
+  - How a no-fee checking account still makes the bank plenty of money off you

@@ -60,9 +60,12 @@ SECOND_LOOK = (
 STATE = Path("state/topic_history.json")
 AUTO_DIR = Path("scripts/auto")
 
-SYSTEM = """You are the head writer for a faceless personal-finance YouTube Shorts channel.
-You write tight, accurate, plain-English scripts that a stick-figure animation pipeline turns into a vertical video.
-You never give individualised advice and never tell viewers what to buy. You explain how money works."""
+SYSTEM = """You are the head writer for "Anti Broke", a faceless personal-finance YouTube Shorts channel.
+You write tight, accurate scripts that a stick-figure animation pipeline turns into a vertical video.
+The voice is dry and a little sarcastic -- the humour comes from pointing out how absurd or rigged the
+fine print is, never from jokes, puns, or making fun of the viewer. Punchy, quick, a knowing smirk.
+You pick topics most people have NEVER had explained -- not "what is a budget". You never give
+individualised advice and never tell viewers what to buy; you explain how the mechanism works."""
 
 SCHEMA_DOC = """Return ONLY a JSON object, no prose, with this shape:
 
@@ -100,8 +103,10 @@ SCHEMA_DOC = """Return ONLY a JSON object, no prose, with this shape:
       // 6 to 8 beats, targeting 20-28 seconds of narration total. Every character
       // mentioned in a beat's cast must be in the top-level cast.
       // Beat 1 MUST be a scroll-stopping hook: a pointed question, a surprising
-      //   number, or a "you're doing X wrong" -- NEVER a definition or "Let me explain".
-      // Last beat is a calm one-line takeaway (no hard sell).
+      //   number, or a dry "here's a thing nobody tells you" -- NEVER a definition
+      //   or "Let me explain". A little sarcasm in the hook is good.
+      // Middle beats can land one dry aside each -- calling out the absurd part.
+      // Last beat is a flat, useful one-line takeaway (dry, no hard sell).
       // At most one prop per beat. Reuse the SAME prop name across beats when it's
       //   the same object evolving. Props must be concrete and instantly readable
       //   (a piggy bank, a padlock, a rising line chart) -- not abstract.

@@ -108,7 +108,7 @@ SFX_TICKS = os.environ.get("STICKFIN_SFX_TICKS", "0") == "1"   # per-cut click; 
 # ---- Captions -----------------------------------------------------------
 # ASS colours are &HAABBGGRR. White text with a heavy near-black outline (reads
 # on any background); the word currently being said flips to amber.
-CAP_SPOKEN = "&H0018C6FF"     # #FFC618 amber
+CAP_SPOKEN = "&H0042B37C"     # #7CB342 brand green (ASS is &HBBGGRR)
 CAP_PENDING = "&H00FFFFFF"    # white
 CAP_OUTLINE = "&H00181818"    # near-black
 ZOOM_RATE_PER_S = 0.05

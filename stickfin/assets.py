@@ -33,12 +33,12 @@ STYLE_FLOOR = (
     "rendering. Bold and legible."
 )
 CHAR_FLOOR = (
-    "The figure is pure LINE ART: an open round head outline plus exactly five "
-    "single straight lines (one spine, two arms, two legs) and dot hands. It "
-    "has NO torso shape and is NEVER a filled black silhouette or a solid body "
-    "wedge. Perfectly circular open white head, dot eyes, simple line mouth, "
-    "one even black line weight throughout. Match the reference sheet exactly "
-    "for proportions and construction."
+    "The figure is thin LINE ART: an open round white head (with a few spiky "
+    "hair lines) plus five single straight lines for the body (spine, 2 arms, "
+    "2 legs), dot hands, and one small skinny necktie at the neck. It has NO "
+    "torso shape and is NEVER a filled black silhouette or a solid body wedge. "
+    "Open white head, dot eyes, sharp angled brows, one even black line weight. "
+    "Match the reference sheet exactly for proportions and construction."
 )
 # Flat mid-grey keys out cleanly against both black outlines and white fills.
 MATTE_BG = "on a completely flat solid #8a8a8a grey background, no gradient, no shadow, no floor line, no horizon"
@@ -269,11 +269,11 @@ def generate_assets(script, plan: dict, force: bool = False) -> None:
     # ---- character reference sheets ----
     # A filled black torso here poisons every pose, so retry until it's line art.
     LINE_LOCK = (
-        "The whole figure is thin LINE ART: an open round head outline plus "
-        "exactly five separate thin straight lines (spine, 2 arms, 2 legs) and "
-        "two dot hands. NEVER a filled black body, NEVER a solid torso wedge, "
-        "NEVER a silhouette. EXACTLY ONE figure in the frame -- never two "
-        "people, never a duplicate or mirror image."
+        "The whole figure is thin LINE ART: an open round head (with spiky "
+        "hair) plus five separate thin straight lines (spine, 2 arms, 2 legs), "
+        "dot hands, and a small skinny necktie. NEVER a filled black body, "
+        "NEVER a solid torso wedge, NEVER a silhouette. EXACTLY ONE figure in "
+        "the frame -- never two people, never a duplicate or mirror image."
     )
     sheets = {}
     for name, c in plan["characters"].items():

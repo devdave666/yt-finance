@@ -20,9 +20,9 @@ from __future__ import annotations
 from pathlib import Path
 
 INK = "#181818"
-SLATE = "#8f9aa6"
-ACCENT = "#f5b301"      # amber, matches the caption highlight
-RED = "#e0362c"
+SLATE = "#9aa3ac"
+ACCENT = "#7CB342"      # brand green, matches the caption highlight
+RED = "#e0362c"         # kept for the "look here" annotation ring only
 PAPER = "#00000000"     # transparent
 
 

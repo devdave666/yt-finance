@@ -36,14 +36,15 @@ STAGE_COLOR = "#f4efe4"
 # the figure looks identical across every upload. The model still chooses poses
 # and expressions per beat.
 HOST_LOOK = (
-    "a classic minimalist stick figure drawn with a black marker: a round OPEN "
-    "white head (thin black outline, two small dot eyes, tiny smile, "
-    "clean-shaven, no facial hair), then ONE single straight vertical black "
-    "line for the entire body/spine, plus four more single straight black lines "
-    "for the two arms and two legs, ending in tiny round dot hands and short "
-    "line feet. The whole figure is nothing but a head outline and five thin "
-    "lines. It has NO torso shape, NO filled body, NO solid black wedge, NO "
-    "clothing -- it is never a black silhouette."
+    "the 'Anti Broke' host: a minimalist black-marker stick figure with a round "
+    "OPEN white head, four or five short spiky lines of hair on top, two small "
+    "dot eyes, two short sharp angled eyebrows, a small mouth. The body is ONE "
+    "single straight vertical black line (spine), with four more single straight "
+    "black lines for the two arms and two legs, dot hands, short line feet -- "
+    "plus one small thin necktie shape (a short strip + a little triangle) "
+    "hanging at the neck. NO torso shape, NO filled body, NO solid black wedge, "
+    "NO shirt block -- the figure is a head, spiky hair, five thin lines and a "
+    "skinny tie. It is never a black silhouette."
 )
 SECOND_LOOK = (
     "a classic minimalist stick figure like the host but drawn slightly shorter, "

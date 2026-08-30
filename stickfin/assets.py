@@ -165,14 +165,29 @@ def _pil_or_none(response):
 _rembg_session = None
 
 
-def _cutout(pil_rgb):
-    """RGB PIL image -> RGBA with background removed and trimmed to content."""
+def _cutout(pil_rgb, ink: bool = False):
+    """RGB PIL image -> RGBA with background removed and trimmed to content.
+
+    ink=True normalises the line art: any grey/washed-out stroke is forced to
+    solid near-black so the figure reads the same weight in every pose (Nano
+    Banana sometimes draws a pose in faint grey ink)."""
     global _rembg_session
-    from PIL import ImageFilter
+    from PIL import Image, ImageFilter
     from rembg import new_session, remove
     if _rembg_session is None:
         _rembg_session = new_session(config.REMBG_MODEL)
     out = remove(pil_rgb, session=_rembg_session, post_process_mask=True)
+
+    if ink:
+        import numpy as np
+        arr = np.asarray(out).copy()
+        lum = arr[..., :3].mean(axis=2)
+        opaque = arr[..., 3] > 60
+        dark = opaque & (lum < 190)          # every stroke, however faint
+        arr[dark, 0:3] = 22
+        arr[dark, 3] = 255
+        out = Image.fromarray(arr)
+
     # shrink the matte by ~1px to eat the pale antialiased fringe (shows as a
     # white halo when composited onto the cream background)
     a = out.getchannel("A").filter(ImageFilter.MinFilter(3))
@@ -325,14 +340,14 @@ def generate_assets(script, plan: dict, force: bool = False) -> None:
         if img is None:
             print(f"  pose {key}: no image, using reference sheet crop as fallback")
             img = sheets[spec["char"]]
-        cut = _cutout(img)
+        cut = _cutout(img, ink=True)
         if _solidity(cut) > 0.13:
             print(f"  pose {key}: body looks filled, retrying once")
             retry = _pil_or_none(_generate(client, [
                 pose_prompt + "\n\nThe last try filled the body solid black -- "
                 "the body must be ONE THIN LINE.", sheets[spec["char"]]], cfg))
             if retry is not None:
-                rcut = _cutout(retry)
+                rcut = _cutout(retry, ink=True)
                 if _solidity(rcut) < _solidity(cut):
                     cut = rcut
         cut.save(out)
@@ -358,7 +373,7 @@ def generate_assets(script, plan: dict, force: bool = False) -> None:
             "no character, no ground."]
         if any_sheet is not None:
             contents.append(any_sheet)
-        _cutout(_pil_from(_generate(client, contents, cfg))).save(out)
+        _cutout(_pil_from(_generate(client, contents, cfg)), ink=True).save(out)
         print(f"  prop {key}")
 
     # ---- cutouts (ingested, transparent) ----

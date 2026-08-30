@@ -8,6 +8,7 @@ from __future__ import annotations
 import json
 import os
 import subprocess
+import time
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -151,8 +152,18 @@ def _critique(video: Path) -> dict:
 
     client = genai.Client(vertexai=True, project=config.GCP_PROJECT,
                           location="us-central1")
-    r = client.models.generate_content(
-        model="gemini-2.5-flash",
-        contents=[types.Part.from_bytes(data=data, mime_type="video/mp4"), _CRIT_PROMPT],
-        config=types.GenerateContentConfig(response_mime_type="application/json"))
-    return json.loads(r.text)
+    last = None
+    for attempt in range(4):
+        try:
+            r = client.models.generate_content(
+                model="gemini-2.5-flash",
+                contents=[types.Part.from_bytes(data=data, mime_type="video/mp4"),
+                          _CRIT_PROMPT],
+                config=types.GenerateContentConfig(response_mime_type="application/json"))
+            return json.loads(r.text)
+        except Exception as e:  # noqa: BLE001 -- retry only on rate limits
+            last = e
+            if "429" not in str(e) and "RESOURCE_EXHAUSTED" not in str(e):
+                raise
+            time.sleep(20 * (attempt + 1))
+    raise last

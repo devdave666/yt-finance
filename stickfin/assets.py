@@ -57,7 +57,7 @@ def _src_key(src: str) -> str:
 # --------------------------------------------------------------------------
 
 def plan_assets(script) -> dict:
-    scenes, characters, poses, props, cutouts = {}, {}, {}, {}, {}
+    scenes, characters, poses, props, cutouts, charts_ = {}, {}, {}, {}, {}, {}
 
     for name, sc in script.scenes.items():
         scenes[name] = {"bg": sc.bg, "color": sc.color}
@@ -73,8 +73,11 @@ def plan_assets(script) -> dict:
         for cname, state in beat.cast.items():
             key = f"{cname}__{slug(state)}"
             poses[key] = {"char": cname, "state": state}
-        for p in beat.props:
-            props[slug(p)] = {"name": p}
+        if beat.chart:
+            charts_[beat.id] = beat.chart
+        else:
+            for p in beat.props:
+                props[slug(p)] = {"name": p}
         for co in beat.cutouts:
             cutouts.setdefault(_src_key(co.src), {"src": co.src, "kind": "image"})
 
@@ -86,7 +89,9 @@ def plan_assets(script) -> dict:
         "poses": poses,
         "props": props,
         "cutouts": cutouts,
-        "count": len(scenes) + len(characters) + len(poses) + len(props) + len(cutouts),
+        "charts": charts_,
+        "count": (len(scenes) + len(characters) + len(poses) + len(props)
+                  + len(cutouts) + len(charts_)),
     }
     script.build_dir.mkdir(parents=True, exist_ok=True)
     (script.build_dir / "asset_plan.json").write_text(json.dumps(plan, indent=2))
@@ -211,8 +216,18 @@ def generate_assets(script, plan: dict, force: bool = False) -> None:
     from PIL import Image, ImageOps
 
     a = script.build_dir / "assets"
-    for sub in ("bg", "char", "prop", "cutout"):
+    for sub in ("bg", "char", "prop", "cutout", "chart"):
         (a / sub).mkdir(parents=True, exist_ok=True)
+
+    # ---- charts (matplotlib, no API) ----
+    if plan.get("charts"):
+        from . import charts as chart_mod
+        for bid, spec in plan["charts"].items():
+            out = a / "chart" / f"{bid}.png"
+            if out.exists() and not force:
+                continue
+            chart_mod.render(spec, out)
+            print(f"  chart {bid}  ({spec['type']}, {len(spec['values'])} pts)")
 
     cw, ch = config.canvas(script.fmt)
     client = _client()

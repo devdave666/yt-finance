@@ -55,6 +55,7 @@ class Beat:
     cast: dict[str, str] = field(default_factory=dict)   # name -> "pose, expression"
     props: list[str] = field(default_factory=list)        # generated prop names
     cutouts: list[Cutout] = field(default_factory=list)
+    chart: dict | None = None    # {type, title, labels[], values[], unit, highlight, note}
     live: dict | None = None     # {"src": ..., "trim": "0:00-0:03"}
     emphasis: bool = False
 
@@ -88,6 +89,28 @@ class Script:
         if beat.who and beat.who in self.cast:
             return self.cast[beat.who].voice
         return self.narrator_voice
+
+
+def _parse_chart(raw, bid: str) -> dict | None:
+    if not raw:
+        return None
+    labels = [str(x) for x in (raw.get("labels") or [])]
+    try:
+        values = [float(str(x).replace(",", "")) for x in (raw.get("values") or [])]
+    except (TypeError, ValueError):
+        raise ValueError(f"beat {bid!r}: chart values must be numbers")
+    if len(labels) != len(values) or len(values) < 2:
+        raise ValueError(f"beat {bid!r}: chart needs >=2 matching labels and values")
+    hi = raw.get("highlight")
+    return {
+        "type": raw.get("type", "bar") if raw.get("type") in ("bar", "hbar", "line") else "bar",
+        "title": str(raw.get("title", "")).strip(),
+        "labels": labels,
+        "values": values,
+        "unit": str(raw.get("unit", "")).strip(),
+        "highlight": int(hi) if isinstance(hi, (int, float)) and 0 <= int(hi) < len(values) else None,
+        "note": str(raw.get("note", "")).strip(),
+    }
 
 
 def _parse_cutout(raw) -> Cutout:
@@ -184,6 +207,7 @@ def load_script(path) -> Script:
             cast=cast_state,
             props=[str(p) for p in (raw.get("props") or [])],
             cutouts=[_parse_cutout(c) for c in (raw.get("cutouts") or [])],
+            chart=_parse_chart(raw.get("chart"), bid),
             emphasis=bool(raw.get("emphasis")),
         ))
 

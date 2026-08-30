@@ -42,7 +42,13 @@ def _layers_for(script, beat, n_holds: int) -> list[dict]:
         layers.append({"type": "character", "asset": f"{cname}__{slug(state)}",
                        "anchor": anchor, "scale": ch.scale, "from_hold": 0})
 
+    if beat.chart:
+        layers.append({"type": "chart", "asset": beat.id, "from_hold": obj_hold})
+
     for i, p in enumerate(beat.props):
+        # a chart already carries the data; a second prop just crowds the frame
+        if beat.chart:
+            break
         layers.append({"type": "prop", "asset": slug(p),
                        "at": _PROP_SLOTS[i % len(_PROP_SLOTS)],
                        "scale": config.PROP_SCALE, "from_hold": obj_hold})

@@ -21,19 +21,11 @@ def _img_size(path: Path) -> tuple[int, int]:
         return im.size
 
 
-def _box_for(layer: dict, asset_path: Path, fmt: str) -> tuple[int, int, int, int]:
-    wh = _img_size(asset_path)
-    if layer["type"] == "character":
-        box = layout.character_box(layer.get("anchor", "center"),
-                                   float(layer.get("scale", 1.0)), wh, fmt)
-    else:
-        box = layout.object_box(layer.get("at", "center"),
-                                float(layer.get("scale", 0.4)), wh, fmt)
-    return layout.clamp(box, fmt)
-
-
 def _resolve(layer: dict, adir: Path) -> Path | None:
-    sub = {"character": "char", "prop": "prop", "cutout": "cutout"}[layer["type"]]
+    sub = {"character": "char", "prop": "prop", "cutout": "cutout",
+           "chart": "chart"}.get(layer["type"])
+    if sub is None:
+        return None
     p = adir / sub / f"{layer['asset']}.png"
     return p if p.exists() else None
 
@@ -51,14 +43,20 @@ def _composite_clip(shot: dict, adir: Path, fmt: str, out: Path) -> None:
         inputs += ["-f", "lavfi", "-i", f"color=c=white:s={cw}x{ch}:r={fps}"]
         chains = ["[0:v]setsar=1[b0]"]
 
-    pop = max(config.POP_IN_S, 0.001)
-    idx, last, char_seen = 1, "b0", 0
+    # resolve every layer, then let layout.solve place them all so nothing
+    # collides or leaves the frame
+    resolved = []
     for layer in shot["layers"]:
         ap = _resolve(layer, adir)
         if ap is None:
             print(f"    ! missing asset {layer['type']}/{layer['asset']} -- skipped")
             continue
-        x, y, w, h = _box_for(layer, ap, fmt)
+        resolved.append((layer, ap, _img_size(ap)))
+    placements = layout.solve([{"type": l["type"], "wh": wh} for l, _, wh in resolved], fmt)
+
+    pop = max(config.POP_IN_S, 0.001)
+    idx, last, char_seen = 1, "b0", 0
+    for (layer, ap, _wh), (x, y, w, h) in zip(resolved, placements):
         inputs += ["-loop", "1", "-i", str(ap)]
         cur = f"c{idx}"
         # every layer fades + settles up into place on the cut (the "pop")

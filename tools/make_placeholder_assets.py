@@ -37,7 +37,7 @@ def main(build_dir: str) -> None:
     bd = Path(build_dir)
     plan = json.loads((bd / "asset_plan.json").read_text())
     a = bd / "assets"
-    for sub in ("bg", "char", "prop", "cutout"):
+    for sub in ("bg", "char", "prop", "cutout", "chart"):
         (a / sub).mkdir(parents=True, exist_ok=True)
 
     from stickfin import config
@@ -77,7 +77,13 @@ def main(build_dir: str) -> None:
         d.text((28, 180), f"cutout {key}", fill=(120, 0, 0, 255))
         img.save(a / "cutout" / f"{key}.png")
 
-    n = len(plan["scenes"]) + len(plan["poses"]) + len(plan["props"]) + len(plan["cutouts"])
+    # charts are real even in the offline path (matplotlib, no API)
+    from stickfin import charts as chart_mod
+    for bid, spec in plan.get("charts", {}).items():
+        chart_mod.render(spec, a / "chart" / f"{bid}.png")
+
+    n = (len(plan["scenes"]) + len(plan["poses"]) + len(plan["props"])
+         + len(plan["cutouts"]) + len(plan.get("charts", {})))
     print(f"{n} placeholder assets -> {a}")
 
 

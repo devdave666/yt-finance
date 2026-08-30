@@ -1,0 +1,77 @@
+title: "The AI Bet Has Four Legs"
+slug: test-ai-capex
+format: short
+caption_style: explainer
+narrator: { voice: Orus }
+
+cast:
+  host:
+    voice: Orus
+    look: >
+      a classic minimalist stick figure drawn with a black marker: a round OPEN
+      white head, two dot eyes, tiny mouth, one straight vertical line for the
+      body, single straight lines for arms and legs, dot hands. Never a filled
+      silhouette.
+    anchor: center
+
+scenes:
+  stage:
+    bg: >
+      a plain soft warm off-white backdrop with subtle paper texture and a
+      gentle corner vignette. Completely empty -- no floor line, no objects,
+      no text.
+
+beats:
+  - id: b1
+    scene: stage
+    who: host
+    say: "AI needs four things to go right. It's a parlay."
+    cast: { host: "standing, holding up four fingers, skeptical look" }
+    props: [question]
+
+  - id: b2
+    scene: stage
+    who: host
+    say: "One: the spending can't slow down."
+    cast: { host: "standing, pointing to the right at a chart, flat expression" }
+    chart:
+      type: bar
+      title: "Big Tech AI spend"
+      labels: ["'18", "'20", "'22", "'24", "'26e"]
+      values: [80, 180, 340, 520, 700]
+      unit: "$B"
+      highlight: 4
+      note: "still climbing"
+
+  - id: b3
+    scene: stage
+    who: host
+    say: "Two: revenue has to actually catch up."
+    cast: { host: "standing, arms crossed, unconvinced" }
+    chart:
+      type: line
+      title: "AI revenue run-rate"
+      labels: ["'22", "'23", "'24", "now"]
+      values: [15, 45, 80, 110]
+      unit: "$B"
+      highlight: 3
+
+  - id: b4
+    scene: stage
+    who: host
+    say: "Three: someone finds three trillion dollars to fund it."
+    cast: { host: "standing, shrugging, palms up" }
+    props: [scale]
+
+  - id: b5
+    scene: stage
+    who: host
+    say: "And four: none of the other three can break."
+    cast: { host: "standing, one eyebrow raised, dry" }
+    props: [padlock]
+
+  - id: b6
+    scene: stage
+    who: host
+    say: "Four legs. Every one has to hit."
+    cast: { host: "standing, arms open, calm" }

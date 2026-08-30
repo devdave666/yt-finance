@@ -98,7 +98,16 @@ SCHEMA_DOC = """Return ONLY a JSON object, no prose, with this shape:
         "who": "<character name>",       // the speaker; for explainer always "host"
         "say": "ONE short spoken sentence, <= 10 words, punchy",
         "cast": { "<name>": "pose and facial expression, e.g. 'standing, pointing to the right, neutral'" },
-        "props": ["at most ONE prop per beat, chosen ONLY from the PROP VOCAB below (exact name), or omit"]
+        "props": ["at most ONE prop per beat, chosen ONLY from the PROP VOCAB below (exact name), or omit"],
+        "chart": {   // OPTIONAL -- use on a beat that cites a trend or 2+ real numbers, INSTEAD of a prop
+          "type": "bar" | "line" | "hbar",
+          "title": "<= 6 word chart title",
+          "labels": ["2018","2020","2022","2024"],   // 2-6 short labels
+          "values": [80, 180, 340, 520],             // plain numbers, same length as labels
+          "unit": "$B" | "%" | "",
+          "highlight": <index of the value the narration calls out>,
+          "note": "<= 4 word red callout, or omit"
+        }
       }
       // 6 to 8 beats, targeting 20-28 seconds of narration total. Every character
       // mentioned in a beat's cast must be in the top-level cast.
@@ -107,9 +116,10 @@ SCHEMA_DOC = """Return ONLY a JSON object, no prose, with this shape:
       //   or "Let me explain". A little sarcasm in the hook is good.
       // Middle beats can land one dry aside each -- calling out the absurd part.
       // Last beat is a flat, useful one-line takeaway (dry, no hard sell).
-      // At most one prop per beat. Reuse the SAME prop name across beats when it's
-      //   the same object evolving. Props must be concrete and instantly readable
-      //   (a piggy bank, a padlock, a rising line chart) -- not abstract.
+      // At most one prop OR one chart per beat. 1-2 beats with a chart is ideal
+      //   for a data topic; the chart's numbers MUST be ones the narration states
+      //   and MUST be roughly accurate. A beat with a chart should not also list a prop.
+      // Props must be concrete and instantly readable -- not abstract.
     ]
   }
 }

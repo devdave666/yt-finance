@@ -27,14 +27,10 @@ TEXT_MODELS = [("us-central1", "gemini-2.5-pro"), ("us-central1", "gemini-2.5-fl
 CHANNEL_VOICE = "Orus"       # narrator / first character (Gemini-TTS roster), every video
 SECOND_VOICE = "Aoede"       # the other character in a skit
 
-# Every explainer uses this one backdrop (generated once, reused) instead of
-# stark white -- first review called the white background "unappealing".
-STAGE_BG = (
-    "a plain soft warm off-white backdrop with a very subtle paper texture and "
-    "a gentle vignette darkening the corners slightly. Completely empty and "
-    "even -- NO floor line, NO horizon line, NO ground, NO shadow, NO objects, "
-    "no furniture, no text."
-)
+# Every explainer uses this one flat warm backdrop (compositor adds a soft
+# vignette + grain). Not an image-model generation -- it kept drawing a framed
+# border / rectangle around the "backdrop".
+STAGE_COLOR = "#f4efe4"
 
 # The channel's recurring characters -- fixed here (not written by the model) so
 # the figure looks identical across every upload. The model still chooses poses
@@ -215,7 +211,7 @@ def _inject_identity(script_obj: dict) -> None:
         if not scenes:
             scenes["stage"] = {}
         for name in scenes:
-            scenes[name] = {"bg": STAGE_BG}      # one consistent backdrop
+            scenes[name] = {"color": STAGE_COLOR}   # one consistent flat backdrop
         only = next(iter(scenes))
         for beat in script_obj.get("beats", []):
             beat["scene"] = only

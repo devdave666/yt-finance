@@ -48,6 +48,21 @@ def slug(text: str) -> str:
     return re.sub(r"[^a-z0-9]+", "-", text.lower()).strip("-")[:48] or "x"
 
 
+def _flat_bg(color: str, w: int, h: int):
+    """A flat colour field with a soft corner vignette + faint grain -- warmer
+    than dead flat, and with none of the 'framed poster' borders an image model
+    keeps drawing around a 'backdrop'."""
+    import numpy as np
+    from PIL import Image
+    base = np.array(Image.new("RGB", (w, h), color), dtype=np.float32)
+    ys, xs = np.mgrid[0:h, 0:w]
+    d = np.hypot((xs - w / 2) / (w / 2), (ys - h / 2) / (h / 2))
+    vig = np.clip(1.0 - 0.16 * np.clip(d - 0.4, 0, None) ** 2, 0.8, 1.0)[..., None]
+    grain = (np.random.default_rng(7).random((h, w, 1)) - 0.5) * 5
+    out = np.clip(base * vig + grain, 0, 255).astype(np.uint8)
+    return Image.fromarray(out)
+
+
 def _src_key(src: str) -> str:
     return hashlib.sha1(src.encode()).hexdigest()[:12]
 
@@ -239,9 +254,8 @@ def generate_assets(script, plan: dict, force: bool = False) -> None:
         if out.exists() and not force:
             continue
         if not sc["bg"]:
-            color = sc["color"] or "#ffffff"
-            Image.new("RGB", (cw, ch), color).save(out)
-            print(f"  bg {name} (flat {color})")
+            _flat_bg(sc["color"] or "#ffffff", cw, ch).save(out)
+            print(f"  bg {name} (flat {sc['color'] or '#ffffff'})")
             continue
         resp = _generate(client, [
             f"{STYLE_FLOOR}\n\n{sc['bg']}\n\nFull-bleed background filling a "

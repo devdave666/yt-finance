@@ -43,13 +43,13 @@ def main(build_dir: str) -> None:
     from stickfin import config
     cw, ch = config.canvas(plan["fmt"])
 
+    from stickfin.assets import _flat_bg
     for name, sc in plan["scenes"].items():
-        img = Image.new("RGB", (cw, ch), sc.get("color") or (238, 234, 226))
-        d = ImageDraw.Draw(img)
-        d.rectangle([40, 40, cw - 40, ch - 40], outline=(120, 120, 120), width=4)
-        d.text((80, 80), f"BG: {name}", fill=(90, 90, 90))
         if sc.get("bg"):
-            d.text((80, 140), sc["bg"][:120], fill=(90, 90, 90))
+            img = Image.new("RGB", (cw, ch), (238, 234, 226))
+            ImageDraw.Draw(img).text((80, 80), f"BG(gen): {name}", fill=(150, 150, 150))
+        else:
+            img = _flat_bg(sc.get("color") or "#f4efe4", cw, ch)
         img.save(a / "bg" / f"{name}.png")
 
     for i, (key, spec) in enumerate(plan["poses"].items()):

@@ -1,87 +1,100 @@
-title: The Credit Card Grace Period Trap You Fell For
+title: How Credit Cards Charge Interest From Day One
 slug: 2026-08-30-credit-card-grace-period-trap
 format: short
 caption_style: explainer
 cast:
   host:
-    look: 'a classic minimalist stick figure drawn with a black marker: a round OPEN
-      white head (thin black outline, two small dot eyes, tiny smile, clean-shaven,
-      no facial hair), then ONE single straight vertical black line for the entire
-      body/spine, plus four more single straight black lines for the two arms and
-      two legs, ending in tiny round dot hands and short line feet. The whole figure
-      is nothing but a head outline and five thin lines. It has NO torso shape, NO
-      filled body, NO solid black wedge, NO clothing -- it is never a black silhouette.'
+    look: 'the ''Anti Broke'' host: a minimalist black-marker stick figure with a
+      round OPEN white head, four or five short spiky lines of hair on top, two small
+      dot eyes, two short sharp angled eyebrows, and always a visible mouth that shows
+      the expression (flat, frown, grimace, open shout). The body is ONE single straight
+      vertical black line (spine), with four more single straight black lines for
+      the two arms and two legs, dot hands, short line feet -- plus one small thin
+      necktie shape (a short strip + a little triangle) hanging at the neck. NO torso
+      shape, NO filled body, NO solid black wedge, NO shirt block -- the figure is
+      a head, spiky hair, five thin lines and a skinny tie. It is never a black silhouette.'
     anchor: center
-    voice: Charon
+    voice: Orus
 scenes:
   stage:
-    bg: a plain soft warm off-white backdrop with a very subtle paper texture and
-      a gentle vignette darkening the corners slightly. Completely empty and even
-      -- NO floor line, NO horizon line, NO ground, NO shadow, NO objects, no furniture,
-      no text.
+    color: '#f4efe4'
 beats:
 - id: b01
   scene: stage
   who: host
-  say: Carrying a credit card balance? Here's the trap.
+  say: Your card can charge interest on new purchases instantly.
   cast:
-    host: standing, pointing at camera, knowing smirk
-  props:
-  - credit-card
+    host: standing, arms wide, looking directly at camera, serious
+  headline: INTEREST FROM DAY ONE
+  props: []
 - id: b02
   scene: stage
   who: host
-  say: Usually, new purchases get an interest-free 'grace period'.
+  say: You're supposed to get an interest-free grace period.
   cast:
-    host: standing, hands open, explaining
+    host: standing, pointing, explaining
   props:
   - calendar
 - id: b03
   scene: stage
   who: host
-  say: But that disappears if you don't pay in full.
+  say: But carry even a tiny balance, and it disappears.
   cast:
-    host: shaking head, disappointed expression
+    host: standing, hand up in a 'stop' gesture, concerned
   props:
-  - padlock
+  - warning
 - id: b04
   scene: stage
   who: host
-  say: Now, new purchases collect interest from day one.
+  say: That means all your new spending charges interest immediately.
   cast:
-    host: pointing to the right, looking serious
+    host: standing, pointing, looking serious
   props:
-  - chart-up
+  - credit-card
 - id: b05
   scene: stage
   who: host
-  say: That coffee you just bought? It's already costing extra.
+  say: In 2022, this cost Americans one hundred thirty billion dollars.
   cast:
-    host: shrugging, sarcastic expression
-  props:
-  - receipt
+    host: standing, pointing at the chart
+  chart:
+    type: bar
+    title: US Card Interest & Fees
+    labels:
+    - '2020'
+    - '2021'
+    - '2022'
+    values:
+    - 104
+    - 107
+    - 131
+    unit: $B
+    highlight: 2
+    note: Soaring cost
+  props: []
 - id: b06
   scene: stage
   who: host
-  say: Your old balance poisons all your new spending.
+  say: This is how small debts snowball into huge ones.
   cast:
-    host: making a 'mixing' motion with hands
+    host: neutral expression, watching the prop
   props:
-  - warning
+  - snowball
 - id: b07
   scene: stage
   who: host
-  say: To get the grace period back, clear the balance.
+  say: The only way to get your grace period back...
   cast:
-    host: making a 'wiping clean' gesture with one hand
+    host: standing, looking at camera, determined
   props:
   - shield
 - id: b08
   scene: stage
   who: host
-  say: The grace period is a reward for paying in full.
+  say: '...is to pay the entire balance down to zero.'
   cast:
-    host: standing neutral, arms crossed, looking at camera
-  props: []
+    host: standing, arms crossed, neutral expression
+  props:
+  - padlock
 narrator:
-  voice: Charon
+  voice: Orus

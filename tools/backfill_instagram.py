@@ -174,10 +174,26 @@ def main(argv: list[str]) -> int:
         try:
             post_id = publish_mod.buffer_post(url, caption_for(slug), channel, "instagram")
             print(f"[{slug}] Instagram post id: {post_id}")
+            _report_status(token, post_id, slug)
         except Exception as e:  # noqa: BLE001
             print(f"[{slug}] FAILED: {e}")
             rc = 1
     return rc
+
+
+def _report_status(token: str, post_id: str, slug: str) -> None:
+    import time
+    q = ('query($id: PostId!) { post(input: {id: $id}) '
+         '{ id status dueAt error { message } } }')
+    for _ in range(6):
+        time.sleep(10)
+        body = _gql(token, q, {"id": post_id})
+        p = ((body.get("data") or {}).get("post")) or {}
+        st = p.get("status")
+        print(f"[{slug}] status: {st}"
+              + (f" -- {p['error']['message']}" if p.get("error") else ""))
+        if st and st not in ("processing", "sending", "pending"):
+            return
 
 
 if __name__ == "__main__":

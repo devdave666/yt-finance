@@ -26,9 +26,10 @@ from pathlib import Path
 
 import requests
 
-from stickfin import publish as publish_mod
-
 REPO = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(REPO))
+
+from stickfin import publish as publish_mod  # noqa: E402
 BUFFER_URL = "https://api.buffer.com/graphql"
 
 _CHANNELS_QUERY = """

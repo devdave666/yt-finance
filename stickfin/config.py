@@ -96,6 +96,8 @@ BUFFER_YOUTUBE_CHANNEL_ID = (
     os.environ.get("BUFFER_YOUTUBE_CHANNEL_ID") or "6a935542ccaf649a674104fd")   # "Anti Broke"
 BUFFER_INSTAGRAM_CHANNEL_ID = (
     os.environ.get("BUFFER_INSTAGRAM_CHANNEL_ID") or "6a93569eccaf649a6741110c")  # @antibrokee
+BUFFER_TIKTOK_CHANNEL_ID = (
+    os.environ.get("BUFFER_TIKTOK_CHANNEL_ID") or "6a942e4f065799be46540c7b")    # @antibrokee
 
 # ---- Ken Burns (off by default; the reference style has a static camera) ----
 KENBURNS = os.environ.get("STICKFIN_KENBURNS", "0") == "1"

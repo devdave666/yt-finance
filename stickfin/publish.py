@@ -119,8 +119,8 @@ def publish_youtube(video_url: str, title: str, description: str) -> str:
 
 
 def publish(script, meta: dict, repo_root: Path) -> dict:
-    out = {"hosted_url": None, "youtube_post_id": None, "instagram_post_id": None,
-           "published": False}
+    out = {"hosted_url": None, "published": False,
+           "youtube_post_id": None, "instagram_post_id": None, "tiktok_post_id": None}
     url = host_in_repo(script.out_path, script.slug, repo_root)
     out["hosted_url"] = url
     print(f"[publish] hosted: {url}")
@@ -132,19 +132,22 @@ def publish(script, meta: dict, repo_root: Path) -> dict:
     title = meta.get("title") or script.title
     desc = meta.get("description") or script.title
 
+    # YouTube first (the important one); IG + TikTok are best-effort after.
     out["youtube_post_id"] = buffer_post(
         url, desc, config.BUFFER_YOUTUBE_CHANNEL_ID, "youtube", title=title)
     out["published"] = True
     print(f"[publish] YouTube post id: {out['youtube_post_id']}")
 
-    ig_channel = config.BUFFER_INSTAGRAM_CHANNEL_ID
-    if ig_channel:
+    for platform, channel in (("instagram", config.BUFFER_INSTAGRAM_CHANNEL_ID),
+                              ("tiktok", config.BUFFER_TIKTOK_CHANNEL_ID)):
+        if not channel:
+            print(f"[publish] no {platform} channel configured -- skipping")
+            continue
         try:
-            out["instagram_post_id"] = buffer_post(url, desc, ig_channel, "instagram")
-            print(f"[publish] Instagram post id: {out['instagram_post_id']}")
+            pid = buffer_post(url, desc, channel, platform)
+            out[f"{platform}_post_id"] = pid
+            print(f"[publish] {platform} post id: {pid}")
         except Exception as e:  # non-fatal: YouTube already went out
-            print(f"[publish] Instagram post FAILED (non-fatal): {e}")
-    else:
-        print("[publish] no Instagram channel configured -- skipping Instagram")
+            print(f"[publish] {platform} post FAILED (non-fatal): {e}")
 
     return out

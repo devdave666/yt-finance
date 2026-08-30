@@ -56,7 +56,8 @@ def main() -> int:
         sc = report.critique.get("scores", {})
         print(f"       critique {sc.get('overall')}/10 "
               f"(hook {sc.get('hook')}, pace {sc.get('pacing')}, "
-              f"caps {sc.get('captions')}, audio {sc.get('clarity_of_audio')}) "
+              f"caps {sc.get('captions')}, audio {sc.get('clarity_of_audio')}, "
+              f"visuals {sc.get('visuals')}) "
               f"-- {report.critique.get('first_impression', '')}")
         for p in report.critique.get("top_problems", []):
             print(f"         - {p}")

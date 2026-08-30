@@ -54,13 +54,22 @@ def _composite_clip(shot: dict, adir: Path, fmt: str, out: Path) -> None:
         resolved.append((layer, ap, _img_size(ap)))
     placements = layout.solve([{"type": l["type"], "wh": wh} for l, _, wh in resolved], fmt)
 
+    # a character should face what it's talking about. Poses are generated
+    # gesturing to the viewer's right, so mirror any character that ends up to
+    # the RIGHT of the shot's other content (chart / prop / headline).
+    others = [b for (l, _, _), b in zip(resolved, placements) if l["type"] != "character"]
+    focus_cx = (sum(bx + bw / 2 for bx, _, bw, _ in others) / len(others)
+                if others else None)
+
     pop = max(config.POP_IN_S, 0.001)
     idx, last, char_seen = 1, "b0", 0
     for (layer, ap, _wh), (x, y, w, h) in zip(resolved, placements):
         inputs += ["-loop", "1", "-i", str(ap)]
         cur = f"c{idx}"
+        flip = (layer["type"] == "character" and focus_cx is not None
+                and focus_cx < (x + w / 2) - 0.03 * cw)
         # every layer fades + settles up into place on the cut (the "pop")
-        chains.append(f"[{idx}:v]scale={w}:{h},format=rgba,"
+        chains.append(f"[{idx}:v]scale={w}:{h}{',hflip' if flip else ''},format=rgba,"
                       f"fade=t=in:st=0:d={pop}:alpha=1[s{idx}]")
 
         settle = f"-18*(1-min(1,t/{pop}))"

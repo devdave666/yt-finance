@@ -13,7 +13,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 from . import config
-from .ffmpeg_util import probe_duration
+from .ffmpeg_util import probe_duration, run_ffmpeg
 
 
 @dataclass
@@ -101,18 +101,24 @@ def check(script, run_critique: bool = True) -> QAResult:
     # failure the last reel shipped with: garbled fast speech = low clarity +
     # low pacing). Tunable so it can be loosened without a code change.
     floor = float(os.environ.get("STICKFIN_QA_CRITIQUE_FLOOR", "2"))
+    min_overall = float(os.environ.get("STICKFIN_QA_MIN_OVERALL", "5"))
     if run_critique and video.exists():
         try:
-            res.critique = _critique(video)
+            res.critique = _critique(video, timeline)
             (bd / "qa_critique.json").write_text(json.dumps(res.critique, indent=2))
             sc = res.critique.get("scores", {})
-            broken = {k: sc[k] for k in ("overall", "pacing", "clarity_of_audio")
+            probs = "; ".join(res.critique.get("top_problems", []))[:240]
+            broken = {k: sc[k] for k in ("overall", "pacing", "clarity_of_audio", "visuals")
                       if isinstance(sc.get(k), (int, float)) and sc[k] <= floor}
             if broken:
                 res.blockers.append(
                     "Gemini flags it broken: "
-                    + ", ".join(f"{k} {v}/10" for k, v in broken.items())
-                    + f" -- {'; '.join(res.critique.get('top_problems', []))[:200]}")
+                    + ", ".join(f"{k} {v}/10" for k, v in broken.items()) + f" -- {probs}")
+            elif isinstance(sc.get("overall"), (int, float)) and sc["overall"] < min_overall:
+                res.blockers.append(
+                    f"Gemini overall {sc['overall']}/10 (need >= {min_overall:g}) -- {probs}")
+            for vf in res.critique.get("visual_defects", [])[:5]:
+                res.warnings.append(f"visual: {vf}")
         except Exception as e:  # noqa: BLE001
             res.warnings.append(f"critique skipped: {str(e)[:120]}")
 
@@ -127,28 +133,77 @@ def check(script, run_critique: bool = True) -> QAResult:
     return res
 
 
-_CRIT_PROMPT = """Watch this vertical finance Short as a viewer scrolling. Return ONLY JSON:
-{"first_impression":"one honest line","scores":{"hook":0-10,"pacing":0-10,"captions":0-10,"clarity_of_audio":0-10,"overall":0-10},
- "top_problems":["at most 3, concrete"]}
-No prose outside the JSON."""
+_CRIT_PROMPT = """You are reviewing a vertical finance Short before it's published.
+You get the video (for pacing + audio) AND one full-resolution still per beat (for
+visual detail). Judge both.
+
+Check the stills carefully for these DEFECTS:
+- a character pointing / gesturing / looking AWAY from the chart, prop, or headline
+  it's talking about (it should face that element)
+- a character with no mouth, or a blank/incomplete face
+- any element clipped by the frame edge, or a figure standing off the floor
+- two caption lines on screen at once, or a caption overlapping the art badly
+- a chart whose numbers or labels don't match what's being said
+- the stick figure drawn as a solid black blob instead of clean line art
+
+Return ONLY JSON, no prose:
+{"first_impression":"one honest line",
+ "scores":{"hook":0-10,"pacing":0-10,"captions":0-10,"clarity_of_audio":0-10,"visuals":0-10,"overall":0-10},
+ "visual_defects":["each concrete defect you actually see in the stills, with the beat number; [] if none"],
+ "top_problems":["at most 3, concrete, most important first"]}"""
 
 
-def _critique(video: Path) -> dict:
+def _keyframes(video: Path, timeline: dict, out_dir: Path) -> list[Path]:
+    """One full-res still at the mid-point of each composite beat."""
+    seen, frames = set(), []
+    for shot in timeline["shots"]:
+        bid = shot["beat_id"]
+        if bid in seen or shot.get("kind") != "composite":
+            continue
+        seen.add(bid)
+        t = shot["start_s"] + shot["dur_s"] / 2
+        fp = out_dir / f"kf_{bid}.jpg"
+        try:
+            run_ffmpeg(["-ss", f"{t:.3f}", "-i", video, "-frames:v", "1",
+                        "-vf", "scale=720:-2", "-q:v", "3", fp],
+                       f"qa keyframe {bid}")
+            frames.append(fp)
+        except Exception:  # noqa: BLE001
+            pass
+    return frames
+
+
+def _critique(video: Path, timeline: dict | None = None) -> dict:
     from google import genai
     from google.genai import types
 
+    model = os.environ.get("STICKFIN_QA_CRITIQUE_MODEL", "gemini-2.5-pro")
+
     # Vertex inline-data caps the whole request ~20MB; a CRF-18 short can brush
-    # that. Send a small proxy -- audio is untouched so pacing/clarity still read.
+    # that. Send a small proxy for motion/audio + full-res stills for detail.
     proxy = video.with_suffix(".qa.mp4")
+    kf_dir = video.parent / "_qa_kf"
+    kf_dir.mkdir(exist_ok=True)
+    parts: list = []
     try:
         run_ffmpeg(["-i", video, "-vf", "scale=-2:640", "-c:v", "libx264",
                     "-crf", "34", "-preset", "veryfast", "-c:a", "aac", "-b:a", "96k",
                     proxy], "qa proxy")
-        data = proxy.read_bytes()
+        parts.append(types.Part.from_bytes(data=proxy.read_bytes(), mime_type="video/mp4"))
     except Exception:  # noqa: BLE001
-        data = video.read_bytes()
+        parts.append(types.Part.from_bytes(data=video.read_bytes(), mime_type="video/mp4"))
     finally:
         proxy.unlink(missing_ok=True)
+
+    frames = _keyframes(video, timeline, kf_dir) if timeline else []
+    for fp in frames:
+        parts.append(types.Part.from_bytes(data=fp.read_bytes(), mime_type="image/jpeg"))
+        fp.unlink(missing_ok=True)
+    try:
+        kf_dir.rmdir()
+    except OSError:
+        pass
+    parts.append(f"{_CRIT_PROMPT}\n\n(The {len(frames)} stills are beats 1..{len(frames)} in order.)")
 
     client = genai.Client(vertexai=True, project=config.GCP_PROJECT,
                           location="us-central1")
@@ -156,9 +211,7 @@ def _critique(video: Path) -> dict:
     for attempt in range(4):
         try:
             r = client.models.generate_content(
-                model="gemini-2.5-flash",
-                contents=[types.Part.from_bytes(data=data, mime_type="video/mp4"),
-                          _CRIT_PROMPT],
+                model=model, contents=parts,
                 config=types.GenerateContentConfig(response_mime_type="application/json"))
             return json.loads(r.text)
         except Exception as e:  # noqa: BLE001 -- retry only on rate limits

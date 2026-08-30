@@ -231,6 +231,16 @@ def _inject_identity(script_obj: dict) -> None:
         for beat in script_obj.get("beats", []):
             beat["props"] = [p for p in (beat.get("props") or []) if p in allowed][:1]
 
+    # strip left/right from pose directions -- the pose is always generated
+    # facing one way and the compositor mirrors it to face the scene's content,
+    # so an explicit "pointing left" just fights that
+    _dir = re.compile(r",?\s*\b(?:to (?:the|their) |towards? (?:the|their) |"
+                      r"towards? )?(?:left|right)\b", re.I)
+    for beat in script_obj.get("beats", []):
+        cast = beat.get("cast") or {}
+        for cname, pose in list(cast.items()):
+            cast[cname] = re.sub(r"\s{2,}", " ", _dir.sub("", str(pose))).strip(" ,")
+
     # beat 1 must have a hook headline -- synthesise one from the line if missing
     beats = script_obj.get("beats", [])
     if beats and not beats[0].get("headline"):

@@ -62,10 +62,15 @@ AUTO_DIR = Path("scripts/auto")
 
 SYSTEM = """You are the head writer for "Anti Broke", a faceless personal-finance YouTube Shorts channel.
 You write tight, accurate scripts that a stick-figure animation pipeline turns into a vertical video.
-The voice is dry and a little sarcastic -- the humour comes from pointing out how absurd or rigged the
-fine print is, never from jokes, puns, or making fun of the viewer. Punchy, quick, a knowing smirk.
-You pick topics most people have NEVER had explained -- not "what is a budget". You never give
-individualised advice and never tell viewers what to buy; you explain how the mechanism works."""
+
+Voice: a sharp market analyst who's a little pissed off on the viewer's behalf. Dry, calm, specific.
+The edge comes from exposing how rigged the fine print is -- never from jokes, puns, or mocking the viewer.
+
+The bar is HIGH. Every video must be genuinely surprising -- the kind of thing a smart person watches
+and thinks "wait, WHAT". If the idea wouldn't make someone stop scrolling and say that out loud, pick a
+sharper angle on the topic or a more shocking number. No "what is a budget", no generic advice, no
+buildup -- open on the surprising conclusion, then show the mechanism. You explain how the machine
+works; you never tell anyone what to buy or give individualised advice."""
 
 SCHEMA_DOC = """Return ONLY a JSON object, no prose, with this shape:
 
@@ -111,11 +116,17 @@ SCHEMA_DOC = """Return ONLY a JSON object, no prose, with this shape:
       }
       // 6 to 8 beats, targeting 20-28 seconds of narration total. Every character
       // mentioned in a beat's cast must be in the top-level cast.
-      // Beat 1 MUST be a scroll-stopping hook: a pointed question, a surprising
-      //   number, or a dry "here's a thing nobody tells you" -- NEVER a definition
-      //   or "Let me explain". A little sarcasm in the hook is good.
-      // Middle beats can land one dry aside each -- calling out the absurd part.
-      // Last beat is a flat, useful one-line takeaway (dry, no hard sell).
+      //
+      // BEAT 1 is the whole game. It must be ONE of:
+      //   - a shocking specific number ("Your bank makes about thirty five dollars every time you overdraft.")
+      //   - the trick, stated plainly ("Your card company can reorder your purchases so more of them bounce.")
+      //   - a claim that sounds wrong but isn't ("Paying the minimum on a five thousand dollar card takes over twenty years.")
+      //   - money you're losing right now ("If you carry a balance, you're paying interest on things you already paid off.")
+      //   NEVER a definition, NEVER "let me explain", NEVER a yes/no question the viewer could shrug at.
+      //   Open on the payoff. Do not build up to it.
+      // Middle beats: each one must carry a real number, a concrete image, or a sharp turn -- no filler
+      //   transition lines. Name the villain: the fine print, the default setting, the fee schedule.
+      // Last beat: a memorable one-liner the viewer could repeat -- not a summary, not a call to action.
       // At most one prop OR one chart per beat. 1-2 beats with a chart is ideal
       //   for a data topic; the chart's numbers MUST be ones the narration states
       //   and MUST be roughly accurate. A beat with a chart should not also list a prop.
@@ -223,11 +234,23 @@ def _slugify(s: str) -> str:
 def generate(out_dir: Path | None = None, dry_topic: str | None = None) -> tuple[Path, dict]:
     themes = _load_themes()
     history = _history()
-    topic = dry_topic or _pick_topic(themes, history)
-    print(f"[generate] topic: {topic}")
-
     AUTO_DIR.mkdir(parents=True, exist_ok=True)
     date = dt.date.today().isoformat()
+
+    # reuse a script already written today but not yet published (a hand-reviewed
+    # one, or a run that died after generate) instead of burning another LLM call
+    media = Path("media")
+    published = {p.stem for p in media.glob("*.mp4")} if media.exists() else set()
+    for yml in sorted(AUTO_DIR.glob(f"{date}-*.yaml"), reverse=True):
+        if yml.stem in published:
+            continue
+        meta_p = yml.with_suffix(".meta.json")
+        meta = json.loads(meta_p.read_text()) if meta_p.exists() else {"slug": yml.stem}
+        print(f"[generate] reusing existing script {yml.name}")
+        return yml, meta
+
+    topic = dry_topic or _pick_topic(themes, history)
+    print(f"[generate] topic: {topic}")
 
     obj = None
     for attempt in range(3):

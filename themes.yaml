@@ -14,10 +14,11 @@ niche: >
   YouTube, the topics are evergreen, and the content is advertiser-safe.
 
 voice: >
-  Dry, quick, a little sarcastic. The humour comes from calling out how absurd
-  or rigged the thing is -- not from jokes or puns. Punchy one-liners, a
-  knowing smirk, zero fluff. Confident, never hypey, never mean. Think a smart
-  friend who finds this stuff genuinely funny and slightly infuriating.
+  A sharp market analyst who's a little pissed off on the viewer's behalf.
+  Calm, dry, specific -- the edge comes from exposing how rigged the fine print
+  is, never from jokes or mocking the viewer. Open on the surprising fact, then
+  show the mechanism. Zero fluff, zero hype. Every line either lands a number or
+  a turn.
 
 # Hard rules the generator must follow (also enforced in generate.py):
 rules:
@@ -31,34 +32,35 @@ rules:
 formats: [explainer, skit]     # the generator picks one per video based on the topic
 cooldown: 14                   # don't reuse a topic until this many videos have passed
 
+# Ordered strongest-hook-first (the generator works down the list). Each one
+# should be genuinely "wait, WHAT" -- lead with the number or the trick.
 topics:
-  - Carrying any card balance kills the interest-free grace period on new purchases
-  - The 0% long-term capital gains bracket -- selling winners tax-free in a low-income year
-  - An HSA is the only triple-tax-free account, and you can invest it instead of spending it
-  - FDIC insurance can cover far more than $250k at one bank via ownership categories
-  - Credit utilization is scored per card, not just across all your cards combined
-  - Deferred-interest store financing -- "same as cash" until you miss the date, then it all backdates
-  - The Rule of 72, and why 114 triples your money and 144 quadruples it
-  - Sequence-of-returns risk -- a crash early in retirement hurts far more than a later one
-  - Your 401k's expense ratio can quietly eat a third of your lifetime returns
-  - Target-date funds are great in a 401k and tax-messy in a regular brokerage account
-  - Money market funds vs high-yield savings -- similar yield, different risk and access
-  - Beneficiary designations on your accounts override whatever your will says
-  - I bonds -- government savings bonds whose rate tracks inflation, with a yearly cap
-  - The wash-sale rule -- no tax loss if you rebuy the same thing within 30 days
-  - Municipal bond interest is federal-tax-free, so a lower rate can still win
-  - A Roth's quiet superpower -- your contributions come back out anytime, penalty-free
-  - Card minimum payments are engineered so a balance can take decades to clear
-  - Balance transfers advertised at zero percent APR almost always carry a 3 to 5 percent upfront fee
-  - 401k match vesting -- leave too early and you forfeit part of the free money
-  - Investing a lump sum now beats dollar-cost-averaging it in, most of the time historically
-  - Your effective tax rate is way below your bracket, because brackets are marginal
-  - A credit score has nothing to do with your income or how much money you have
-  - Paying rent on time builds zero credit unless you specifically enrol it
-  - Closing your oldest credit card can drop your score by shortening your history
-  - How term and whole life insurance differ, and why term costs a fraction as much
-  - Overdraft "protection" is usually a very expensive loan you opted into
-  - The debt avalanche saves more; the debt snowball is just easier to stick with
-  - Brokered CDs pay more than bank CDs but can lose value if you sell early
-  - A 15-year vs 30-year mortgage -- the rate gap and the payment gap people miss
-  - How a no-fee checking account still makes the bank plenty of money off you
+  - Banks reorder your daily purchases largest-first so more of them overdraft -- and each overdraft is ~$35
+  - Deferred-interest "same as cash" financing -- miss the payoff date by a day and months of interest hit retroactively
+  - Paying only the minimum on a $5,000 credit card at 24% APR takes over 20 years and roughly doubles what you owe
+  - Carry any balance on a credit card and you lose the interest-free grace period -- new purchases start charging from day one
+  - A credit score has nothing to do with your income, savings, or net worth -- a millionaire can have a bad one
+  - Closing your oldest credit card can drop your score, because it shortens your average account age
+  - Balance transfers advertised at zero-percent APR almost always carry a 3 to 5 percent upfront fee people forget to count
+  - Whole life insurance can cost 10x term for the same coverage, with most of the extra going to fees and commission
+  - The 0% long-term capital gains bracket -- in a low-income year you can sell winners and owe zero federal tax
+  - An HSA is the only triple-tax-free account -- and if you invest it instead of spending it, it's a stealth retirement fund
+  - A 401k match can have a vesting schedule -- leave a year too early and you forfeit thousands in "free" money
+  - Your 401k's expense ratio, even at 1%, can quietly eat close to a third of your lifetime returns
+  - FDIC insurance covers far more than $250k at one bank if the money sits in different ownership categories
+  - Credit utilization is scored per card, not just overall -- one maxed card can tank your score while your total looks fine
+  - Beneficiary designations on your accounts override whatever your will says -- an ex can still inherit
+  - The wash-sale rule -- claim a tax loss then rebuy within 30 days and the IRS disallows the whole deduction
+  - Sequence-of-returns risk -- a market crash in your first retirement years does far more damage than the same crash later
+  - The Rule of 72 -- divide 72 by your rate to get the doubling time; 114 triples, 144 quadruples
+  - I bonds -- U.S. savings bonds whose rate resets with inflation, with a hard yearly purchase cap
+  - Target-date funds are great inside a 401k and quietly tax-inefficient in a regular brokerage account
+  - Money market funds and high-yield savings pay similar rates but one is FDIC-insured and one isn't
+  - Municipal bond interest is federal-tax-free, so a 3.5% muni can beat a 4.5% taxable bond after tax
+  - A Roth IRA's quiet feature -- your contributions (not the gains) can come back out anytime, tax and penalty free
+  - Your effective tax rate is much lower than your bracket -- a raise into a new bracket never lowers your take-home
+  - Paying rent on time builds zero credit history unless you specifically enroll in a rent-reporting service
+  - Brokered CDs often pay more than bank CDs but trade like bonds -- sell early and you can take a loss
+  - A 15-year vs a 30-year mortgage -- the rate is lower but the payment jump is bigger than most people expect
+  - A "no-fee" checking account still earns the bank money -- on your idle balance and on interchange when you swipe
+  - Overdraft "protection" is usually an opt-in short-term loan at an effective APR in the triple digits

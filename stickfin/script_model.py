@@ -183,6 +183,7 @@ def load_script(path) -> Script:
             continue
 
         say = str(raw.get("say") or "").strip()
+        say = re.sub(r"(?<!\w)[*_]+(?=\w)|(?<=\w)[*_]+(?!\w)", "", say)  # strip md emphasis
         if not say:
             raise ValueError(f"beat {bid!r} needs 'say' (or 'live')")
 

@@ -1,0 +1,97 @@
+title: How Banks Reorder Your Buys To Maximize Overdraft Fees
+slug: 2026-08-30-overdraft-reordering-trap
+format: short
+caption_style: explainer
+cast:
+  host:
+    look: 'a classic minimalist stick figure drawn with a black marker: a round OPEN
+      white head (thin black outline, two small dot eyes, tiny smile, clean-shaven,
+      no facial hair), then ONE single straight vertical black line for the entire
+      body/spine, plus four more single straight black lines for the two arms and
+      two legs, ending in tiny round dot hands and short line feet. The whole figure
+      is nothing but a head outline and five thin lines. It has NO torso shape, NO
+      filled body, NO solid black wedge, NO clothing -- it is never a black silhouette.'
+    anchor: center
+    voice: Orus
+scenes:
+  stage:
+    bg: a plain soft warm off-white backdrop with a very subtle paper texture and
+      a gentle vignette darkening the corners slightly. Completely empty and even
+      -- NO floor line, NO horizon line, NO ground, NO shadow, NO objects, no furniture,
+      no text.
+beats:
+- id: b01
+  scene: stage
+  who: host
+  say: Your bank can reorder your purchases to charge more fees.
+  cast:
+    host: standing, arms slightly open, looking at camera, concerned
+  props: []
+- id: b02
+  scene: stage
+  who: host
+  say: Say your account has exactly one hundred dollars.
+  cast:
+    host: standing, holding up one finger, neutral
+  props:
+  - bank
+- id: b03
+  scene: stage
+  who: host
+  say: You buy coffee, lunch, then pay a ninety-dollar bill.
+  cast:
+    host: standing, pointing to the right as if listing items
+  props:
+  - receipt
+- id: b04
+  scene: stage
+  who: host
+  say: Chronologically, only that last ninety-dollar bill would overdraft.
+  cast:
+    host: standing, pointing to one item in a list, serious
+  props:
+  - warning
+- id: b05
+  scene: stage
+  who: host
+  say: But they can legally process that large payment *first*.
+  cast:
+    host: standing, hands pushing down, eyebrows furrowed
+  props:
+  - arrow-down
+- id: b06
+  scene: stage
+  who: host
+  say: Suddenly, you have two overdrafts instead of one.
+  cast:
+    host: standing, holding up two fingers, looking surprised
+  chart:
+    type: bar
+    title: Overdraft Fees
+    labels:
+    - Chronological
+    - Reordered
+    values:
+    - 35
+    - 70
+    unit: $
+    highlight: 1
+    note: Double!
+  props: []
+- id: b07
+  scene: stage
+  who: host
+  say: Each fee is about thirty-five dollars out of your pocket.
+  cast:
+    host: standing, gesturing towards wallet area, angry
+  props:
+  - cash
+- id: b08
+  scene: stage
+  who: host
+  say: It's called high-to-low posting. It's in the fine print.
+  cast:
+    host: standing still, looking directly at camera, calm and serious
+  props: []
+narrator:
+  voice: Orus

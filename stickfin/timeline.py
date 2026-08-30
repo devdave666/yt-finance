@@ -27,7 +27,9 @@ def _layers_for(script, beat, n_holds: int) -> list[dict]:
     layers: list[dict] = []
     front_cutouts = [c for c in beat.cutouts if not c.behind]
     has_objects = bool(beat.props or front_cutouts)
-    obj_hold = 1 if n_holds > 1 else 0        # stagger the object onto hold 2
+    # a small prop can pop in on hold 2 for a mini-reveal; a chart reflows the
+    # whole frame, so it must be present from the start of the beat.
+    obj_hold = 1 if (n_holds > 1 and not beat.chart) else 0
 
     for co in beat.cutouts:
         if co.behind:

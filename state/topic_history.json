@@ -18,5 +18,10 @@
     "date": "2026-08-30",
     "topic": "Carrying any card balance kills the interest-free grace period on new purchases",
     "slug": "2026-08-30-credit-card-grace-period-trap"
+  },
+  {
+    "date": "2026-08-30",
+    "topic": "Banks reorder your daily purchases largest-first so more of them overdraft -- and each overdraft is ~$35",
+    "slug": "2026-08-30-overdraft-reordering-trap"
   }
 ]

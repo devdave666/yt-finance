@@ -11,6 +11,8 @@ Auth: ADC. Enable the API once:
 from __future__ import annotations
 
 import json
+import re
+import subprocess
 from pathlib import Path
 
 from . import config
@@ -107,6 +109,35 @@ def _norm(src: Path, dst: Path, extra_af: str = "") -> None:
                f"normalize {dst.name}")
 
 
+def _speech_span(path: Path, total: float) -> tuple[float, float]:
+    """(start, end) seconds of actual speech within a beat clip.
+
+    Captions key off this so the karaoke highlight starts exactly when the
+    voice starts, not when the clip starts -- lead-in room tone that's too
+    faint for the trim filter to catch was pushing the highlight ahead of the
+    speech. Falls back to the whole clip if detection is unclear.
+    """
+    try:
+        r = subprocess.run(
+            ["ffmpeg", "-hide_banner", "-nostats", "-i", str(path),
+             "-af", "silencedetect=noise=-38dB:d=0.12", "-f", "null", "-"],
+            capture_output=True, text=True)
+        log = r.stderr
+        starts = [float(x) for x in re.findall(r"silence_start:\s*(-?[0-9.]+)", log)]
+        ends = [float(x) for x in re.findall(r"silence_end:\s*([0-9.]+)", log)]
+        start = ends[0] if starts and starts[0] <= 0.06 and ends else 0.0
+        end = total
+        if len(starts) > len(ends) and starts[-1] > start:      # trailing silence to EOF
+            end = starts[-1]
+        elif ends and starts and starts[-1] > start and ends[-1] >= total - 0.03:
+            end = starts[-1]
+        if 0.0 <= start < end <= total + 0.05 and end - start >= 0.2:
+            return round(start, 3), round(min(end, total), 3)
+    except Exception as e:  # noqa: BLE001
+        print(f"    (speech-span probe failed for {path.name}: {e})")
+    return 0.0, round(total, 3)
+
+
 def synthesize(script, force: bool = False) -> dict:
     audio_dir = script.build_dir / "audio"
     audio_dir.mkdir(parents=True, exist_ok=True)
@@ -138,8 +169,13 @@ def synthesize(script, force: bool = False) -> dict:
             _norm(raw, final)
             raw.unlink(missing_ok=True)
 
-        entries.append({"id": beat.id, "wav": str(final),
-                        "duration_s": round(probe_duration(final), 3)})
+        dur = round(probe_duration(final), 3)
+        if beat.is_live or not beat.say:
+            s0, s1 = 0.0, dur
+        else:
+            s0, s1 = _speech_span(final, dur)
+        entries.append({"id": beat.id, "wav": str(final), "duration_s": dur,
+                        "speech_start_s": s0, "speech_end_s": s1})
 
     listfile = audio_dir / "_concat.txt"
     listfile.write_text(

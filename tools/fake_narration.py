@@ -23,9 +23,10 @@ def main(path: str) -> None:
 
     beats, total = [], 0.0
     for b in s.beats:
-        secs = 3.0 if b.is_live else max(1.2, len(b.say.split()) / WORDS_PER_SEC)
-        secs += config.BEAT_GAP_S
-        beats.append({"id": b.id, "wav": "", "duration_s": round(secs, 3)})
+        speech = 3.0 if b.is_live else max(1.2, len(b.say.split()) / WORDS_PER_SEC)
+        secs = speech + config.BEAT_GAP_S
+        beats.append({"id": b.id, "wav": "", "duration_s": round(secs, 3),
+                      "speech_start_s": 0.0, "speech_end_s": round(speech, 3)})
         total += secs
 
     (s.build_dir / "narration.json").write_text(json.dumps(

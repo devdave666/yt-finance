@@ -1,0 +1,34 @@
+name: Backfill Instagram
+
+# Post an already-committed short (media/<slug>.mp4) to Instagram via Buffer.
+# Use for shorts that went to YouTube before the Instagram path existed.
+
+on:
+  workflow_dispatch:
+    inputs:
+      slug:
+        description: "Short slug(s), space-separated. Empty = just list Buffer channels."
+        type: string
+        required: false
+        default: ""
+
+permissions:
+  contents: read
+
+jobs:
+  backfill:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - run: pip install requests
+
+      - name: Post to Instagram
+        env:
+          BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
+          BUFFER_INSTAGRAM_CHANNEL_ID: ${{ secrets.BUFFER_INSTAGRAM_CHANNEL_ID }}
+        run: python tools/backfill_instagram.py ${{ inputs.slug || '--list' }}

@@ -13,6 +13,7 @@ approximate karaoke still reads as "dynamic captions".
 from __future__ import annotations
 
 import json
+import re
 import textwrap
 
 from . import config
@@ -56,12 +57,34 @@ def _wrap(text: str, width: int) -> str:
     return "\\N".join(textwrap.wrap(text, width=width)) or text
 
 
+def _syllables(w: str) -> int:
+    groups = re.findall(r"[aeiouy]+", w.lower())
+    n = len(groups)
+    if n > 1 and w.lower().endswith("e"):
+        n -= 1
+    return max(1, n)
+
+
 def _karaoke(text: str, dur: float) -> str:
-    """`{\\kNN}` per word, centiseconds, summing to dur."""
+    """`{\\kNN}` per word, centiseconds, summing to dur.
+
+    Time is split by a rough speech-length model -- syllable count plus a
+    lingering weight on words that end a clause -- not raw letter count, so the
+    highlight doesn't race ahead through the setup and then wait on the pause.
+    """
     words = text.split()
     if not words:
         return text
-    weights = [len(w) + 1 for w in words]
+    weights = []
+    for i, w in enumerate(words):
+        wt = _syllables(w) + 0.5
+        if i < len(words) - 1:
+            tail = w[-1]
+            if tail in ",;:":
+                wt += 1.5
+            elif tail in '.?!…—-"\'':
+                wt += 2.5
+        weights.append(wt)
     total_cs = max(int(dur * 100), len(words))
     tw = sum(weights)
     out, spent = [], 0
@@ -95,12 +118,19 @@ def build(script, out_path):
         if beat.is_live or not beat.say:
             t += d
             continue
-        end = t + max(d - 0.04, 0.2)
+        # speech span within the clip -- keeps the highlight locked to the voice
+        s0 = float(entry.get("speech_start_s", 0.0) or 0.0)
+        s1 = float(entry.get("speech_end_s", d) or d)
+        if not (0.0 <= s0 < s1 <= d + 0.05):
+            s0, s1 = 0.0, d
         if style == "skit":
+            start, end = t, t + max(d - 0.04, 0.2)
             body = f"{{\\fad(90,60)}}{_wrap(beat.say.upper(), 22)}"
         else:
-            body = f"{{\\fad(120,70)}}{_karaoke(beat.say, d)}"
-        lines.append(f"Dialogue: 0,{_ts(t)},{_ts(end)},Cap,,0,0,0,,{body}")
+            start = t + s0
+            end = t + min(s1 + 0.12, d)
+            body = f"{{\\fad(120,70)}}{_karaoke(beat.say, max(s1 - s0, 0.3))}"
+        lines.append(f"Dialogue: 0,{_ts(start)},{_ts(end)},Cap,,0,0,0,,{body}")
         t += d
 
     out_path.write_text("\n".join(lines) + "\n", encoding="utf-8")

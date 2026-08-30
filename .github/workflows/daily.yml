@@ -58,6 +58,7 @@ jobs:
         env:
           BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
           BUFFER_YOUTUBE_CHANNEL_ID: ${{ secrets.BUFFER_YOUTUBE_CHANNEL_ID }}
+          BUFFER_INSTAGRAM_CHANNEL_ID: ${{ secrets.BUFFER_INSTAGRAM_CHANNEL_ID }}
           STICKFIN_AUTOPUBLISH: ${{ (github.event_name == 'schedule' || inputs.autopublish) && '1' || '0' }}
         run: python run_daily.py
 

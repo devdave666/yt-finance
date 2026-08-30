@@ -45,14 +45,24 @@ gcloud projects add-iam-policy-binding "$PROJECT_ID" \
 gcloud services enable texttospeech.googleapis.com --project "$PROJECT_ID"
 ```
 
-## 3. Buffer channel for the new YouTube channel
+## 3. Buffer channels (YouTube + Instagram)
 
-1. Create the YouTube channel.
-2. Connect it in Buffer (same Buffer account as core-decor is fine).
-3. Get its channel id (Buffer URL, or the GraphQL `channels` query).
+1. Create the YouTube channel; connect it in Buffer (same Buffer account as
+   core-decor is fine).
+2. Connect the Instagram account in Buffer too (must be a Business/Creator
+   account for Buffer to publish via API — a personal account only gets a
+   reminder, no auto-post).
+3. Get each channel's id: `python tools/backfill_instagram.py --list` with
+   `BUFFER_API_KEY` set, or read it out of the Buffer dashboard URL.
 4. Repo → Settings → Secrets and variables → Actions:
    - `BUFFER_API_KEY` — your Buffer personal token (can be the same one)
-   - `BUFFER_YOUTUBE_CHANNEL_ID` — the new channel's id
+   - `BUFFER_YOUTUBE_CHANNEL_ID` — the YouTube channel's id
+   - `BUFFER_INSTAGRAM_CHANNEL_ID` — the Instagram channel's id (optional; the
+     daily run just skips Instagram if it's unset)
+
+To push an already-built short to Instagram after the fact (e.g. one that was
+posted before Instagram was wired up), run the **Backfill Instagram** workflow
+with the slug, or `python tools/backfill_instagram.py <slug>` locally.
 
 ## 4. First runs
 

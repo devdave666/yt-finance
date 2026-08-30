@@ -1,14 +1,18 @@
-"""Publish the finished short to YouTube.
+"""Publish the finished short to YouTube and Instagram.
 
 Mirrors core-decor-automation's proven path: commit the mp4 into the repo so
 it's served from raw.githubusercontent.com, then hand that URL to Buffer's
-GraphQL API with mode=shareNow. Buffer is used instead of the YouTube Data API
-because YouTube's OAuth verification is high-friction for an automated poster
-(same call core-decor made).
+GraphQL API with mode=shareNow. Buffer is used instead of the platforms' own
+APIs because YouTube's OAuth verification and Instagram's Graph API setup are
+high-friction for an automated poster (same call core-decor made).
+
+Both destinations go through one Buffer account; each is a separate connected
+channel addressed by its own channel id. Instagram video posts land as Reels.
 
 Env:
     BUFFER_API_KEY
     BUFFER_YOUTUBE_CHANNEL_ID
+    BUFFER_INSTAGRAM_CHANNEL_ID   (optional -- skipped if unset)
     GITHUB_REPOSITORY   (owner/repo, set automatically in Actions)
     STICKFIN_AUTOPUBLISH=1  to actually post (otherwise host-only, dry run)
 """
@@ -19,6 +23,21 @@ import subprocess
 from pathlib import Path
 
 YT_CATEGORY_EDUCATION = "27"
+
+_CREATE_POST = """
+mutation CreatePost($input: CreatePostInput!) {
+  createPost(input: $input) {
+    __typename
+    ... on PostActionSuccess { post { id status } }
+    ... on InvalidInputError { message }
+    ... on LimitReachedError { message }
+    ... on UnauthorizedError { message }
+    ... on UnexpectedError { message }
+    ... on RestProxyError { message }
+    ... on NotFoundError { message }
+  }
+}
+"""
 
 
 def _run(cmd: list[str]) -> None:
@@ -49,47 +68,53 @@ def host_in_repo(video: Path, slug: str, repo_root: Path) -> str:
     return f"https://raw.githubusercontent.com/{repo}/{branch}/media/{slug}.mp4"
 
 
-def publish_youtube(video_url: str, title: str, description: str) -> str:
+def buffer_post(video_url: str, text: str, channel_id: str, platform: str,
+                *, title: str | None = None) -> str:
+    """Create a shareNow post on one Buffer channel; return the Buffer post id.
+
+    platform is only used for YouTube's extra required fields and for error
+    messages -- Buffer routes by channel_id, not by this string.
+    """
     import requests
 
     token = os.environ["BUFFER_API_KEY"]
-    channel = os.environ["BUFFER_YOUTUBE_CHANNEL_ID"]
-    mutation = """
-    mutation CreatePost($input: CreatePostInput!) {
-      createPost(input: $input) {
-        __typename
-        ... on PostActionSuccess { post { id status } }
-        ... on InvalidInputError { message }
-        ... on LimitReachedError { message }
-        ... on UnauthorizedError { message }
-        ... on UnexpectedError { message }
-        ... on RestProxyError { message }
-        ... on NotFoundError { message }
-      }
-    }
-    """
-    post_input = {
-        "channelId": channel,
+    asset: dict = {"video": {"url": video_url}}
+    post_input: dict = {
+        "channelId": channel_id,
         "mode": "shareNow",
         "schedulingType": "automatic",
         "needsApproval": False,
-        "text": description,
-        "assets": [{"video": {"url": video_url, "metadata": {"title": title}}}],
-        "metadata": {"youtube": {"title": title, "categoryId": YT_CATEGORY_EDUCATION,
-                                 "privacy": "public"}},
+        "text": text,
+        "assets": [asset],
     }
+    if platform == "youtube":
+        if not title:
+            raise RuntimeError("title is required when publishing to YouTube via Buffer")
+        asset["video"]["metadata"] = {"title": title}
+        post_input["metadata"] = {"youtube": {"title": title,
+                                              "categoryId": YT_CATEGORY_EDUCATION,
+                                              "privacy": "public"}}
+
     r = requests.post(
         "https://api.buffer.com/graphql",
         headers={"Authorization": f"Bearer {token}", "Content-Type": "application/json"},
-        json={"query": mutation, "variables": {"input": post_input}}, timeout=60)
-    result = r.json().get("data", {}).get("createPost", {})
+        json={"query": _CREATE_POST, "variables": {"input": post_input}}, timeout=60)
+    body = r.json()
+    result = body.get("data", {}).get("createPost", {})
     if result.get("__typename") != "PostActionSuccess":
-        raise RuntimeError(f"Buffer publish failed: {result.get('message', r.json())}")
+        raise RuntimeError(f"Buffer publish to {platform} failed: {result.get('message', body)}")
     return result["post"]["id"]
 
 
+# backwards-compatible alias
+def publish_youtube(video_url: str, title: str, description: str) -> str:
+    return buffer_post(video_url, description, os.environ["BUFFER_YOUTUBE_CHANNEL_ID"],
+                       "youtube", title=title)
+
+
 def publish(script, meta: dict, repo_root: Path) -> dict:
-    out = {"hosted_url": None, "post_id": None, "published": False}
+    out = {"hosted_url": None, "youtube_post_id": None, "instagram_post_id": None,
+           "published": False}
     url = host_in_repo(script.out_path, script.slug, repo_root)
     out["hosted_url"] = url
     print(f"[publish] hosted: {url}")
@@ -98,8 +123,22 @@ def publish(script, meta: dict, repo_root: Path) -> dict:
         print("[publish] STICKFIN_AUTOPUBLISH != 1 -- hosted only, not posting")
         return out
 
+    title = meta.get("title") or script.title
     desc = meta.get("description") or script.title
-    out["post_id"] = publish_youtube(url, meta.get("title") or script.title, desc)
+
+    out["youtube_post_id"] = buffer_post(
+        url, desc, os.environ["BUFFER_YOUTUBE_CHANNEL_ID"], "youtube", title=title)
     out["published"] = True
-    print(f"[publish] YouTube post id: {out['post_id']}")
+    print(f"[publish] YouTube post id: {out['youtube_post_id']}")
+
+    ig_channel = os.environ.get("BUFFER_INSTAGRAM_CHANNEL_ID")
+    if ig_channel:
+        try:
+            out["instagram_post_id"] = buffer_post(url, desc, ig_channel, "instagram")
+            print(f"[publish] Instagram post id: {out['instagram_post_id']}")
+        except Exception as e:  # non-fatal: YouTube already went out
+            print(f"[publish] Instagram post FAILED (non-fatal): {e}")
+    else:
+        print("[publish] BUFFER_INSTAGRAM_CHANNEL_ID not set -- skipping Instagram")
+
     return out

@@ -77,8 +77,8 @@ TTS_STYLE = os.environ.get("STICKFIN_TTS_STYLE", (
 ))
 TTS_SAMPLE_RATE = 48000
 TTS_TARGET_LUFS = -15.0
-TTS_SPEAKING_RATE = 1.0
-BEAT_GAP_S = 0.12
+TTS_SPEAKING_RATE = 1.12       # a touch quick -- shorter Shorts + more energy
+BEAT_GAP_S = 0.08
 
 # ---- Ken Burns (off by default; the reference style has a static camera) ----
 KENBURNS = os.environ.get("STICKFIN_KENBURNS", "0") == "1"

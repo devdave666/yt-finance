@@ -93,11 +93,11 @@ SCHEMA_DOC = """Return ONLY a JSON object, no prose, with this shape:
         "id": "b01",
         "scene": "<scene name>",
         "who": "<character name>",       // the speaker; for explainer always "host"
-        "say": "ONE spoken sentence, <= 12 words",
+        "say": "ONE short spoken sentence, <= 10 words, punchy",
         "cast": { "<name>": "pose and facial expression, e.g. 'standing, pointing to the right, neutral'" },
         "props": ["at most ONE prop per beat, chosen ONLY from the PROP VOCAB below (exact name), or omit"]
       }
-      // 7 to 9 beats, targeting 22-30 seconds of narration total. Every character
+      // 6 to 8 beats, targeting 20-28 seconds of narration total. Every character
       // mentioned in a beat's cast must be in the top-level cast.
       // Beat 1 MUST be a scroll-stopping hook: a pointed question, a surprising
       //   number, or a "you're doing X wrong" -- NEVER a definition or "Let me explain".

@@ -69,18 +69,21 @@ TTS_LANGUAGE = "en-US"
 # the voice can carry actual character (review: "add more feeling"). Voice
 # names are the Gemini roster (Charon/Puck/Kore/...); needs model_name.
 TTS_MODEL = os.environ.get("STICKFIN_TTS_MODEL", "gemini-2.5-flash-tts")
-DEFAULT_VOICE = os.environ.get("STICKFIN_VOICE", "Charon")
+DEFAULT_VOICE = os.environ.get("STICKFIN_VOICE", "Orus")
+# Register modelled on the "market skeptic" finance explainers (ref: stickfigref1):
+# credible analyst, dry and a little skeptical, NOT a comedian, NOT hype.
 TTS_STYLE = os.environ.get("STICKFIN_TTS_STYLE", (
-    "You host a personal-finance channel called Anti Broke. Deliver this "
-    "deadpan and quick, with dry sarcasm and a knowing smirk in your voice -- "
-    "like a sharp friend who thinks this stuff is genuinely funny and slightly "
-    "rigged. Hit the key words hard, throw away the setups, land the "
-    "punchlines flat. Fast, confident, a little amused. Never flat-robotic, "
-    "never hypey, never goofy."
+    "You explain money and markets on a channel called Anti Broke. Deliver this "
+    "like a sharp market analyst walking someone through the case: calm, "
+    "confident, a little skeptical, faintly amused at how rigged the fine print "
+    "is. Brisk and clear -- keep it moving, hit the key numbers and the turn, "
+    "then land the last line flat. No hype, no goofiness, and never draggy or "
+    "sing-song."
 ))
 TTS_SAMPLE_RATE = 48000
 TTS_TARGET_LUFS = -15.0
-TTS_SPEAKING_RATE = 1.17       # quick -- shorter Shorts + more energy
+TTS_SPEAKING_RATE = 1.16       # base pace hint to Gemini-TTS
+TTS_MIN_WPS = 2.85           # hard floor: any beat slower than this gets sped up with atempo
 BEAT_GAP_S = 0.03            # near-zero: dead air between lines was the #1 complaint
 TTS_TRIM_SILENCE = True      # strip leading/trailing silence from each beat clip
 

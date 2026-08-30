@@ -94,12 +94,16 @@ def _parse_trim(trim: str) -> tuple[float, float | None]:
 def _norm(src: Path, dst: Path, extra_af: str = "") -> None:
     chain = []
     if getattr(config, "TTS_TRIM_SILENCE", False):
-        # cut dead air off both ends -- glacial gaps between lines was the top note
+        # 1) trim dead air off both ends, 2) collapse any internal pause longer
+        # than ~0.3s down to 0.3s -- Gemini-TTS sometimes drops a multi-second
+        # gap mid-line (a 7-word closer once came back 22s long).
         chain.append(
-            "silenceremove=start_periods=1:start_silence=0.04:start_threshold=-45dB:"
+            "silenceremove=start_periods=1:start_silence=0.04:start_threshold=-42dB:"
             "detection=peak,areverse,"
-            "silenceremove=start_periods=1:start_silence=0.04:start_threshold=-45dB:"
-            "detection=peak,areverse")
+            "silenceremove=start_periods=1:start_silence=0.04:start_threshold=-42dB:"
+            "detection=peak,areverse,"
+            "silenceremove=stop_periods=-1:stop_duration=0.30:stop_threshold=-40dB:"
+            "detection=peak")
     if extra_af:
         chain.append(extra_af)
     chain.append(f"loudnorm=I={config.TTS_TARGET_LUFS}:TP=-1.5:LRA=11")
@@ -107,6 +111,28 @@ def _norm(src: Path, dst: Path, extra_af: str = "") -> None:
     run_ffmpeg(["-i", src, "-af", ",".join(chain),
                 "-ar", config.TTS_SAMPLE_RATE, "-ac", "1", dst],
                f"normalize {dst.name}")
+
+
+def _enforce_pace(path: Path, n_words: int) -> None:
+    """If a beat came back slower than TTS_MIN_WPS, speed it up with atempo
+    (pitch-preserving). Gemini-TTS ignores the rate hint on some lines and
+    drags -- this is the hard floor."""
+    floor = getattr(config, "TTS_MIN_WPS", 0)
+    if floor <= 0 or n_words < 2:
+        return
+    speech = max(probe_duration(path) - config.BEAT_GAP_S, 0.1)
+    wps = n_words / speech
+    if wps >= floor:
+        return
+    # a normal slow line just needs a nudge; wps below ~1.5 means the synth
+    # itself is broken (huge internal drag) -- allow a bigger stretch there.
+    cap = 1.4 if wps > 1.5 else 2.0
+    factor = min(cap, round(floor / wps, 3))
+    tmp = path.with_suffix(".pace.wav")
+    run_ffmpeg(["-i", path, "-af", f"atempo={factor}",
+                "-ar", config.TTS_SAMPLE_RATE, "-ac", "1", tmp],
+               f"speed up {path.name} x{factor} ({wps:.1f}->{floor} wps)")
+    tmp.replace(path)
 
 
 def _speech_span(path: Path, total: float) -> tuple[float, float]:
@@ -158,15 +184,13 @@ def synthesize(script, force: bool = False) -> dict:
             else:
                 if client is None:
                     client = _client()
-                hint = ""
-                if i == 0:
-                    hint = (" This is the opening hook -- punch it, a little "
-                            "provocative, make them stop scrolling.")
-                elif i == len(script.beats) - 1:
-                    hint = (" This is the closing line -- slow down and let it land.")
+                hint = (" This is the opening hook -- punch it, make them stop "
+                        "scrolling." if i == 0 else "")
                 _synth_raw(client, beat.say, script.voice_for(beat), raw,
                            style=config.TTS_STYLE + hint)
             _norm(raw, final)
+            if not beat.is_live:
+                _enforce_pace(final, len(beat.say.split()))
             raw.unlink(missing_ok=True)
 
         dur = round(probe_duration(final), 3)

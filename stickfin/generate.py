@@ -24,7 +24,7 @@ from . import config, icons, script_model
 
 TEXT_MODELS = [("us-central1", "gemini-2.5-pro"), ("us-central1", "gemini-2.5-flash")]
 
-CHANNEL_VOICE = "Charon"     # narrator / first character (Gemini-TTS roster), every video
+CHANNEL_VOICE = "Orus"       # narrator / first character (Gemini-TTS roster), every video
 SECOND_VOICE = "Aoede"       # the other character in a skit
 
 # Every explainer uses this one backdrop (generated once, reused) instead of

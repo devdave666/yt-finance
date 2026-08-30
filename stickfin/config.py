@@ -63,11 +63,21 @@ IDLE_BOB_HZ = 0.5
 
 # ---- Text-to-Speech ------------------------------------------------------
 TTS_LANGUAGE = "en-US"
-# Chirp 3 HD reads far more naturally than Neural2 (first review: "flat and
-# robotic"). Chirp voices don't take SSML -- tts.py already handles that.
-DEFAULT_VOICE = os.environ.get("STICKFIN_VOICE", "en-US-Chirp3-HD-Charon")
+# Gemini-TTS: takes a natural-language `prompt` that steers delivery style, so
+# the voice can carry actual character (review: "add more feeling"). Voice
+# names are the Gemini roster (Charon/Puck/Kore/...); needs model_name.
+TTS_MODEL = os.environ.get("STICKFIN_TTS_MODEL", "gemini-2.5-flash-tts")
+DEFAULT_VOICE = os.environ.get("STICKFIN_VOICE", "Charon")
+TTS_STYLE = os.environ.get("STICKFIN_TTS_STYLE", (
+    "You are the host of a punchy personal-finance channel called Anti Broke. "
+    "Deliver this with energy and a little edge -- like a sharp friend who's "
+    "tired of watching people make the same money mistake. Conversational and "
+    "confident, lean hard into the key words, vary the pace, land the "
+    "punchlines. Never flat, never robotic, never over-excited."
+))
 TTS_SAMPLE_RATE = 48000
 TTS_TARGET_LUFS = -15.0
+TTS_SPEAKING_RATE = 1.0
 BEAT_GAP_S = 0.12
 
 # ---- Ken Burns (off by default; the reference style has a static camera) ----

@@ -24,15 +24,16 @@ from . import config, icons, script_model
 
 TEXT_MODELS = [("us-central1", "gemini-2.5-pro"), ("us-central1", "gemini-2.5-flash")]
 
-CHANNEL_VOICE = "en-US-Chirp3-HD-Charon"    # narrator / first character, every video
-SECOND_VOICE = "en-US-Chirp3-HD-Aoede"      # the other character in a skit
+CHANNEL_VOICE = "Charon"     # narrator / first character (Gemini-TTS roster), every video
+SECOND_VOICE = "Aoede"       # the other character in a skit
 
 # Every explainer uses this one backdrop (generated once, reused) instead of
 # stark white -- first review called the white background "unappealing".
 STAGE_BG = (
-    "a very soft warm off-white studio backdrop, a faint horizon/floor line low "
-    "in the frame, a gentle vignette darkening the corners slightly, subtle "
-    "paper texture -- nothing else, no objects, no furniture, no text"
+    "a plain soft warm off-white backdrop with a very subtle paper texture and "
+    "a gentle vignette darkening the corners slightly. Completely empty and "
+    "even -- NO floor line, NO horizon line, NO ground, NO shadow, NO objects, "
+    "no furniture, no text."
 )
 
 # The channel's recurring characters -- fixed here (not written by the model) so

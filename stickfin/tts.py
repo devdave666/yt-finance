@@ -31,22 +31,49 @@ def _esc(t: str) -> str:
     return t.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 
 
-def _synth_raw(client, text: str, voice: str, out_raw: Path) -> None:
+def _synth_raw(client, text: str, voice: str, out_raw: Path, style: str = "") -> None:
     from google.cloud import texttospeech
-    if _is_ssml_voice(voice):
+
+    model = config.TTS_MODEL
+    if model.startswith("gemini"):
+        # Gemini-TTS wants a bare roster name (Charon, Aoede, ...). Map any
+        # legacy "en-US-Chirp3-HD-Charon" style id down to its last segment.
+        gem_voice = voice.split("-")[-1] if "-" in voice else voice
+        # Gemini-TTS: plain text + a natural-language delivery prompt
+        payload = texttospeech.SynthesisInput(
+            text=text, prompt=(style or config.TTS_STYLE))
+        voice_params = texttospeech.VoiceSelectionParams(
+            language_code=config.TTS_LANGUAGE, name=gem_voice, model_name=model)
+    elif _is_ssml_voice(voice):
         payload = texttospeech.SynthesisInput(
             ssml=f'<speak><break time="50ms"/>{_esc(text)}<break time="110ms"/></speak>')
+        voice_params = texttospeech.VoiceSelectionParams(
+            language_code=config.TTS_LANGUAGE, name=voice)
     else:
         payload = texttospeech.SynthesisInput(text=text)
-    resp = client.synthesize_speech(
-        input=payload,
-        voice=texttospeech.VoiceSelectionParams(
-            language_code=config.TTS_LANGUAGE, name=voice),
-        audio_config=texttospeech.AudioConfig(
-            audio_encoding=texttospeech.AudioEncoding.LINEAR16,
-            sample_rate_hertz=config.TTS_SAMPLE_RATE),
-    )
-    out_raw.write_bytes(resp.audio_content)
+        voice_params = texttospeech.VoiceSelectionParams(
+            language_code=config.TTS_LANGUAGE, name=voice)
+
+    audio_config = texttospeech.AudioConfig(
+        audio_encoding=texttospeech.AudioEncoding.LINEAR16,
+        sample_rate_hertz=config.TTS_SAMPLE_RATE,
+        speaking_rate=config.TTS_SPEAKING_RATE)
+    req = texttospeech.SynthesizeSpeechRequest(
+        input=payload, voice=voice_params, audio_config=audio_config)
+
+    import time
+    from google.api_core import exceptions as gexc
+    for attempt in range(6):
+        try:
+            resp = client.synthesize_speech(request=req)
+            out_raw.write_bytes(resp.audio_content)
+            return
+        except gexc.ResourceExhausted:
+            if attempt == 5:
+                raise
+            wait = 15 * (2 ** attempt)
+            print(f"    TTS 429 -- retrying in {wait}s ({attempt + 1}/6)")
+            time.sleep(wait)
 
 
 def _parse_trim(trim: str) -> tuple[float, float | None]:
@@ -77,7 +104,7 @@ def synthesize(script, force: bool = False) -> dict:
 
     client = None
     entries = []
-    for beat in script.beats:
+    for i, beat in enumerate(script.beats):
         final = audio_dir / f"{beat.id}.wav"
 
         if force or not final.exists():
@@ -91,7 +118,14 @@ def synthesize(script, force: bool = False) -> dict:
             else:
                 if client is None:
                     client = _client()
-                _synth_raw(client, beat.say, script.voice_for(beat), raw)
+                hint = ""
+                if i == 0:
+                    hint = (" This is the opening hook -- punch it, a little "
+                            "provocative, make them stop scrolling.")
+                elif i == len(script.beats) - 1:
+                    hint = (" This is the closing line -- slow down and let it land.")
+                _synth_raw(client, beat.say, script.voice_for(beat), raw,
+                           style=config.TTS_STYLE + hint)
             _norm(raw, final)
             raw.unlink(missing_ok=True)
 

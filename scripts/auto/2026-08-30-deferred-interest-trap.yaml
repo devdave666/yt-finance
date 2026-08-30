@@ -1,0 +1,98 @@
+title: How '0% Interest' Deals Can Cost You Hundreds
+slug: 2026-08-30-deferred-interest-trap
+format: short
+caption_style: explainer
+cast:
+  host:
+    look: 'the ''Anti Broke'' host: a minimalist black-marker stick figure with a
+      round OPEN white head, four or five short spiky lines of hair on top, two small
+      dot eyes, two short sharp angled eyebrows, a small mouth. The body is ONE single
+      straight vertical black line (spine), with four more single straight black lines
+      for the two arms and two legs, dot hands, short line feet -- plus one small
+      thin necktie shape (a short strip + a little triangle) hanging at the neck.
+      NO torso shape, NO filled body, NO solid black wedge, NO shirt block -- the
+      figure is a head, spiky hair, five thin lines and a skinny tie. It is never
+      a black silhouette.'
+    anchor: center
+    voice: Orus
+scenes:
+  stage:
+    color: '#f4efe4'
+beats:
+- id: b01
+  scene: stage
+  who: host
+  say: Miss your last payment by one day, pay for the year.
+  cast:
+    host: standing, arms wide, looking directly at viewer, concerned
+  headline: ALL THE INTEREST.
+  props: []
+- id: b02
+  scene: stage
+  who: host
+  say: It’s called deferred interest, or 'same as cash'.
+  cast:
+    host: standing, hands clasped in front, neutral expression
+  props:
+  - handshake
+- id: b03
+  scene: stage
+  who: host
+  say: You buy a two-thousand-dollar item on a special offer.
+  cast:
+    host: standing, pointing to the right, explaining
+  props:
+  - credit-card
+- id: b04
+  scene: stage
+  who: host
+  say: The deal is zero percent interest for twelve months.
+  cast:
+    host: showing open hands, as if presenting the deal
+  props:
+  - calendar
+- id: b05
+  scene: stage
+  who: host
+  say: But interest is quietly adding up in the background.
+  cast:
+    host: leaning forward slightly, conspiratorial expression
+  props:
+  - hourglass
+- id: b06
+  scene: stage
+  who: host
+  say: If just one dollar is left, all that interest hits.
+  cast:
+    host: standing straight, arms crossed, stern expression
+  chart:
+    type: bar
+    title: Cost of a $2,000 Purchase
+    labels:
+    - Paid On Time
+    - Paid 1 Day Late
+    values:
+    - 2000
+    - 2490
+    unit: $
+    highlight: 1
+    note: +$490
+  props: []
+- id: b07
+  scene: stage
+  who: host
+  say: That's how your 'deal' suddenly costs almost five hundred more.
+  cast:
+    host: looking shocked, hands on cheeks
+  props:
+  - warning
+- id: b08
+  scene: stage
+  who: host
+  say: Deferred interest is a bet you can't afford to lose.
+  cast:
+    host: looking directly at viewer, serious, one hand raised
+  props:
+  - padlock
+narrator:
+  voice: Orus

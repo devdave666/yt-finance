@@ -42,24 +42,26 @@ def aspect_ratio(fmt: str | None = None) -> str:
 # longer is split into that many holds (identical composite unless the beat
 # defines `steps`). Skit lines are naturally short; explainer beats lean on
 # phrase-by-phrase captions for motion during a hold.
-MAX_HOLD_S = float(os.environ.get("STICKFIN_MAX_HOLD_S", "1.5"))
-MIN_HOLD_S = float(os.environ.get("STICKFIN_MIN_HOLD_S", "0.8"))
+MAX_HOLD_S = float(os.environ.get("STICKFIN_MAX_HOLD_S", "2.7"))
+MIN_HOLD_S = float(os.environ.get("STICKFIN_MIN_HOLD_S", "0.9"))
 
 # ---- Character layout (fraction of canvas) ---------------------------------
 CHAR_HEIGHT_FRAC = 0.54       # default figure height vs canvas height
 CHAR_BASELINE_FRAC = 0.95     # where feet sit
-ANCHOR_X = {"left": 0.30, "center": 0.5, "right": 0.70}
+ANCHOR_X = {"far-left": 0.24, "left": 0.30, "center": 0.5,
+            "right": 0.70, "far-right": 0.78}
 
-# When a shot has props/cutouts, the speaking character slides here and the
-# objects take the other side, so nothing lands on the figure's head.
-CHAR_ANCHOR_WITH_PROPS = "left"
-PROP_ZONE_AT = "right-low"    # beside the figure at hand height, clear of the head
-PROP_SCALE = 0.24
+# When a shot has an object, the speaker slides far-left and the object sits
+# far-right, capped in width so it can't reach back across the figure.
+CHAR_ANCHOR_WITH_PROPS = "far-left"
+PROP_ZONE_AT = "far-right-low"
+PROP_SCALE = 0.20
+PROP_MAX_W_FRAC = 0.34       # never wider than this fraction of the canvas
 
-# ---- Idle motion -------------------------------------------------------------
-# Gentle "moving hold" so shots aren't frozen (first review: "feels frozen").
-IDLE_BOB_PX = float(os.environ.get("STICKFIN_IDLE_BOB_PX", "7"))
+# ---- Motion --------------------------------------------------------------
+IDLE_BOB_PX = float(os.environ.get("STICKFIN_IDLE_BOB_PX", "6"))
 IDLE_BOB_HZ = 0.5
+POP_IN_S = 0.16             # new layers fade/scale in over this on each cut
 
 # ---- Text-to-Speech ------------------------------------------------------
 TTS_LANGUAGE = "en-US"
@@ -78,10 +80,21 @@ TTS_STYLE = os.environ.get("STICKFIN_TTS_STYLE", (
 ))
 TTS_SAMPLE_RATE = 48000
 TTS_TARGET_LUFS = -15.0
-TTS_SPEAKING_RATE = 1.15       # quick -- shorter Shorts + more energy
-BEAT_GAP_S = 0.06
+TTS_SPEAKING_RATE = 1.17       # quick -- shorter Shorts + more energy
+BEAT_GAP_S = 0.03            # near-zero: dead air between lines was the #1 complaint
+TTS_TRIM_SILENCE = True      # strip leading/trailing silence from each beat clip
 
 # ---- Ken Burns (off by default; the reference style has a static camera) ----
 KENBURNS = os.environ.get("STICKFIN_KENBURNS", "0") == "1"
+
+# ---- SFX ---------------------------------------------------------------------
+SFX_TICKS = os.environ.get("STICKFIN_SFX_TICKS", "0") == "1"   # per-cut click; off (annoying)
+
+# ---- Captions -----------------------------------------------------------
+# ASS colours are &HAABBGGRR. White text with a heavy near-black outline (reads
+# on any background); the word currently being said flips to amber.
+CAP_SPOKEN = "&H0018C6FF"     # #FFC618 amber
+CAP_PENDING = "&H00FFFFFF"    # white
+CAP_OUTLINE = "&H00181818"    # near-black
 ZOOM_RATE_PER_S = 0.05
 MAX_ZOOM = 1.25

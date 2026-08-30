@@ -90,11 +90,20 @@ def _parse_trim(trim: str) -> tuple[float, float | None]:
 
 
 def _norm(src: Path, dst: Path, extra_af: str = "") -> None:
-    af = f"loudnorm=I={config.TTS_TARGET_LUFS}:TP=-1.5:LRA=11"
+    chain = []
+    if getattr(config, "TTS_TRIM_SILENCE", False):
+        # cut dead air off both ends -- glacial gaps between lines was the top note
+        chain.append(
+            "silenceremove=start_periods=1:start_silence=0.04:start_threshold=-45dB:"
+            "detection=peak,areverse,"
+            "silenceremove=start_periods=1:start_silence=0.04:start_threshold=-45dB:"
+            "detection=peak,areverse")
     if extra_af:
-        af = f"{extra_af},{af}"
-    af = f"{af},apad=pad_dur={config.BEAT_GAP_S}"
-    run_ffmpeg(["-i", src, "-af", af, "-ar", config.TTS_SAMPLE_RATE, "-ac", "1", dst],
+        chain.append(extra_af)
+    chain.append(f"loudnorm=I={config.TTS_TARGET_LUFS}:TP=-1.5:LRA=11")
+    chain.append(f"apad=pad_dur={config.BEAT_GAP_S}")
+    run_ffmpeg(["-i", src, "-af", ",".join(chain),
+                "-ar", config.TTS_SAMPLE_RATE, "-ac", "1", dst],
                f"normalize {dst.name}")
 
 

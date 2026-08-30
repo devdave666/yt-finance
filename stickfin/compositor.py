@@ -51,6 +51,7 @@ def _composite_clip(shot: dict, adir: Path, fmt: str, out: Path) -> None:
         inputs += ["-f", "lavfi", "-i", f"color=c=white:s={cw}x{ch}:r={fps}"]
         chains = ["[0:v]setsar=1[b0]"]
 
+    pop = max(config.POP_IN_S, 0.001)
     idx, last, char_seen = 1, "b0", 0
     for layer in shot["layers"]:
         ap = _resolve(layer, adir)
@@ -60,16 +61,19 @@ def _composite_clip(shot: dict, adir: Path, fmt: str, out: Path) -> None:
         x, y, w, h = _box_for(layer, ap, fmt)
         inputs += ["-loop", "1", "-i", str(ap)]
         cur = f"c{idx}"
-        chains.append(f"[{idx}:v]scale={w}:{h}[s{idx}]")
+        # every layer fades + settles up into place on the cut (the "pop")
+        chains.append(f"[{idx}:v]scale={w}:{h},format=rgba,"
+                      f"fade=t=in:st=0:d={pop}:alpha=1[s{idx}]")
 
+        settle = f"-18*(1-min(1,t/{pop}))"
         if layer["type"] == "character" and config.IDLE_BOB_PX > 0:
             phase = char_seen * 3.14159
             char_seen += 1
             amp, hz = config.IDLE_BOB_PX, config.IDLE_BOB_HZ
-            ye = f"{y}+{amp}*sin(2*PI*{hz}*t+{phase:.3f})"
-            chains.append(f"[{last}][s{idx}]overlay={x}:'{ye}':format=auto[{cur}]")
+            ye = f"{y}{settle}+{amp}*sin(2*PI*{hz}*t+{phase:.3f})"
         else:
-            chains.append(f"[{last}][s{idx}]overlay={x}:{y}:format=auto[{cur}]")
+            ye = f"{y}{settle}"
+        chains.append(f"[{last}][s{idx}]overlay={x}:'{ye}':format=auto[{cur}]")
         last, idx = cur, idx + 1
 
     run_ffmpeg(

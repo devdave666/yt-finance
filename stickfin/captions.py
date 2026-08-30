@@ -18,11 +18,11 @@ import textwrap
 from . import config
 
 # name -> (Font, Size, Primary[spoken], Secondary[pending], BorderStyle, Outline,
-#          Back/box colour, Alignment, MarginV, Bold)
+#          Outline/box colour, Alignment, MarginV, Bold)
 _STYLES = {
-    "explainer": ("Arial", 76, "&H00202020", "&H00A0A0A0", 4, 2, "&HE6FFFFFF", 8, 300, -1),
-    "skit":      ("Arial", 64, "&H00FFFFFF", "&H00FFFFFF", 3, 6, "&H00000000", 8, 320, -1),
-    "title":     ("Arial", 56, "&H00000000", "&H00000000", 3, 8, "&H00FFFFFF", 8, 250, -1),
+    "explainer": ("Arial", 82, config.CAP_SPOKEN, config.CAP_PENDING, 1, 5, config.CAP_OUTLINE, 8, 300, -1),
+    "skit":      ("Arial", 66, "&H00FFFFFF", "&H00FFFFFF", 3, 6, "&H00000000", 8, 320, -1),
+    "title":     ("Arial", 58, "&H00000000", "&H00000000", 3, 8, "&H00FFFFFF", 8, 250, -1),
 }
 
 

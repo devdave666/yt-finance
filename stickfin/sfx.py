@@ -63,7 +63,7 @@ def _events(script, timeline: dict) -> list[tuple[float, str, float]]:
 
     for i, s in enumerate(shots):
         t = s["start_s"]
-        if i > 0:
+        if i > 0 and getattr(config, "SFX_TICKS", False):
             ev.append((t, "tick", -20.0))
         if s["beat_id"] != prev_beat:
             if s["beat_id"] == last_beat:

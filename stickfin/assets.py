@@ -145,11 +145,16 @@ _rembg_session = None
 def _cutout(pil_rgb):
     """RGB PIL image -> RGBA with background removed and trimmed to content."""
     global _rembg_session
+    from PIL import ImageFilter
     from rembg import new_session, remove
     if _rembg_session is None:
         _rembg_session = new_session(config.REMBG_MODEL)
     out = remove(pil_rgb, session=_rembg_session, post_process_mask=True)
-    bbox = out.getchannel("A").getbbox()
+    # shrink the matte by ~1px to eat the pale antialiased fringe (shows as a
+    # white halo when composited onto the cream background)
+    a = out.getchannel("A").filter(ImageFilter.MinFilter(3))
+    out.putalpha(a)
+    bbox = a.getbbox()
     if bbox:
         pad = 6
         x0, y0, x1, y1 = bbox
@@ -238,7 +243,8 @@ def generate_assets(script, plan: dict, force: bool = False) -> None:
         "The whole figure is thin LINE ART: an open round head outline plus "
         "exactly five separate thin straight lines (spine, 2 arms, 2 legs) and "
         "two dot hands. NEVER a filled black body, NEVER a solid torso wedge, "
-        "NEVER a silhouette."
+        "NEVER a silhouette. EXACTLY ONE figure in the frame -- never two "
+        "people, never a duplicate or mirror image."
     )
     sheets = {}
     for name, c in plan["characters"].items():

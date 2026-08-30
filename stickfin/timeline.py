@@ -18,38 +18,38 @@ from . import config
 from .assets import slug
 
 
-# prop slots beside the figure, clear of its head
-_PROP_SLOTS = ["right-low", "right-mid", "right-top", "center-bottom"]
+_PROP_SLOTS = ["far-right-low", "far-right-mid", "right-top", "center-bottom"]
 
 
-def _layers_for(script, beat) -> list[dict]:
+def _layers_for(script, beat, n_holds: int) -> list[dict]:
+    """Layers for the beat, each tagged with the hold index it first appears on
+    (so a split beat's second hold is a real change, not a re-show)."""
     layers: list[dict] = []
     front_cutouts = [c for c in beat.cutouts if not c.behind]
     has_objects = bool(beat.props or front_cutouts)
+    obj_hold = 1 if n_holds > 1 else 0        # stagger the object onto hold 2
 
     for co in beat.cutouts:
         if co.behind:
             layers.append({"type": "cutout", "asset": _cut_key(co.src),
-                           "at": co.at, "scale": co.scale})
+                           "at": co.at, "scale": co.scale, "from_hold": 0})
 
     for cname, state in beat.cast.items():
         ch = script.cast[cname]
-        # a centred solo speaker slides aside when objects share the frame
         anchor = ch.anchor
         if anchor == "center" and has_objects and len(beat.cast) == 1:
             anchor = config.CHAR_ANCHOR_WITH_PROPS
-        layers.append({"type": "character",
-                       "asset": f"{cname}__{slug(state)}",
-                       "anchor": anchor, "scale": ch.scale})
+        layers.append({"type": "character", "asset": f"{cname}__{slug(state)}",
+                       "anchor": anchor, "scale": ch.scale, "from_hold": 0})
 
     for i, p in enumerate(beat.props):
         layers.append({"type": "prop", "asset": slug(p),
                        "at": _PROP_SLOTS[i % len(_PROP_SLOTS)],
-                       "scale": config.PROP_SCALE})
+                       "scale": config.PROP_SCALE, "from_hold": obj_hold})
 
     for co in front_cutouts:
         layers.append({"type": "cutout", "asset": _cut_key(co.src),
-                       "at": co.at, "scale": co.scale})
+                       "at": co.at, "scale": co.scale, "from_hold": obj_hold})
     return layers
 
 
@@ -81,7 +81,7 @@ def plan(script, narration: dict) -> dict:
             while n_holds > 1 and (beat_frames / n_holds) / fps < config.MIN_HOLD_S:
                 n_holds -= 1
 
-        layers = [] if beat.is_live else _layers_for(script, beat)
+        all_layers = [] if beat.is_live else _layers_for(script, beat, n_holds)
         for k in range(n_holds):
             # distribute beat_frames across holds with no rounding loss
             f0 = frame_cursor + round(beat_frames * k / n_holds)
@@ -93,7 +93,7 @@ def plan(script, narration: dict) -> dict:
                 "start_s": round(f0 / fps, 3), "dur_s": round(nf / fps, 3),
                 "kind": "live" if beat.is_live else "composite",
                 "scene": None if beat.is_live else beat.scene,
-                "layers": layers,
+                "layers": [dict(l) for l in all_layers if l.get("from_hold", 0) <= k],
                 "emphasis": beat.emphasis if not beat.is_live else False,
             }
             if beat.is_live:

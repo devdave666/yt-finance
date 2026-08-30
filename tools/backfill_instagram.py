@@ -32,15 +32,14 @@ sys.path.insert(0, str(REPO))
 from stickfin import publish as publish_mod  # noqa: E402
 BUFFER_URL = "https://api.buffer.com/graphql"
 
-_CHANNELS_QUERY = """
-query Channels {
-  account {
-    currentOrganization {
-      channels { id service name }
-    }
-  }
-}
-"""
+# Buffer's channel list lives in different places depending on how the token is
+# scoped -- try the known shapes in order.
+_CHANNELS_QUERIES = [
+    "query { account { currentOrganization { channels { id service serviceType name } } } }",
+    "query { account { organizations { channels { id service serviceType name } } } }",
+    "query { channels { id service serviceType name } }",
+    "query { account { channels { id service serviceType name } } }",
+]
 
 
 def _repo_slug() -> str:
@@ -58,16 +57,40 @@ def _branch() -> str:
                           capture_output=True, text=True).stdout.strip() or "main"
 
 
-def list_channels(token: str) -> list[dict]:
+def _gql(token: str, query: str) -> dict:
     r = requests.post(BUFFER_URL,
                       headers={"Authorization": f"Bearer {token}",
                                "Content-Type": "application/json"},
-                      json={"query": _CHANNELS_QUERY}, timeout=60)
-    body = r.json()
-    try:
-        return body["data"]["account"]["currentOrganization"]["channels"]
-    except (KeyError, TypeError):
-        raise SystemExit(f"could not read channels from Buffer: {body}")
+                      json={"query": query}, timeout=60)
+    return r.json()
+
+
+def _dig_channels(obj) -> list[dict]:
+    """Find the first list of {id, service, ...} dicts anywhere in a response."""
+    if isinstance(obj, list):
+        if obj and isinstance(obj[0], dict) and "id" in obj[0] and "service" in obj[0]:
+            return obj
+        for x in obj:
+            got = _dig_channels(x)
+            if got:
+                return got
+    elif isinstance(obj, dict):
+        for v in obj.values():
+            got = _dig_channels(v)
+            if got:
+                return got
+    return []
+
+
+def list_channels(token: str) -> list[dict]:
+    attempts = []
+    for q in _CHANNELS_QUERIES:
+        body = _gql(token, q)
+        chans = _dig_channels(body.get("data"))
+        if chans:
+            return chans
+        attempts.append(f"  {q}\n    -> {body}")
+    raise SystemExit("could not read channels from Buffer. Tried:\n" + "\n".join(attempts))
 
 
 def caption_for(slug: str) -> str:

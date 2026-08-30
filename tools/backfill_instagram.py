@@ -35,10 +35,15 @@ BUFFER_URL = "https://api.buffer.com/graphql"
 # Buffer's channel list lives in different places depending on how the token is
 # scoped -- try the known shapes in order.
 _CHANNELS_QUERIES = [
-    "query { account { currentOrganization { channels { id service name serviceId } } } }",
-    "query { account { organizations { channels { id service name serviceId } } } }",
-    "query { account { currentOrganization { channels { id service } } } }",
+    "query { channels { id service name } }",
+    "query { channels(input: {}) { id service name } }",
+    "query { account { currentOrganization { channels { id service name } } } }",
+    "query { viewer { channels { id service name } } }",
+    "query { account { channels { id service name } } }",
 ]
+
+_INTROSPECT = ('query { __schema { queryType { fields { name args { name } '
+               'type { name kind ofType { name kind } } } } } }')
 
 
 def _repo_slug() -> str:
@@ -112,6 +117,13 @@ def list_channels(token: str) -> list[dict]:
         return rest
     if err:
         attempts.append(err)
+    schema = _gql(token, _INTROSPECT)
+    try:
+        fields = schema["data"]["__schema"]["queryType"]["fields"]
+        attempts.append("  root query fields available to this token: "
+                        + ", ".join(sorted(f["name"] for f in fields)))
+    except (KeyError, TypeError):
+        attempts.append(f"  introspection -> {schema}")
     raise SystemExit("could not read channels from Buffer. Tried:\n" + "\n".join(attempts))
 
 

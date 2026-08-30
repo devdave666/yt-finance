@@ -96,7 +96,8 @@ def buffer_post(video_url: str, text: str, channel_id: str, platform: str,
                                               "privacy": "public"}}
     elif platform == "instagram":
         # a video post to IG is a Reel; Buffer rejects it without an explicit type
-        post_input["metadata"] = {"instagram": {"type": "reel"}}
+        post_input["metadata"] = {"instagram": {"type": "reel",
+                                                "shouldShareToFeed": True}}
 
     r = requests.post(
         "https://api.buffer.com/graphql",

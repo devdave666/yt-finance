@@ -1,0 +1,87 @@
+title: The FDIC's $250k Insurance Limit Is Not What You Think
+slug: 2026-08-31-fdic-insurance-limit-explained
+format: short
+caption_style: explainer
+cast:
+  host:
+    look: 'the ''Anti Broke'' host: a minimalist black-marker stick figure with a
+      round OPEN white head, four or five short spiky lines of hair on top, two small
+      dot eyes, two short sharp angled eyebrows, and always a visible mouth that shows
+      the expression (flat, frown, grimace, open shout). The body is ONE single straight
+      vertical black line (spine), with four more single straight black lines for
+      the two arms and two legs, dot hands, short line feet -- plus one small thin
+      necktie shape (a short strip + a little triangle) hanging at the neck. NO torso
+      shape, NO filled body, NO solid black wedge, NO shirt block -- the figure is
+      a head, spiky hair, five thin lines and a skinny tie. It is never a black silhouette.'
+    anchor: center
+    voice: Orus
+scenes:
+  stage:
+    color: '#f4efe4'
+beats:
+- id: b01
+  scene: stage
+  who: host
+  say: A couple can insure one and a half million dollars.
+  cast:
+    host: standing, arms open wide, serious expression
+  headline: $1,500,000 INSURED
+  props: []
+- id: b02
+  scene: stage
+  who: host
+  say: At one bank. Legally. It's not a loophole.
+  cast:
+    host: standing, pointing, neutral expression
+  props:
+  - bank
+- id: b03
+  scene: stage
+  who: host
+  say: The standard FDIC limit is $250,000.
+  cast:
+    host: standing, hands clasped in front, looking serious
+  props:
+  - shield
+- id: b04
+  scene: stage
+  who: host
+  say: But the rule is per depositor, per ownership category.
+  cast:
+    host: standing, pointing, eyebrows raised slightly
+  props:
+  - receipt
+- id: b05
+  scene: stage
+  who: host
+  say: Your single account is one category. Your spouse's is another.
+  cast:
+    host: standing, neutral, indicating two separate points in space
+  props:
+  - coin
+- id: b06
+  scene: stage
+  who: host
+  say: A joint account is a third category, insuring $500,000.
+  cast:
+    host: standing, looking directly at camera, neutral
+  props:
+  - handshake
+- id: b07
+  scene: stage
+  who: host
+  say: Certain retirement accounts and trusts are also separate categories.
+  cast:
+    host: standing, pointing up and to the side, matter-of-fact
+  props:
+  - safe
+- id: b08
+  scene: stage
+  who: host
+  say: The limit isn't your total money. It's the account structure.
+  cast:
+    host: standing, arms crossed, unimpressed expression
+  props:
+  - padlock
+narrator:
+  voice: Orus

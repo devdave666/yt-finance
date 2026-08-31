@@ -1,0 +1,98 @@
+title: The Stock Market Has Never Lost Money Over 20 Years
+slug: 2026-08-31-sp500-20-year-record
+format: short
+caption_style: explainer
+cast:
+  host:
+    look: 'the ''Anti Broke'' host: a minimalist black-marker stick figure with a
+      round OPEN white head, four or five short spiky lines of hair on top, two small
+      dot eyes, two short sharp angled eyebrows, and always a visible mouth that shows
+      the expression (flat, frown, grimace, open shout). The body is ONE single straight
+      vertical black line (spine), with four more single straight black lines for
+      the two arms and two legs, dot hands, short line feet -- plus one small thin
+      necktie shape (a short strip + a little triangle) hanging at the neck. NO torso
+      shape, NO filled body, NO solid black wedge, NO shirt block -- the figure is
+      a head, spiky hair, five thin lines and a skinny tie. It is never a black silhouette.'
+    anchor: center
+    voice: Orus
+scenes:
+  stage:
+    color: '#f4efe4'
+beats:
+- id: b01
+  scene: stage
+  who: host
+  say: The stock market has never lost money over twenty years.
+  cast:
+    host: standing, arms crossed, serious expression
+  headline: NEVER. LOST. MONEY.
+  props: []
+- id: b02
+  scene: stage
+  who: host
+  say: The benchmark is the S&P 500 index.
+  cast:
+    host: standing, hands slightly open, explaining gesture
+  props:
+  - chart-up
+- id: b03
+  scene: stage
+  who: host
+  say: Pick any twenty-year period in its entire history.
+  cast:
+    host: standing, pointing, neutral
+  props:
+  - calendar
+- id: b04
+  scene: stage
+  who: host
+  say: Even if you bought right before a massive crash.
+  cast:
+    host: standing, hands up in a 'what if' gesture, concerned
+  props:
+  - warning
+- id: b05
+  scene: stage
+  who: host
+  say: The worst twenty-year return ever was still positive.
+  cast:
+    host: standing, pointing to the chart, serious
+  chart:
+    type: bar
+    title: Worst 20-Yr Avg. Returns
+    labels:
+    - Start 1929
+    - Start 2000
+    values:
+    - 1
+    - 6
+    unit: '%'
+    highlight: 0
+    note: Still Positive
+  props: []
+- id: b06
+  scene: stage
+  who: host
+  say: Short-term volatility is designed to make you panic.
+  cast:
+    host: standing, hand waving away to the side, unimpressed
+  props:
+  - bars-down
+- id: b07
+  scene: stage
+  who: host
+  say: But the market's trend over time is growth.
+  cast:
+    host: standing firm, confident
+  props:
+  - arrow-up
+- id: b08
+  scene: stage
+  who: host
+  say: Your holding period is your real advantage.
+  cast:
+    host: standing, looking directly at camera, serious
+  props:
+  - hourglass
+narrator:
+  voice: Orus

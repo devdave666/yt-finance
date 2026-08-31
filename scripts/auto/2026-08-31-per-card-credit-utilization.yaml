@@ -1,0 +1,90 @@
+title: How One Maxed-Out Card Can Wreck Your Credit Score
+slug: 2026-08-31-per-card-credit-utilization
+format: short
+caption_style: explainer
+cast:
+  host:
+    look: 'the ''Anti Broke'' host: a minimalist black-marker stick figure with a
+      round OPEN white head, four or five short spiky lines of hair on top, two small
+      dot eyes, two short sharp angled eyebrows, and always a visible mouth that shows
+      the expression (flat, frown, grimace, open shout). The body is ONE single straight
+      vertical black line (spine), with four more single straight black lines for
+      the two arms and two legs, dot hands, short line feet -- plus one small thin
+      necktie shape (a short strip + a little triangle) hanging at the neck. NO torso
+      shape, NO filled body, NO solid black wedge, NO shirt block -- the figure is
+      a head, spiky hair, five thin lines and a skinny tie. It is never a black silhouette.'
+    anchor: center
+    voice: Orus
+scenes:
+  stage:
+    color: '#f4efe4'
+beats:
+- id: b01
+  scene: stage
+  who: host
+  say: One maxed-out card can wreck your credit score.
+  cast:
+    host: standing, pointing up and, looking alarmed
+  headline: ONE CARD. BIG DAMAGE.
+  props: []
+- id: b02
+  scene: stage
+  who: host
+  say: You think your total debt-to-credit ratio matters most.
+  cast:
+    host: standing, arms open questioningly
+  props:
+  - scale
+- id: b03
+  scene: stage
+  who: host
+  say: But scoring models look at each card individually.
+  cast:
+    host: standing, pointing, then, neutral expression
+  props:
+  - credit-card
+- id: b04
+  scene: stage
+  who: host
+  say: Imagine one card is 95% full, the other empty.
+  cast:
+    host: standing, pointing at the chart
+  chart:
+    type: hbar
+    title: Per-Card Utilization
+    labels:
+    - Card A
+    - Card B
+    values:
+    - 95
+    - 5
+    unit: '%'
+    highlight: 0
+    note: HIGH RISK
+  props: []
+- id: b05
+  scene: stage
+  who: host
+  say: Your overall utilization is only fifty percent.
+  cast:
+    host: standing, shrugging, looks unimpressed
+  props:
+  - percent
+- id: b06
+  scene: stage
+  who: host
+  say: But that single high-balance card flags you as a risk.
+  cast:
+    host: standing, hands framing a warning symbol, stern expression
+  props:
+  - warning
+- id: b07
+  scene: stage
+  who: host
+  say: A spread-out balance is better than one maxed-out card.
+  cast:
+    host: standing, looking directly at camera, neutral
+  props:
+  - shield
+narrator:
+  voice: Orus

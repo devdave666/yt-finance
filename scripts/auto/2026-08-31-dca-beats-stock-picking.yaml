@@ -1,0 +1,92 @@
+title: Why 85% of Stock Pickers Fail to Beat the Market
+slug: 2026-08-31-dca-beats-stock-picking
+format: short
+caption_style: explainer
+cast:
+  host:
+    look: 'the ''Anti Broke'' host: a minimalist black-marker stick figure with a
+      round OPEN white head, four or five short spiky lines of hair on top, two small
+      dot eyes, two short sharp angled eyebrows, and always a visible mouth that shows
+      the expression (flat, frown, grimace, open shout). The body is ONE single straight
+      vertical black line (spine), with four more single straight black lines for
+      the two arms and two legs, dot hands, short line feet -- plus one small thin
+      necktie shape (a short strip + a little triangle) hanging at the neck. NO torso
+      shape, NO filled body, NO solid black wedge, NO shirt block -- the figure is
+      a head, spiky hair, five thin lines and a skinny tie. It is never a black silhouette.'
+    anchor: center
+    voice: Orus
+scenes:
+  stage:
+    color: '#f4efe4'
+beats:
+- id: b01
+  scene: stage
+  who: host
+  say: Over ten years, eighty-five percent of professional stock pickers fail.
+  cast:
+    host: standing, arms wide, looking directly at camera, serious expression
+  headline: 85% FAIL.
+  props: []
+- id: b02
+  scene: stage
+  who: host
+  say: They fail to beat the market's average return.
+  cast:
+    host: standing, pointing, neutral expression
+  props:
+  - target
+- id: b03
+  scene: stage
+  who: host
+  say: You can track that average with a simple index fund.
+  cast:
+    host: standing, looking at camera, calm
+  props:
+  - chart-up
+- id: b04
+  scene: stage
+  who: host
+  say: Instead of timing the market, you just invest consistently.
+  cast:
+    host: standing, neutral, looking at camera
+  props:
+  - calendar
+- id: b05
+  scene: stage
+  who: host
+  say: Historically, $100 a month for ten years grew to about $23,000.
+  cast:
+    host: pointing at a chart, impressed expression
+  chart:
+    type: line
+    title: $100/mo into S&P 500
+    labels:
+    - Start
+    - 5 Yrs
+    - 10 Yrs
+    values:
+    - 0
+    - 7500
+    - 23000
+    unit: $
+    highlight: 2
+    note: on $12k invested
+  props: []
+- id: b06
+  scene: stage
+  who: host
+  say: This works because you automatically buy more when prices are low.
+  cast:
+    host: standing, holding hands out like a scale
+  props:
+  - scale
+- id: b07
+  scene: stage
+  who: host
+  say: The goal isn't to beat the market. It's to be the market.
+  cast:
+    host: standing, arms crossed, confident expression
+  props:
+  - shield
+narrator:
+  voice: Orus

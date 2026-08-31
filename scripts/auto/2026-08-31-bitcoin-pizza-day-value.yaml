@@ -1,0 +1,94 @@
+title: He Bought Pizza for $41 with $690 Million in Bitcoin
+slug: 2026-08-31-bitcoin-pizza-day-value
+format: short
+caption_style: explainer
+cast:
+  host:
+    look: 'the ''Anti Broke'' host: a minimalist black-marker stick figure with a
+      round OPEN white head, four or five short spiky lines of hair on top, two small
+      dot eyes, two short sharp angled eyebrows, and always a visible mouth that shows
+      the expression (flat, frown, grimace, open shout). The body is ONE single straight
+      vertical black line (spine), with four more single straight black lines for
+      the two arms and two legs, dot hands, short line feet -- plus one small thin
+      necktie shape (a short strip + a little triangle) hanging at the neck. NO torso
+      shape, NO filled body, NO solid black wedge, NO shirt block -- the figure is
+      a head, spiky hair, five thin lines and a skinny tie. It is never a black silhouette.'
+    anchor: center
+    voice: Orus
+scenes:
+  stage:
+    color: '#f4efe4'
+beats:
+- id: b01
+  scene: stage
+  who: host
+  say: In 2010, two pizzas were bought for 10,000 Bitcoin.
+  cast:
+    host: standing, looking shocked, arms wide
+  headline: $690 MILLION PIZZAS
+  props: []
+- id: b02
+  scene: stage
+  who: host
+  say: The entire transaction was worth forty-one dollars.
+  cast:
+    host: standing, holding out hand as if weighing something small
+  props:
+  - cash
+- id: b03
+  scene: stage
+  who: host
+  say: At its peak, that same Bitcoin was worth $690 million.
+  cast:
+    host: standing, pointing up and, looking amazed
+  props:
+  - arrow-up
+- id: b04
+  scene: stage
+  who: host
+  say: But this wasn't a smooth ride to riches.
+  cast:
+    host: standing, shaking head, unimpressed
+  props:
+  - question
+- id: b05
+  scene: stage
+  who: host
+  say: Its value grew exponentially, with massive spikes and crashes.
+  cast:
+    host: standing, pointing at the chart
+  chart:
+    type: line
+    title: Value of 10,000 BTC
+    labels:
+    - '2010'
+    - '2014'
+    - '2018'
+    - '2021'
+    values:
+    - 0
+    - 11
+    - 197
+    - 690
+    unit: $M
+    highlight: 3
+    note: Peak Value
+  props: []
+- id: b06
+  scene: stage
+  who: host
+  say: In fact, the asset has seen drops of over 80%.
+  cast:
+    host: standing, looking down, concerned
+  props:
+  - chart-down
+- id: b07
+  scene: stage
+  who: host
+  say: Holding through that isn't investing. It's winning the lottery.
+  cast:
+    host: standing, arms crossed, neutral expression
+  props:
+  - warning
+narrator:
+  voice: Orus

@@ -177,7 +177,17 @@ def _save_queue(repo_root: Path, queue: list[dict]) -> None:
 
 
 def enqueue(script, meta: dict, repo_root: Path) -> dict:
-    """Host a finished short and append it to the queue. No social post."""
+    """Host a finished short and append it to the queue. No social post.
+
+    host_in_repo() does its own git add/commit/push (for media/scripts/auto/
+    topic_history) BEFORE this function ever touches queue.json -- so the
+    queue update needs its own explicit commit+push right after, or it just
+    sits on disk uncommitted until some *later* video's host_in_repo call
+    happens to sweep it up in its `git add state`. For the last video in any
+    batch there is no later call, so its queue entry would silently never
+    reach git at all. Learned this the hard way: a 3-video validation batch
+    shipped 2 queue entries.
+    """
     url = host_in_repo(script.out_path, script.slug, repo_root)
     entry = {
         "slug": script.slug,
@@ -192,6 +202,9 @@ def enqueue(script, meta: dict, repo_root: Path) -> dict:
     queue = _load_queue(repo_root)
     queue.append(entry)
     _save_queue(repo_root, queue)
+    _run(["git", "-C", str(repo_root), "add", "state"])
+    _run(["git", "-C", str(repo_root), "commit", "-m", f"queue: {script.slug}"])
+    _run(["git", "-C", str(repo_root), "push"])
     print(f"[publish] queued: {entry['slug']}")
     return entry
 

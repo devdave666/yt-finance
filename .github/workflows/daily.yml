@@ -19,7 +19,8 @@ permissions:
   id-token: write        # Workload Identity Federation OIDC exchange
 
 concurrency:
-  group: daily-short
+  # shared with batch-build.yml/poster.yml -- see the note there
+  group: repo-state-writer
   cancel-in-progress: false
 
 jobs:

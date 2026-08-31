@@ -15,6 +15,12 @@ permissions:
   contents: write
   id-token: write
 
+concurrency:
+  # shared with poster.yml/daily.yml -- all three git-push to state/media/
+  # scripts, and none of them rebase-retry, so only one may run at a time.
+  group: repo-state-writer
+  cancel-in-progress: false
+
 jobs:
   batch:
     runs-on: ubuntu-latest
@@ -53,6 +59,8 @@ jobs:
           git config user.email "automation@users.noreply.github.com"
 
       - name: Batch build
+        env:
+          PYTHONUNBUFFERED: "1"
         run: python tools/batch_build.py --count ${{ inputs.count }}
 
       - name: Upload QA reports for anything that failed (always)

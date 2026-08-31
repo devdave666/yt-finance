@@ -17,7 +17,8 @@ permissions:
   contents: write
 
 concurrency:
-  group: post-queued-short
+  # shared with batch-build.yml/daily.yml -- see the note there
+  group: repo-state-writer
   cancel-in-progress: false
 
 jobs:

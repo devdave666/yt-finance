@@ -1,0 +1,87 @@
+title: Your Will Can Be Overridden by One Form
+slug: 2026-08-31-beneficiary-overrides-will
+format: short
+caption_style: explainer
+cast:
+  host:
+    look: 'the ''Anti Broke'' host: a minimalist black-marker stick figure with a
+      round OPEN white head, four or five short spiky lines of hair on top, two small
+      dot eyes, two short sharp angled eyebrows, and always a visible mouth that shows
+      the expression (flat, frown, grimace, open shout). The body is ONE single straight
+      vertical black line (spine), with four more single straight black lines for
+      the two arms and two legs, dot hands, short line feet -- plus one small thin
+      necktie shape (a short strip + a little triangle) hanging at the neck. NO torso
+      shape, NO filled body, NO solid black wedge, NO shirt block -- the figure is
+      a head, spiky hair, five thin lines and a skinny tie. It is never a black silhouette.'
+    anchor: center
+    voice: Orus
+scenes:
+  stage:
+    color: '#f4efe4'
+beats:
+- id: b01
+  scene: stage
+  who: host
+  say: Your will can be completely ignored by your bank.
+  cast:
+    host: standing, arms wide, serious expression
+  headline: YOUR WILL IS IGNORED
+  props: []
+- id: b02
+  scene: stage
+  who: host
+  say: This happens because of your beneficiary designation forms.
+  cast:
+    host: standing, pointing, neutral
+  props:
+  - receipt
+- id: b03
+  scene: stage
+  who: host
+  say: These are legal contracts with the financial institution.
+  cast:
+    host: standing, hands clasped in front, firm expression
+  props:
+  - handshake
+- id: b04
+  scene: stage
+  who: host
+  say: They control retirement accounts, life insurance, and bank accounts.
+  cast:
+    host: looking down slightly, neutral
+  props:
+  - wallet
+- id: b05
+  scene: stage
+  who: host
+  say: Payment is made directly, bypassing your estate and your will.
+  cast:
+    host: hand up in a 'stop' gesture, serious
+  props:
+  - arrow-up
+- id: b06
+  scene: stage
+  who: host
+  say: So if you named an ex on an old 401k...
+  cast:
+    host: shrugging, looking to the side, exasperated
+  props:
+  - question
+- id: b07
+  scene: stage
+  who: host
+  say: '...they get the money, not the person in your will.'
+  cast:
+    host: pointing at camera, serious expression
+  props:
+  - cash
+- id: b08
+  scene: stage
+  who: host
+  say: Update your beneficiaries after every major life event.
+  cast:
+    host: standing, neutral, looking at camera
+  props:
+  - calendar
+narrator:
+  voice: Orus

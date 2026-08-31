@@ -158,5 +158,10 @@
     "date": "2026-08-31",
     "topic": "Credit utilization is scored per card, not just overall -- one maxed card can tank your score while your total looks fine",
     "slug": "2026-08-31-per-card-credit-utilization"
+  },
+  {
+    "date": "2026-08-31",
+    "topic": "Beneficiary designations on your accounts override whatever your will says -- an ex can still inherit",
+    "slug": "2026-08-31-beneficiary-overrides-will"
   }
 ]

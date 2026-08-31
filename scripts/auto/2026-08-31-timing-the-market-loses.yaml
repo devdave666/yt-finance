@@ -1,0 +1,90 @@
+title: Miss The 10 Best Market Days, Lose Half Your Returns
+slug: 2026-08-31-timing-the-market-loses
+format: short
+caption_style: explainer
+cast:
+  host:
+    look: 'the ''Anti Broke'' host: a minimalist black-marker stick figure with a
+      round OPEN white head, four or five short spiky lines of hair on top, two small
+      dot eyes, two short sharp angled eyebrows, and always a visible mouth that shows
+      the expression (flat, frown, grimace, open shout). The body is ONE single straight
+      vertical black line (spine), with four more single straight black lines for
+      the two arms and two legs, dot hands, short line feet -- plus one small thin
+      necktie shape (a short strip + a little triangle) hanging at the neck. NO torso
+      shape, NO filled body, NO solid black wedge, NO shirt block -- the figure is
+      a head, spiky hair, five thin lines and a skinny tie. It is never a black silhouette.'
+    anchor: center
+    voice: Orus
+scenes:
+  stage:
+    color: '#f4efe4'
+beats:
+- id: b01
+  scene: stage
+  who: host
+  say: Miss the ten best market days, lose half your returns.
+  cast:
+    host: standing, arms wide, serious
+  headline: LOSE HALF YOUR RETURNS
+  props: []
+- id: b02
+  scene: stage
+  who: host
+  say: Here’s a twenty-year look at the S&P 500.
+  cast:
+    host: standing, pointing, neutral
+  chart:
+    type: hbar
+    title: $10k Invested in S&P 500
+    labels:
+    - Stayed Invested
+    - Missed 10 Best Days
+    values:
+    - 62000
+    - 28000
+    unit: $
+    highlight: 1
+    note: 55% less
+  props: []
+- id: b03
+  scene: stage
+  who: host
+  say: Trying to get out before a crash seems smart.
+  cast:
+    host: standing, hand on chin, thinking
+  props:
+  - lightbulb
+- id: b04
+  scene: stage
+  who: host
+  say: But the market’s best days often follow its worst.
+  cast:
+    host: standing, pointing, serious
+  props:
+  - chart-down
+- id: b05
+  scene: stage
+  who: host
+  say: So people sell at the bottom and miss the rebound.
+  cast:
+    host: standing, arms raised in alarm
+  props:
+  - arrow-down
+- id: b06
+  scene: stage
+  who: host
+  say: Miss the thirty best days, you actually lose money.
+  cast:
+    host: standing, hands on hips, unimpressed
+  props:
+  - wallet
+- id: b07
+  scene: stage
+  who: host
+  say: The market rewards time in the market, not timing it.
+  cast:
+    host: standing, neutral, looking at camera
+  props:
+  - hourglass
+narrator:
+  voice: Orus

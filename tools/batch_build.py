@@ -14,7 +14,9 @@ from __future__ import annotations
 
 import argparse
 import json
+import shutil
 import sys
+import time
 import traceback
 from pathlib import Path
 
@@ -25,6 +27,26 @@ from stickfin import (assemble, assets as assets_mod, captions as captions_mod,
                       timeline as timeline_mod, tts)
 
 REPO = Path(__file__).resolve().parent.parent
+AUTO_DIR = Path("scripts/auto")
+
+
+def _discard(slug: str) -> None:
+    """Remove a QA-failed script (+ its build dir) so the NEXT generate() call
+    is forced to pick a genuinely different topic.
+
+    generate()'s "reuse a script already written today but not yet
+    published" fast path exists to resume a crashed single run without
+    burning another LLM call -- but inside this loop it does the opposite of
+    what we want: a QA-failed script is still "unpublished", so every later
+    attempt finds the same file and reuses it. Worse, tts.synthesize()
+    caches each beat's audio to disk and skips resynthesis if it's already
+    there, so a "retry" wasn't actually retrying anything -- same script,
+    same cached audio, same QA verdict, forever. One bad take once ate 33
+    attempts and almost the whole batch this way.
+    """
+    for p in (AUTO_DIR / f"{slug}.yaml", AUTO_DIR / f"{slug}.meta.json"):
+        p.unlink(missing_ok=True)
+    shutil.rmtree(Path("build") / slug, ignore_errors=True)
 
 
 def build_one() -> tuple[bool, str]:
@@ -66,12 +88,17 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--count", type=int, default=15, help="shorts to queue")
     ap.add_argument("--max-attempts", type=int, default=None,
-                    help="hard cap on attempts (built + QA-failed); default 2x count")
+                    help="hard cap on attempts (built + QA-failed); default 1.5x count")
+    ap.add_argument("--budget-minutes", type=float, default=320,
+                    help="stop starting new attempts past this wall-clock budget, "
+                         "so the job exits cleanly instead of being killed mid-video "
+                         "by GitHub's hard per-job timeout")
     args = ap.parse_args()
-    max_attempts = args.max_attempts or args.count * 2
+    max_attempts = args.max_attempts or (args.count + (args.count + 1) // 2)
+    deadline = time.monotonic() + args.budget_minutes * 60
 
     built, attempts, failures = 0, 0, []
-    while built < args.count and attempts < max_attempts:
+    while built < args.count and attempts < max_attempts and time.monotonic() < deadline:
         attempts += 1
         print(f"\n=== short {built + 1}/{args.count} (attempt {attempts}/{max_attempts}) ===")
         try:
@@ -85,6 +112,7 @@ def main() -> int:
         else:
             failures.append(slug)
             print(f"  skipped: {slug}")
+            _discard(slug)
 
     print(f"\n=== batch done: {built}/{args.count} queued in {attempts} attempts ===")
     if failures:

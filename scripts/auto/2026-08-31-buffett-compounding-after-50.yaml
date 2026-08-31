@@ -1,0 +1,100 @@
+title: Warren Buffett Made 99% of His Money After 50
+slug: 2026-08-31-buffett-compounding-after-50
+format: short
+caption_style: explainer
+cast:
+  host:
+    look: 'the ''Anti Broke'' host: a minimalist black-marker stick figure with a
+      round OPEN white head, four or five short spiky lines of hair on top, two small
+      dot eyes, two short sharp angled eyebrows, and always a visible mouth that shows
+      the expression (flat, frown, grimace, open shout). The body is ONE single straight
+      vertical black line (spine), with four more single straight black lines for
+      the two arms and two legs, dot hands, short line feet -- plus one small thin
+      necktie shape (a short strip + a little triangle) hanging at the neck. NO torso
+      shape, NO filled body, NO solid black wedge, NO shirt block -- the figure is
+      a head, spiky hair, five thin lines and a skinny tie. It is never a black silhouette.'
+    anchor: center
+    voice: Orus
+scenes:
+  stage:
+    color: '#f4efe4'
+beats:
+- id: b01
+  scene: stage
+  who: host
+  say: Warren Buffett made 99% of his money after age 50.
+  cast:
+    host: standing, arms wide, looking at camera, unimpressed
+  headline: 99% AFTER 50
+  props: []
+- id: b02
+  scene: stage
+  who: host
+  say: This isn't about one lucky stock pick.
+  cast:
+    host: standing, hand on chin, thinking
+  props:
+  - question
+- id: b03
+  scene: stage
+  who: host
+  say: At age 52, his net worth was $376 million.
+  cast:
+    host: standing, pointing, neutral
+  props:
+  - coins-stack
+- id: b04
+  scene: stage
+  who: host
+  say: By age 90, it was eighty-four billion.
+  cast:
+    host: standing, gesturing with both hands
+  chart:
+    type: line
+    title: Buffett's Net Worth
+    labels:
+    - Age 52
+    - Age 66
+    - Age 90
+    values:
+    - 0.37
+    - 17
+    - 84.5
+    unit: $B
+    highlight: 2
+    note: Compounding
+  props: []
+- id: b05
+  scene: stage
+  who: host
+  say: Here’s the part no one tells you.
+  cast:
+    host: standing, leaning forward slightly, confidential
+  props:
+  - padlock
+- id: b06
+  scene: stage
+  who: host
+  say: His best percentage returns were in his early years.
+  cast:
+    host: standing, pointing up, looking surprised
+  props:
+  - percent
+- id: b07
+  scene: stage
+  who: host
+  say: But small gains on a huge base are unstoppable.
+  cast:
+    host: standing, arms crossed, confident
+  props:
+  - snowball
+- id: b08
+  scene: stage
+  who: host
+  say: The most powerful variable isn't genius. It's time.
+  cast:
+    host: standing, looking at camera, calm, holding prop
+  props:
+  - hourglass
+narrator:
+  voice: Orus

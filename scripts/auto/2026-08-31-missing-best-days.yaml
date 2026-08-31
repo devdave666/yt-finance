@@ -1,0 +1,98 @@
+title: Missing 10 Days in the Market Cuts Your Return in Half
+slug: 2026-08-31-missing-best-days
+format: short
+caption_style: explainer
+cast:
+  host:
+    look: 'the ''Anti Broke'' host: a minimalist black-marker stick figure with a
+      round OPEN white head, four or five short spiky lines of hair on top, two small
+      dot eyes, two short sharp angled eyebrows, and always a visible mouth that shows
+      the expression (flat, frown, grimace, open shout). The body is ONE single straight
+      vertical black line (spine), with four more single straight black lines for
+      the two arms and two legs, dot hands, short line feet -- plus one small thin
+      necktie shape (a short strip + a little triangle) hanging at the neck. NO torso
+      shape, NO filled body, NO solid black wedge, NO shirt block -- the figure is
+      a head, spiky hair, five thin lines and a skinny tie. It is never a black silhouette.'
+    anchor: center
+    voice: Orus
+scenes:
+  stage:
+    color: '#f4efe4'
+beats:
+- id: b01
+  scene: stage
+  who: host
+  say: Missing ten market days can cut your return in half.
+  cast:
+    host: standing, arms wide, serious expression
+  headline: RETURN CUT IN HALF.
+  props: []
+- id: b02
+  scene: stage
+  who: host
+  say: This isn't a guess. It's S&P 500 data from 20 years.
+  cast:
+    host: standing, hands gesturing to explain, neutral
+  props:
+  - calendar
+- id: b03
+  scene: stage
+  who: host
+  say: An investor who stayed in the market saw this much growth.
+  cast:
+    host: standing, pointing, hopeful expression
+  props:
+  - bars-up
+- id: b04
+  scene: stage
+  who: host
+  say: But miss the ten best days, your final balance is halved.
+  cast:
+    host: pointing at chart, concerned expression
+  chart:
+    type: bar
+    title: Portfolio Balance After 20 Years
+    labels:
+    - Fully Invested
+    - Missed 10 Best Days
+    values:
+    - 100
+    - 46
+    unit: '%'
+    highlight: 1
+    note: Relative Value
+  props: []
+- id: b05
+  scene: stage
+  who: host
+  say: The trap is that the best days follow the worst days.
+  cast:
+    host: standing, hands up in a warning gesture
+  props:
+  - warning
+- id: b06
+  scene: stage
+  who: host
+  say: When people panic and sell, they miss the sudden rebound.
+  cast:
+    host: gesturing downward with one hand, looking down
+  props:
+  - arrow-down
+- id: b07
+  scene: stage
+  who: host
+  say: Seven of the ten best days are near the ten worst.
+  cast:
+    host: gesturing upward with one hand, looking up
+  props:
+  - arrow-up
+- id: b08
+  scene: stage
+  who: host
+  say: Volatility is the price you pay for long-term returns.
+  cast:
+    host: standing, arms crossed, firm expression
+  props:
+  - receipt
+narrator:
+  voice: Orus

@@ -1,0 +1,87 @@
+title: The IRS Rule That Disallows Your Stock Losses
+slug: 2026-08-31-wash-sale-rule-explained
+format: short
+caption_style: explainer
+cast:
+  host:
+    look: 'the ''Anti Broke'' host: a minimalist black-marker stick figure with a
+      round OPEN white head, four or five short spiky lines of hair on top, two small
+      dot eyes, two short sharp angled eyebrows, and always a visible mouth that shows
+      the expression (flat, frown, grimace, open shout). The body is ONE single straight
+      vertical black line (spine), with four more single straight black lines for
+      the two arms and two legs, dot hands, short line feet -- plus one small thin
+      necktie shape (a short strip + a little triangle) hanging at the neck. NO torso
+      shape, NO filled body, NO solid black wedge, NO shirt block -- the figure is
+      a head, spiky hair, five thin lines and a skinny tie. It is never a black silhouette.'
+    anchor: center
+    voice: Orus
+scenes:
+  stage:
+    color: '#f4efe4'
+beats:
+- id: b01
+  scene: stage
+  who: host
+  say: The IRS can simply disallow your stock market loss.
+  cast:
+    host: standing, arms wide, looking serious
+  headline: LOSS DISALLOWED.
+  props: []
+- id: b02
+  scene: stage
+  who: host
+  say: It’s because of something called the wash-sale rule.
+  cast:
+    host: standing, pointing, serious expression
+  props:
+  - warning
+- id: b03
+  scene: stage
+  who: host
+  say: You sell a stock at a loss for a tax deduction.
+  cast:
+    host: standing, looking down, unhappy
+  props:
+  - arrow-down
+- id: b04
+  scene: stage
+  who: host
+  say: But then you buy it right back.
+  cast:
+    host: standing, looking at prop, neutral
+  props:
+  - credit-card
+- id: b05
+  scene: stage
+  who: host
+  say: If it's within thirty days, your loss is disallowed.
+  cast:
+    host: standing, pointing at prop with both index fingers
+  props:
+  - calendar
+- id: b06
+  scene: stage
+  who: host
+  say: Your brokerage just reports it to the IRS that way.
+  cast:
+    host: holding prop, looking at camera, matter-of-fact
+  props:
+  - receipt
+- id: b07
+  scene: stage
+  who: host
+  say: The disallowed loss is added to the cost of the new shares.
+  cast:
+    host: standing, gesturing towards prop, explaining
+  props:
+  - coins-stack
+- id: b08
+  scene: stage
+  who: host
+  say: It's a deferred loss, not a deleted one.
+  cast:
+    host: standing, arms crossed, looking serious
+  props:
+  - padlock
+narrator:
+  voice: Orus

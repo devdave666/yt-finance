@@ -1,0 +1,90 @@
+title: $1000 in Apple at IPO is Worth $1.7 Million Today
+slug: 2026-08-31-apple-ipo-one-thousand-dollars
+format: short
+caption_style: explainer
+cast:
+  host:
+    look: 'the ''Anti Broke'' host: a minimalist black-marker stick figure with a
+      round OPEN white head, four or five short spiky lines of hair on top, two small
+      dot eyes, two short sharp angled eyebrows, and always a visible mouth that shows
+      the expression (flat, frown, grimace, open shout). The body is ONE single straight
+      vertical black line (spine), with four more single straight black lines for
+      the two arms and two legs, dot hands, short line feet -- plus one small thin
+      necktie shape (a short strip + a little triangle) hanging at the neck. NO torso
+      shape, NO filled body, NO solid black wedge, NO shirt block -- the figure is
+      a head, spiky hair, five thin lines and a skinny tie. It is never a black silhouette.'
+    anchor: center
+    voice: Orus
+scenes:
+  stage:
+    color: '#f4efe4'
+beats:
+- id: b01
+  scene: stage
+  who: host
+  say: $1000 in Apple's IPO would be worth $1.7 million today.
+  cast:
+    host: standing, arms wide, looking at camera, neutral
+  headline: $1.7 MILLION
+  props: []
+- id: b02
+  scene: stage
+  who: host
+  say: So why isn't every early investor a millionaire?
+  cast:
+    host: shrugging, head tilted, questioning expression
+  props:
+  - question
+- id: b03
+  scene: stage
+  who: host
+  say: Because the journey from there to here was brutal.
+  cast:
+    host: looking down, concerned expression
+  props:
+  - bars-down
+- id: b04
+  scene: stage
+  who: host
+  say: The stock lost eighty percent of its value in one year.
+  cast:
+    host: pointing at the chart, serious
+  chart:
+    type: line
+    title: Dot-Com Crash
+    labels:
+    - Mar 2000
+    - Sep 2001
+    values:
+    - 100
+    - 20
+    unit: ''
+    highlight: 1
+    note: DOWN 80%
+  props: []
+- id: b05
+  scene: stage
+  who: host
+  say: Almost no one can stomach a drop like that.
+  cast:
+    host: hands up in a 'stop' gesture, alarmed expression
+  props:
+  - warning
+- id: b06
+  scene: stage
+  who: host
+  say: Most people sell in a panic, locking in the loss.
+  cast:
+    host: looking at the prop, disappointed expression
+  props:
+  - receipt
+- id: b07
+  scene: stage
+  who: host
+  say: Huge returns aren't free. Their price is volatility.
+  cast:
+    host: standing firm, arms crossed, neutral expression
+  props:
+  - hourglass
+narrator:
+  voice: Orus

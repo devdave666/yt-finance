@@ -1,0 +1,98 @@
+title: How Inflation Can Erase 60% of Your Cash
+slug: 2026-08-31-inflation-erases-cash-value
+format: short
+caption_style: explainer
+cast:
+  host:
+    look: 'the ''Anti Broke'' host: a minimalist black-marker stick figure with a
+      round OPEN white head, four or five short spiky lines of hair on top, two small
+      dot eyes, two short sharp angled eyebrows, and always a visible mouth that shows
+      the expression (flat, frown, grimace, open shout). The body is ONE single straight
+      vertical black line (spine), with four more single straight black lines for
+      the two arms and two legs, dot hands, short line feet -- plus one small thin
+      necktie shape (a short strip + a little triangle) hanging at the neck. NO torso
+      shape, NO filled body, NO solid black wedge, NO shirt block -- the figure is
+      a head, spiky hair, five thin lines and a skinny tie. It is never a black silhouette.'
+    anchor: center
+    voice: Orus
+scenes:
+  stage:
+    color: '#f4efe4'
+beats:
+- id: b01
+  scene: stage
+  who: host
+  say: Storing ten thousand dollars for thirty years is a mistake.
+  cast:
+    host: standing, pointing up at the headline, serious
+  headline: $10K BECOMES $4K
+  props: []
+- id: b02
+  scene: stage
+  who: host
+  say: Today, it would have the buying power of just four thousand.
+  cast:
+    host: hands open in a 'what can you do' gesture, looking downcast
+  props:
+  - arrow-down
+- id: b03
+  scene: stage
+  who: host
+  say: That missing six thousand dollars wasn't stolen.
+  cast:
+    host: shaking head, firm expression, holding up one hand to stop
+  props:
+  - warning
+- id: b04
+  scene: stage
+  who: host
+  say: It was erased by average inflation.
+  cast:
+    host: pointing to the side, explaining
+  props:
+  - hourglass
+- id: b05
+  scene: stage
+  who: host
+  say: Inflation is the slow, silent increase in prices.
+  cast:
+    host: neutral expression, looking at camera
+  chart:
+    type: hbar
+    title: $10,000 Buying Power
+    labels:
+    - '1994'
+    - '2024'
+    values:
+    - 10000
+    - 4000
+    unit: $
+    highlight: 1
+    note: 60% loss
+  props: []
+- id: b06
+  scene: stage
+  who: host
+  say: The same cash buys you less and less each year.
+  cast:
+    host: making a shrinking gesture with both hands
+  props:
+  - receipt
+- id: b07
+  scene: stage
+  who: host
+  say: Money has to work just to maintain its value.
+  cast:
+    host: arms crossed, looking determined
+  props:
+  - snowball
+- id: b08
+  scene: stage
+  who: host
+  say: Cash is for spending, not for storing long-term wealth.
+  cast:
+    host: standing firm, neutral expression
+  props:
+  - safe
+narrator:
+  voice: Orus

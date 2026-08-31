@@ -1,0 +1,94 @@
+title: The US Government's 9.62% Guaranteed Return
+slug: 2026-08-31-i-bonds-inflation-shield
+format: short
+caption_style: explainer
+cast:
+  host:
+    look: 'the ''Anti Broke'' host: a minimalist black-marker stick figure with a
+      round OPEN white head, four or five short spiky lines of hair on top, two small
+      dot eyes, two short sharp angled eyebrows, and always a visible mouth that shows
+      the expression (flat, frown, grimace, open shout). The body is ONE single straight
+      vertical black line (spine), with four more single straight black lines for
+      the two arms and two legs, dot hands, short line feet -- plus one small thin
+      necktie shape (a short strip + a little triangle) hanging at the neck. NO torso
+      shape, NO filled body, NO solid black wedge, NO shirt block -- the figure is
+      a head, spiky hair, five thin lines and a skinny tie. It is never a black silhouette.'
+    anchor: center
+    voice: Orus
+scenes:
+  stage:
+    color: '#f4efe4'
+beats:
+- id: b01
+  scene: stage
+  who: host
+  say: In 2022, the government offered a 9.62% guaranteed return.
+  cast:
+    host: standing, arms wide, pointing up at text, surprised
+  headline: 9.62% GUARANTEED
+  props: []
+- id: b02
+  scene: stage
+  who: host
+  say: This wasn't a stock. It was a U.S. savings bond.
+  cast:
+    host: standing, pointing, matter-of-fact
+  props:
+  - safe
+- id: b03
+  scene: stage
+  who: host
+  say: Called an I Bond, its interest rate tracks inflation.
+  cast:
+    host: standing, neutral, explaining
+  props:
+  - arrow-up
+- id: b04
+  scene: stage
+  who: host
+  say: So when inflation surged, the bond's rate surged with it.
+  cast:
+    host: pointing at chart peak, emphasizing
+  chart:
+    type: line
+    title: I Bond Rate
+    labels:
+    - '''21'
+    - '''22'
+    - '''23'
+    - '''24'
+    values:
+    - 3.5
+    - 9.6
+    - 4.3
+    - 4.3
+    unit: '%'
+    highlight: 1
+    note: PEAK RATE
+  props: []
+- id: b05
+  scene: stage
+  who: host
+  say: The catch? A strict ten thousand dollar annual limit.
+  cast:
+    host: standing, arms crossed, annoyed
+  props:
+  - padlock
+- id: b06
+  scene: stage
+  who: host
+  say: And you can't touch your money for at least one year.
+  cast:
+    host: standing, tapping wrist, impatient
+  props:
+  - calendar
+- id: b07
+  scene: stage
+  who: host
+  say: It's not designed to make you rich. It's an inflation shield.
+  cast:
+    host: standing, neutral, looking at camera
+  props:
+  - shield
+narrator:
+  voice: Orus

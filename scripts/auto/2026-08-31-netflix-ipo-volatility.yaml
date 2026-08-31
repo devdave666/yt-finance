@@ -1,0 +1,94 @@
+title: '$1000 in Netflix at IPO: The Crash You Forgot'
+slug: 2026-08-31-netflix-ipo-volatility
+format: short
+caption_style: explainer
+cast:
+  host:
+    look: 'the ''Anti Broke'' host: a minimalist black-marker stick figure with a
+      round OPEN white head, four or five short spiky lines of hair on top, two small
+      dot eyes, two short sharp angled eyebrows, and always a visible mouth that shows
+      the expression (flat, frown, grimace, open shout). The body is ONE single straight
+      vertical black line (spine), with four more single straight black lines for
+      the two arms and two legs, dot hands, short line feet -- plus one small thin
+      necktie shape (a short strip + a little triangle) hanging at the neck. NO torso
+      shape, NO filled body, NO solid black wedge, NO shirt block -- the figure is
+      a head, spiky hair, five thin lines and a skinny tie. It is never a black silhouette.'
+    anchor: center
+    voice: Orus
+scenes:
+  stage:
+    color: '#f4efe4'
+beats:
+- id: b01
+  scene: stage
+  who: host
+  say: One thousand dollars in Netflix's IPO is worth $650,000 today.
+  cast:
+    host: standing, arms wide, looking at camera, impressed
+  headline: $650,000
+  props: []
+- id: b02
+  scene: stage
+  who: host
+  say: But that's not the entire story.
+  cast:
+    host: standing, holding one hand up to pause, serious expression
+  props:
+  - chart-down
+- id: b03
+  scene: stage
+  who: host
+  say: In 2011, the stock crashed eighty percent.
+  cast:
+    host: pointing at the chart, concerned expression
+  chart:
+    type: line
+    title: Netflix Stock 2011
+    labels:
+    - July
+    - Aug
+    - Sept
+    - Nov
+    values:
+    - 300
+    - 180
+    - 130
+    - 65
+    unit: ''
+    highlight: 3
+    note: -80% CRASH
+  props: []
+- id: b04
+  scene: stage
+  who: host
+  say: Most investors panicked and sold.
+  cast:
+    host: standing, hands on head, alarmed expression
+  props:
+  - bars-down
+- id: b05
+  scene: stage
+  who: host
+  say: But the underlying business was still strong.
+  cast:
+    host: standing firm, hands on hips, confident expression
+  props:
+  - shield
+- id: b06
+  scene: stage
+  who: host
+  say: Holding through that crash was the key.
+  cast:
+    host: pointing, as if across a long timeline
+  props:
+  - hourglass
+- id: b07
+  scene: stage
+  who: host
+  say: The best returns can follow the biggest tests.
+  cast:
+    host: standing neutral, looking directly at camera, calm
+  props:
+  - arrow-up
+narrator:
+  voice: Orus

@@ -1,0 +1,98 @@
+title: Why a Crash Right After You Retire Is So Dangerous
+slug: 2026-08-31-retirement-crash-timing
+format: short
+caption_style: explainer
+cast:
+  host:
+    look: 'the ''Anti Broke'' host: a minimalist black-marker stick figure with a
+      round OPEN white head, four or five short spiky lines of hair on top, two small
+      dot eyes, two short sharp angled eyebrows, and always a visible mouth that shows
+      the expression (flat, frown, grimace, open shout). The body is ONE single straight
+      vertical black line (spine), with four more single straight black lines for
+      the two arms and two legs, dot hands, short line feet -- plus one small thin
+      necktie shape (a short strip + a little triangle) hanging at the neck. NO torso
+      shape, NO filled body, NO solid black wedge, NO shirt block -- the figure is
+      a head, spiky hair, five thin lines and a skinny tie. It is never a black silhouette.'
+    anchor: center
+    voice: Orus
+scenes:
+  stage:
+    color: '#f4efe4'
+beats:
+- id: b01
+  scene: stage
+  who: host
+  say: A market crash right after you retire is catastrophic.
+  cast:
+    host: standing, looking concerned, arms open wide
+  headline: THE WORST TIMING
+  props: []
+- id: b02
+  scene: stage
+  who: host
+  say: Imagine two people retire with one million dollars each.
+  cast:
+    host: standing, neutral expression, holding hands out as if weighing two things
+  props:
+  - piggy-bank
+- id: b03
+  scene: stage
+  who: host
+  say: Both plan to withdraw forty thousand dollars a year.
+  cast:
+    host: standing, pointing
+  props:
+  - cash
+- id: b04
+  scene: stage
+  who: host
+  say: Person A's portfolio drops thirty percent in year one.
+  cast:
+    host: wincing, looking at a downward arrow
+  props:
+  - chart-down
+- id: b05
+  scene: stage
+  who: host
+  say: They're selling assets at a loss just to live.
+  cast:
+    host: looking down, concerned, gesturing downwards
+  props:
+  - arrow-down
+- id: b06
+  scene: stage
+  who: host
+  say: Person B sees that exact same drop, but years later.
+  cast:
+    host: neutral expression, pointing at a clock
+  props:
+  - clock
+- id: b07
+  scene: stage
+  who: host
+  say: One portfolio runs out. The other has money left.
+  cast:
+    host: neutral, pointing to the chart
+  chart:
+    type: hbar
+    title: Balance After 30 Years
+    labels:
+    - Early Crash
+    - Late Crash
+    values:
+    - 0
+    - 475
+    unit: $K
+    highlight: 0
+    note: Depleted
+  props: []
+- id: b08
+  scene: stage
+  who: host
+  say: It's not just the returns you get. It's the sequence.
+  cast:
+    host: standing, serious expression
+  props:
+  - warning
+narrator:
+  voice: Orus

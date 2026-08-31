@@ -1,0 +1,101 @@
+title: How 20% A Year Becomes $30 Million
+slug: 2026-08-31-berkshire-hathaway-compounding-power
+format: short
+caption_style: explainer
+cast:
+  host:
+    look: 'the ''Anti Broke'' host: a minimalist black-marker stick figure with a
+      round OPEN white head, four or five short spiky lines of hair on top, two small
+      dot eyes, two short sharp angled eyebrows, and always a visible mouth that shows
+      the expression (flat, frown, grimace, open shout). The body is ONE single straight
+      vertical black line (spine), with four more single straight black lines for
+      the two arms and two legs, dot hands, short line feet -- plus one small thin
+      necktie shape (a short strip + a little triangle) hanging at the neck. NO torso
+      shape, NO filled body, NO solid black wedge, NO shirt block -- the figure is
+      a head, spiky hair, five thin lines and a skinny tie. It is never a black silhouette.'
+    anchor: center
+    voice: Orus
+scenes:
+  stage:
+    color: '#f4efe4'
+beats:
+- id: b01
+  scene: stage
+  who: host
+  say: A thousand dollars became thirty million.
+  cast:
+    host: standing, arms wide, looking at camera, surprised
+  headline: $30 MILLION.
+  props: []
+- id: b02
+  scene: stage
+  who: host
+  say: This isn't a lottery ticket. It's Berkshire Hathaway.
+  cast:
+    host: standing, pointing, neutral expression
+  props:
+  - safe
+- id: b03
+  scene: stage
+  who: host
+  say: Their average return since 1965 wasn't outrageous.
+  cast:
+    host: standing, slight shrug, looking at camera
+  props: []
+- id: b04
+  scene: stage
+  who: host
+  say: It was about twenty percent a year.
+  cast:
+    host: standing, hand gesturing toward the prop, matter-of-fact
+  props:
+  - percent
+- id: b05
+  scene: stage
+  who: host
+  say: But that return compounded for nearly sixty years.
+  cast:
+    host: standing, making a rolling motion with hands
+  props:
+  - snowball
+- id: b06
+  scene: stage
+  who: host
+  say: The growth starts slow, then goes almost vertical.
+  cast:
+    host: standing, pointing to the chart on the
+  chart:
+    type: line
+    title: $1k Investment Growth
+    labels:
+    - '1965'
+    - '1985'
+    - '2005'
+    - '2024'
+    values:
+    - 0.001
+    - 0.038
+    - 1.4
+    - 30
+    unit: $M
+    highlight: 3
+    note: Exponential
+  props: []
+- id: b07
+  scene: stage
+  who: host
+  say: The secret isn't a single high-risk bet.
+  cast:
+    host: standing, holding one hand up in a 'stop' gesture
+  props:
+  - warning
+- id: b08
+  scene: stage
+  who: host
+  say: It's good returns plus an unreasonable amount of time.
+  cast:
+    host: standing, looking directly at camera, calm and serious
+  props:
+  - hourglass
+narrator:
+  voice: Orus

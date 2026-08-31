@@ -1,0 +1,87 @@
+title: The Only Triple-Tax-Free Retirement Account
+slug: 2026-08-31-hsa-triple-tax-free-retirement
+format: short
+caption_style: explainer
+cast:
+  host:
+    look: 'the ''Anti Broke'' host: a minimalist black-marker stick figure with a
+      round OPEN white head, four or five short spiky lines of hair on top, two small
+      dot eyes, two short sharp angled eyebrows, and always a visible mouth that shows
+      the expression (flat, frown, grimace, open shout). The body is ONE single straight
+      vertical black line (spine), with four more single straight black lines for
+      the two arms and two legs, dot hands, short line feet -- plus one small thin
+      necktie shape (a short strip + a little triangle) hanging at the neck. NO torso
+      shape, NO filled body, NO solid black wedge, NO shirt block -- the figure is
+      a head, spiky hair, five thin lines and a skinny tie. It is never a black silhouette.'
+    anchor: center
+    voice: Orus
+scenes:
+  stage:
+    color: '#f4efe4'
+beats:
+- id: b01
+  scene: stage
+  who: host
+  say: There's only one account that is triple-tax-free.
+  cast:
+    host: standing, arms open wide, looking serious
+  headline: TRIPLE-TAX-FREE
+  props: []
+- id: b02
+  scene: stage
+  who: host
+  say: First, your contributions are tax-deductible.
+  cast:
+    host: standing, pointing, neutral
+  props:
+  - arrow-down
+- id: b03
+  scene: stage
+  who: host
+  say: Second, your investments grow completely tax-free.
+  cast:
+    host: standing, pointing, neutral
+  props:
+  - chart-up
+- id: b04
+  scene: stage
+  who: host
+  say: Third, withdrawals for medical costs are also tax-free.
+  cast:
+    host: standing, pointing, looking at prop
+  props:
+  - receipt
+- id: b05
+  scene: stage
+  who: host
+  say: But almost everyone misses the best part.
+  cast:
+    host: leaning forward slightly, conspiratorial expression
+  props:
+  - lightbulb
+- id: b06
+  scene: stage
+  who: host
+  say: Don't spend from it. Invest it instead.
+  cast:
+    host: standing straight, confident expression
+  props:
+  - snowball
+- id: b07
+  scene: stage
+  who: host
+  say: After age sixty-five, it just becomes a 401k.
+  cast:
+    host: shrugging, matter-of-fact expression
+  props:
+  - scale
+- id: b08
+  scene: stage
+  who: host
+  say: It's a retirement fund disguised as a health account.
+  cast:
+    host: standing, looking directly at camera, sharp expression
+  props:
+  - safe
+narrator:
+  voice: Orus

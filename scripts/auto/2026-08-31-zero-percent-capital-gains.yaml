@@ -1,0 +1,92 @@
+title: The 0% Tax Bracket for Your Investments
+slug: 2026-08-31-zero-percent-capital-gains
+format: short
+caption_style: explainer
+cast:
+  host:
+    look: 'the ''Anti Broke'' host: a minimalist black-marker stick figure with a
+      round OPEN white head, four or five short spiky lines of hair on top, two small
+      dot eyes, two short sharp angled eyebrows, and always a visible mouth that shows
+      the expression (flat, frown, grimace, open shout). The body is ONE single straight
+      vertical black line (spine), with four more single straight black lines for
+      the two arms and two legs, dot hands, short line feet -- plus one small thin
+      necktie shape (a short strip + a little triangle) hanging at the neck. NO torso
+      shape, NO filled body, NO solid black wedge, NO shirt block -- the figure is
+      a head, spiky hair, five thin lines and a skinny tie. It is never a black silhouette.'
+    anchor: center
+    voice: Orus
+scenes:
+  stage:
+    color: '#f4efe4'
+beats:
+- id: b01
+  scene: stage
+  who: host
+  say: You can sell winning stocks and owe zero federal tax.
+  cast:
+    host: standing, pointing up, serious
+  headline: ZERO PERCENT TAX
+  props: []
+- id: b02
+  scene: stage
+  who: host
+  say: First, you must hold the asset for over one year.
+  cast:
+    host: holding up one finger, explaining
+  props:
+  - calendar
+- id: b03
+  scene: stage
+  who: host
+  say: Second, your total taxable income must stay low enough.
+  cast:
+    host: holding up two fingers, serious
+  props:
+  - arrow-down
+- id: b04
+  scene: stage
+  who: host
+  say: For single filers, that's under about forty-seven thousand dollars.
+  cast:
+    host: hands open, gesturing to a number
+  chart:
+    type: hbar
+    title: LT Capital Gains Tax Brackets
+    labels:
+    - 0%
+    - 15%
+    - 20%
+    values:
+    - 47
+    - 519
+    - 520
+    unit: $K Income
+    highlight: 0
+    note: Single Filer 2024
+  props: []
+- id: b05
+  scene: stage
+  who: host
+  say: Your capital gains can then fill that bracket, tax-free.
+  cast:
+    host: gesturing upward, as if filling a container
+  props:
+  - bars-up
+- id: b06
+  scene: stage
+  who: host
+  say: This is powerful for students, retirees, or a gap year.
+  cast:
+    host: tapping head with finger, idea expression
+  props:
+  - lightbulb
+- id: b07
+  scene: stage
+  who: host
+  say: It's not a loophole; it's just knowing the system.
+  cast:
+    host: arms crossed, looking confident
+  props:
+  - shield
+narrator:
+  voice: Orus

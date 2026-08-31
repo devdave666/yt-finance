@@ -1,0 +1,98 @@
+title: How a 1% Fee Can Cost You 28% of Your Retirement
+slug: 2026-08-31-expense-ratio-fee-drag
+format: short
+caption_style: explainer
+cast:
+  host:
+    look: 'the ''Anti Broke'' host: a minimalist black-marker stick figure with a
+      round OPEN white head, four or five short spiky lines of hair on top, two small
+      dot eyes, two short sharp angled eyebrows, and always a visible mouth that shows
+      the expression (flat, frown, grimace, open shout). The body is ONE single straight
+      vertical black line (spine), with four more single straight black lines for
+      the two arms and two legs, dot hands, short line feet -- plus one small thin
+      necktie shape (a short strip + a little triangle) hanging at the neck. NO torso
+      shape, NO filled body, NO solid black wedge, NO shirt block -- the figure is
+      a head, spiky hair, five thin lines and a skinny tie. It is never a black silhouette.'
+    anchor: center
+    voice: Orus
+scenes:
+  stage:
+    color: '#f4efe4'
+beats:
+- id: b01
+  scene: stage
+  who: host
+  say: A 1% fee can cost you 28% of your retirement.
+  cast:
+    host: standing, arms wide, looking alarmed
+  headline: 28% OF YOUR MONEY.
+  props: []
+- id: b02
+  scene: stage
+  who: host
+  say: It’s called the expense ratio.
+  cast:
+    host: standing, hand raised to explain, neutral
+  props:
+  - percent
+- id: b03
+  scene: stage
+  who: host
+  say: It’s charged every year on your total balance.
+  cast:
+    host: standing, pointing, serious
+  props:
+  - calendar
+- id: b04
+  scene: stage
+  who: host
+  say: So the fee grows as your account grows.
+  cast:
+    host: standing, arms gesturing to show growth, serious
+  props:
+  - snowball
+- id: b05
+  scene: stage
+  who: host
+  say: After 35 years, this is the difference.
+  cast:
+    host: pointing at the chart, looking serious
+  chart:
+    type: bar
+    title: Retirement Balance
+    labels:
+    - 0.5% Fee
+    - 1.5% Fee
+    values:
+    - 227000
+    - 163000
+    unit: $
+    highlight: 1
+    note: $64k LOST
+  props: []
+- id: b06
+  scene: stage
+  who: host
+  say: The fee isn't just on your contributions.
+  cast:
+    host: standing, shaking head slightly, looking grim
+  props:
+  - wallet
+- id: b07
+  scene: stage
+  who: host
+  say: It’s on the entire pile, year after year.
+  cast:
+    host: standing, arms crossed, unimpressed
+  props:
+  - coins-stack
+- id: b08
+  scene: stage
+  who: host
+  say: Low-cost funds aren't just cheaper. They're exponentially better.
+  cast:
+    host: standing, looking directly at camera, firm
+  props:
+  - shield
+narrator:
+  voice: Orus

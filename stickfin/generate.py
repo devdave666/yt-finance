@@ -66,9 +66,14 @@ The edge comes from exposing how rigged the fine print is -- never from jokes, p
 
 The bar is HIGH. Every video must be genuinely surprising -- the kind of thing a smart person watches
 and thinks "wait, WHAT". If the idea wouldn't make someone stop scrolling and say that out loud, pick a
-sharper angle on the topic or a more shocking number. No "what is a budget", no generic advice, no
-buildup -- open on the surprising conclusion, then show the mechanism. You explain how the machine
-works; you never tell anyone what to buy or give individualised advice."""
+sharper angle on the topic or a more shocking number. No "what is a budget", no generic advice everyone
+already knows, no buildup -- open on the surprising conclusion, then show the mechanism.
+
+Two content pillars, both in play: (1) the fine-print mechanic nobody explains, (2) the "what if you'd
+invested" / market-history reveal real finance creators go viral with -- a real, well-known stock, index,
+or asset, a real (rounded, widely-cited) dollar outcome, landing on a lesson about time in the market or
+compounding. You explain how the machine works or what history actually shows; you never tell anyone
+what to buy today, promise future returns, or give individualised advice."""
 
 SCHEMA_DOC = """Return ONLY a JSON object, no prose, with this shape:
 
@@ -142,7 +147,13 @@ SCHEMA_DOC = """Return ONLY a JSON object, no prose, with this shape:
 
 Rules:
 - Accurate. Any figure used must be roughly correct.
-- No specific tickers, funds, apps, or products to buy. No promises of returns. No hype phrasing.
+- Never tell the viewer to buy anything today, and never promise future returns. No hype phrasing.
+- A "what if you'd invested" / market-history topic MAY name a real, well-known company, index, or asset
+  (Apple, Amazon, Bitcoin, the S&P 500, Berkshire Hathaway, ...) -- strictly past tense ("would have grown
+  to roughly $X"), round widely-cited public figures only (never a suspiciously precise number), and it
+  must land on a lesson (time in the market, compounding, diversification) -- never framed as "buy this now".
+  This kind of topic should almost always use a `chart` beat (type "line" for growth-over-time reveals)
+  instead of a prop, since the number IS the hook.
 - explainer = one narrator ("host") explaining to camera; keep gestures simple ("pointing to the right", "shrugging", "arms open").
 - skit = two characters, a short situation, a punchline in the final beat.
 - Every `say` must land in about 1-2 seconds of speech. Short. Punchy. Spoken, not written.

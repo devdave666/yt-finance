@@ -7,11 +7,14 @@ channel: "Anti Broke (@AntiBrokee)"
 
 niche: >
   Personal finance for people who want to stop being broke -- but the LESS
-  obvious stuff. Not "what is a budget". The mechanics and gotchas most people
-  never had explained: how a rule actually works, the trap hidden in the fine
-  print, the counterintuitive thing that's true anyway. One sharp idea per
-  short. Chosen for monetisation -- finance has among the highest ad RPMs on
-  YouTube, the topics are evergreen, and the content is advertiser-safe.
+  obvious stuff. Not "what is a budget". Two pillars, alternating: (1) the
+  mechanics and gotchas most people never had explained -- how a rule
+  actually works, the trap hidden in the fine print, the counterintuitive
+  thing that's true anyway; (2) the compounding/market-history content real
+  finance creators actually go viral with -- "what $1,000 would be worth
+  today" reveals, famous historical stock/index runs, the math of time in
+  the market, viral market stats. Both pillars: one sharp idea per short,
+  evergreen, advertiser-safe, no forward-looking buy advice.
 
 voice: >
   A sharp market analyst who's a little pissed off on the viewer's behalf.
@@ -22,10 +25,16 @@ voice: >
 
 # Hard rules the generator must follow (also enforced in generate.py):
 rules:
-  - Never recommend a specific stock, crypto, fund ticker, or financial product to buy.
+  - Never tell the viewer to buy a specific stock, crypto, fund, or product NOW, and never promise future returns.
+  - What-if-you-invested / market-history content IS allowed -- it may name a real, well-known company,
+    index, or asset (Apple, Amazon, Bitcoin, the S&P 500, ...), but ONLY as a strictly past-tense
+    historical fact (would have grown to roughly $X), using round, widely-cited public figures -- never
+    framed as advice for what to buy today, and it must land on a lesson (time in the market, compounding,
+    diversification), not a buy signal.
   - Never promise returns or use hype ("get rich", "this one trick", "banks hate this").
   - No individualized investment, tax, or legal advice -- general education only.
-  - Keep it accurate. If a number or rule is cited, it must be correct.
+  - Keep it accurate. If a number or rule is cited, it must be correct (or, for historical "what if"
+    figures, a well-known rounded figure -- say "roughly" / "about", never a suspiciously precise number).
   - Sarcasm is aimed at systems and fine print, never at the viewer.
   - Every video ends on a calm, useful takeaway (dry, not a hard sell).
 
@@ -64,3 +73,21 @@ topics:
   - A 15-year vs a 30-year mortgage -- the rate is lower but the payment jump is bigger than most people expect
   - A "no-fee" checking account still earns the bank money -- on your idle balance and on interchange when you swipe
   - Overdraft "protection" is usually an opt-in short-term loan at an effective APR in the triple digits
+
+  # "What if you'd invested" / market-history content -- the viral-finance-creator pillar. Real, well-known
+  # companies and assets, strictly past tense, round widely-cited figures, always lands on a lesson (time in
+  # the market / compounding / diversification), never a buy signal for today.
+  - What $1,000 in Apple stock at its 1980 IPO would be worth today -- and why almost nobody held it that long
+  - What $1,000 in Amazon at its 1997 IPO would be worth today -- it fell over 90% twice on the way there
+  - Missing just the 10 best days in the stock market over 20 years can cut your total return roughly in half
+  - What $1,000 in Bitcoin in 2010 would be worth today -- and the guy who spent 10,000 of them on two pizzas
+  - Warren Buffett made over 99% of his net worth after age 50 -- compounding needs time more than it needs skill
+  - $100 a month invested from age 25 to 35 then left alone beats $100 a month invested from 35 to 65
+  - Berkshire Hathaway turned $1,000 into roughly $30 million since 1965 -- at "only" about 20% a year, compounded
+  - The S&P 500 has never lost money over any historical 20-year holding period, including through every crash
+  - Cash sitting under the mattress for 30 years loses most of its buying power to inflation alone
+  - Trying to time the market historically loses to just staying invested the whole time, most years running
+  - What $1,000 in Netflix at its 2002 IPO would be worth today -- through a stock that also crashed 80% in 2011
+  - Dollar-cost averaging into an index fund beats most people who try to pick individual winning stocks
+  - The Rule of 72 says money doubling every 8 years (9% return) turns $10,000 into over $150,000 in 30 years
+  - GameStop's 2021 short squeeze made a few people millions and wiped out most who bought in after the spike

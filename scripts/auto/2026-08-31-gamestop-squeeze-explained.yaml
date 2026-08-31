@@ -1,0 +1,94 @@
+title: 'GameStop''s Wild Ride: Millionaires and Meltdowns'
+slug: 2026-08-31-gamestop-squeeze-explained
+format: short
+caption_style: explainer
+cast:
+  host:
+    look: 'the ''Anti Broke'' host: a minimalist black-marker stick figure with a
+      round OPEN white head, four or five short spiky lines of hair on top, two small
+      dot eyes, two short sharp angled eyebrows, and always a visible mouth that shows
+      the expression (flat, frown, grimace, open shout). The body is ONE single straight
+      vertical black line (spine), with four more single straight black lines for
+      the two arms and two legs, dot hands, short line feet -- plus one small thin
+      necktie shape (a short strip + a little triangle) hanging at the neck. NO torso
+      shape, NO filled body, NO solid black wedge, NO shirt block -- the figure is
+      a head, spiky hair, five thin lines and a skinny tie. It is never a black silhouette.'
+    anchor: center
+    voice: Orus
+scenes:
+  stage:
+    color: '#f4efe4'
+beats:
+- id: b01
+  scene: stage
+  who: host
+  say: In one week, GameStop stock exploded nearly 2,000 percent.
+  cast:
+    host: standing, arms wide, looking up and
+  headline: UP 2,000%
+  props: []
+- id: b02
+  scene: stage
+  who: host
+  say: Hedge funds had bet the stock would fail by shorting it.
+  cast:
+    host: standing, neutral, pointing
+  props:
+  - bars-down
+- id: b03
+  scene: stage
+  who: host
+  say: But online traders bought the stock, forcing them to buy back.
+  cast:
+    host: standing, looking determined, holding hands together
+  props:
+  - magnet
+- id: b04
+  scene: stage
+  who: host
+  say: This squeeze sent the price from $20 to over $480.
+  cast:
+    host: standing, pointing
+  chart:
+    type: line
+    title: GME Price Jan 2021
+    labels:
+    - Jan 12
+    - Jan 22
+    - Jan 28
+    - Feb 2
+    values:
+    - 20
+    - 65
+    - 483
+    - 90
+    unit: $
+    highlight: 2
+    note: The Peak
+  props: []
+- id: b05
+  scene: stage
+  who: host
+  say: But the hype couldn't last; it crashed just as fast.
+  cast:
+    host: standing, hands up in a 'stop' gesture, concerned
+  props:
+  - chart-down
+- id: b06
+  scene: stage
+  who: host
+  say: Most who bought near the peak lost over 80 percent.
+  cast:
+    host: standing, unimpressed, arms crossed
+  props:
+  - wallet
+- id: b07
+  scene: stage
+  who: host
+  say: Viral stocks aren't investing; they're gambling on timing.
+  cast:
+    host: standing, neutral, looking at camera
+  props:
+  - clock
+narrator:
+  voice: Orus

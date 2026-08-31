@@ -1,0 +1,96 @@
+title: Your 401k 'Free Money' Isn't Yours Yet
+slug: 2026-08-31-401k-vesting-schedule-trap
+format: short
+caption_style: explainer
+cast:
+  host:
+    look: 'the ''Anti Broke'' host: a minimalist black-marker stick figure with a
+      round OPEN white head, four or five short spiky lines of hair on top, two small
+      dot eyes, two short sharp angled eyebrows, and always a visible mouth that shows
+      the expression (flat, frown, grimace, open shout). The body is ONE single straight
+      vertical black line (spine), with four more single straight black lines for
+      the two arms and two legs, dot hands, short line feet -- plus one small thin
+      necktie shape (a short strip + a little triangle) hanging at the neck. NO torso
+      shape, NO filled body, NO solid black wedge, NO shirt block -- the figure is
+      a head, spiky hair, five thin lines and a skinny tie. It is never a black silhouette.'
+    anchor: center
+    voice: Orus
+scenes:
+  stage:
+    color: '#f4efe4'
+beats:
+- id: b01
+  scene: stage
+  who: host
+  say: Your company's 401k match isn't actually your money.
+  cast:
+    host: standing, arms crossed, looking serious
+  headline: IT ISN'T YOURS
+  props: []
+- id: b02
+  scene: stage
+  who: host
+  say: The fine print has something called a vesting schedule.
+  cast:
+    host: pointing, explaining
+  props:
+  - padlock
+- id: b03
+  scene: stage
+  who: host
+  say: With cliff vesting, you get nothing if you leave early.
+  cast:
+    host: one hand up in a 'stop' gesture, serious
+  props:
+  - calendar
+- id: b04
+  scene: stage
+  who: host
+  say: Leave at two years, eleven months? You could forfeit everything.
+  cast:
+    host: shaking head, disappointed expression
+  props:
+  - arrow-down
+- id: b05
+  scene: stage
+  who: host
+  say: Graded vesting gives you a percentage over several years.
+  cast:
+    host: hands showing an upward slope, explaining
+  props:
+  - bars-up
+- id: b06
+  scene: stage
+  who: host
+  say: You might only own twenty percent after year two.
+  cast:
+    host: pointing at the chart
+  chart:
+    type: hbar
+    title: Typical Graded Vesting
+    labels:
+    - Year 2
+    - Year 3
+    - Year 4
+    - Year 5
+    - Year 6
+    values:
+    - 20
+    - 40
+    - 60
+    - 80
+    - 100
+    unit: '%'
+    highlight: 0
+    note: You Own
+  props: []
+- id: b07
+  scene: stage
+  who: host
+  say: Your money is always yours. Theirs has a time lock.
+  cast:
+    host: holding up two hands, palms up, as if weighing two things
+  props:
+  - safe
+narrator:
+  voice: Orus

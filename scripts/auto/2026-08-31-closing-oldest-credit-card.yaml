@@ -1,0 +1,103 @@
+title: Closing Your Oldest Credit Card Can Wreck Your Score
+slug: 2026-08-31-closing-oldest-credit-card
+format: short
+caption_style: explainer
+cast:
+  host:
+    look: 'the ''Anti Broke'' host: a minimalist black-marker stick figure with a
+      round OPEN white head, four or five short spiky lines of hair on top, two small
+      dot eyes, two short sharp angled eyebrows, and always a visible mouth that shows
+      the expression (flat, frown, grimace, open shout). The body is ONE single straight
+      vertical black line (spine), with four more single straight black lines for
+      the two arms and two legs, dot hands, short line feet -- plus one small thin
+      necktie shape (a short strip + a little triangle) hanging at the neck. NO torso
+      shape, NO filled body, NO solid black wedge, NO shirt block -- the figure is
+      a head, spiky hair, five thin lines and a skinny tie. It is never a black silhouette.'
+    anchor: center
+    voice: Orus
+scenes:
+  stage:
+    color: '#f4efe4'
+beats:
+- id: b01
+  scene: stage
+  who: host
+  say: Closing your oldest credit card can drop your score.
+  cast:
+    host: standing, hands on hips, looking serious
+  headline: DON'T CLOSE IT
+  props: []
+- id: b02
+  scene: stage
+  who: host
+  say: Fifteen percent of your score is your credit history length.
+  cast:
+    host: standing, holding up one hand, palm out
+  props:
+  - percent
+- id: b03
+  scene: stage
+  who: host
+  say: The score looks at the average age of all accounts.
+  cast:
+    host: pointing to one side, explaining
+  props:
+  - scale
+- id: b04
+  scene: stage
+  who: host
+  say: A ten-year card and a new card average five years.
+  cast:
+    host: holding hands far apart, showing a range
+  chart:
+    type: hbar
+    title: Average Account Age
+    labels:
+    - Card A
+    - Card B
+    - Average
+    values:
+    - 10
+    - 0
+    - 5
+    unit: ''
+    highlight: 2
+    note: BEFORE
+  props: []
+- id: b05
+  scene: stage
+  who: host
+  say: Close the old one, and your average age drops to zero.
+  cast:
+    host: looking down, concerned, pointing down
+  chart:
+    type: hbar
+    title: Average Account Age
+    labels:
+    - Card B
+    - Average
+    values:
+    - 0
+    - 0
+    unit: ''
+    highlight: 1
+    note: AFTER
+  props: []
+- id: b06
+  scene: stage
+  who: host
+  say: A shorter history makes you look like a new borrower.
+  cast:
+    host: shrugging, hands up, questioning expression
+  props:
+  - warning
+- id: b07
+  scene: stage
+  who: host
+  say: Sometimes the best move is to do nothing at all.
+  cast:
+    host: standing neutral, arms crossed, looking at camera
+  props:
+  - credit-card
+narrator:
+  voice: Orus

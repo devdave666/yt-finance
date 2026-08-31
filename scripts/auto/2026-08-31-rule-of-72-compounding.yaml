@@ -1,0 +1,103 @@
+title: How $10k Becomes $160k With The Rule of 72
+slug: 2026-08-31-rule-of-72-compounding
+format: short
+caption_style: explainer
+cast:
+  host:
+    look: 'the ''Anti Broke'' host: a minimalist black-marker stick figure with a
+      round OPEN white head, four or five short spiky lines of hair on top, two small
+      dot eyes, two short sharp angled eyebrows, and always a visible mouth that shows
+      the expression (flat, frown, grimace, open shout). The body is ONE single straight
+      vertical black line (spine), with four more single straight black lines for
+      the two arms and two legs, dot hands, short line feet -- plus one small thin
+      necktie shape (a short strip + a little triangle) hanging at the neck. NO torso
+      shape, NO filled body, NO solid black wedge, NO shirt block -- the figure is
+      a head, spiky hair, five thin lines and a skinny tie. It is never a black silhouette.'
+    anchor: center
+    voice: Orus
+scenes:
+  stage:
+    color: '#f4efe4'
+beats:
+- id: b01
+  scene: stage
+  who: host
+  say: Here's how ten thousand dollars becomes one hundred sixty thousand.
+  cast:
+    host: standing, arms wide, looking at headline
+  headline: $10k -> $160,000
+  props: []
+- id: b02
+  scene: stage
+  who: host
+  say: It's a mental shortcut called the Rule of 72.
+  cast:
+    host: standing, neutral, pointing up and
+  props:
+  - lightbulb
+- id: b03
+  scene: stage
+  who: host
+  say: Divide 72 by your interest rate to find the doubling time.
+  cast:
+    host: standing, pointing
+  props:
+  - percent
+- id: b04
+  scene: stage
+  who: host
+  say: At nine percent, your money doubles about every eight years.
+  cast:
+    host: standing, looking at prop
+  props:
+  - calendar
+- id: b05
+  scene: stage
+  who: host
+  say: The first doubling is small. Ten thousand becomes twenty thousand.
+  cast:
+    host: standing, pointing at the chart
+  chart:
+    type: bar
+    title: Growth of $10k at 9%
+    labels:
+    - Yr 0
+    - Yr 8
+    - Yr 16
+    - Yr 24
+    - Yr 32
+    values:
+    - 10000
+    - 20000
+    - 40000
+    - 80000
+    - 160000
+    unit: ''
+    highlight: 1
+    note: +$10,000
+  props: []
+- id: b06
+  scene: stage
+  who: host
+  say: But the final doubling adds eighty thousand dollars alone.
+  cast:
+    host: standing, emphatically pointing side of chart
+  props: []
+- id: b07
+  scene: stage
+  who: host
+  say: The real power isn't the rate. It's the time.
+  cast:
+    host: standing, neutral, looking at prop
+  props:
+  - hourglass
+- id: b08
+  scene: stage
+  who: host
+  say: Almost all of the gains happen at the very end.
+  cast:
+    host: standing, looking directly at camera, serious
+  props:
+  - snowball
+narrator:
+  voice: Orus

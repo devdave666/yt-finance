@@ -1,0 +1,98 @@
+title: The Hidden Tax in Your Target-Date Fund
+slug: 2026-08-31-target-date-fund-tax-trap
+format: short
+caption_style: explainer
+cast:
+  host:
+    look: 'the ''Anti Broke'' host: a minimalist black-marker stick figure with a
+      round OPEN white head, four or five short spiky lines of hair on top, two small
+      dot eyes, two short sharp angled eyebrows, and always a visible mouth that shows
+      the expression (flat, frown, grimace, open shout). The body is ONE single straight
+      vertical black line (spine), with four more single straight black lines for
+      the two arms and two legs, dot hands, short line feet -- plus one small thin
+      necktie shape (a short strip + a little triangle) hanging at the neck. NO torso
+      shape, NO filled body, NO solid black wedge, NO shirt block -- the figure is
+      a head, spiky hair, five thin lines and a skinny tie. It is never a black silhouette.'
+    anchor: center
+    voice: Orus
+scenes:
+  stage:
+    color: '#f4efe4'
+beats:
+- id: b01
+  scene: stage
+  who: host
+  say: You can get a huge tax bill without selling anything.
+  cast:
+    host: standing, arms wide, looking alarmed
+  headline: TAX BILL. NO SALE.
+  props: []
+- id: b02
+  scene: stage
+  who: host
+  say: It's a hidden trap in many target-date funds.
+  cast:
+    host: standing, pointing, serious expression
+  props:
+  - target
+- id: b03
+  scene: stage
+  who: host
+  say: These funds automatically rebalance from stocks to bonds over time.
+  cast:
+    host: standing, hands gesturing towards the center
+  props:
+  - scale
+- id: b04
+  scene: stage
+  who: host
+  say: But 'rebalancing' just means the fund is selling assets for you.
+  cast:
+    host: standing, neutral, looking at camera
+  props:
+  - handshake
+- id: b05
+  scene: stage
+  who: host
+  say: In a regular brokerage, you are passed the tax bill.
+  cast:
+    host: standing, pointing, unimpressed
+  props:
+  - receipt
+- id: b06
+  scene: stage
+  who: host
+  say: In 2021, some investors got surprise bills for 15%.
+  cast:
+    host: standing, gesturing to chart, concerned
+  chart:
+    type: bar
+    title: Surprise Taxable Event
+    labels:
+    - Balance
+    - Taxable Gain
+    values:
+    - 100
+    - 15
+    unit: '%'
+    highlight: 1
+    note: 15% gain
+  props: []
+- id: b07
+  scene: stage
+  who: host
+  say: Inside a 401(k) or IRA, these trades are shielded.
+  cast:
+    host: standing, hands together, calm
+  props:
+  - shield
+- id: b08
+  scene: stage
+  who: host
+  say: A fund's tax cost depends on the account it's in.
+  cast:
+    host: standing, neutral, looking at camera
+  props:
+  - padlock
+narrator:
+  voice: Orus

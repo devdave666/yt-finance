@@ -51,22 +51,44 @@ def render(text: str, out: Path, width_px: int = 1180) -> Path:
         lines.append(cur)
     lines = lines[:3]
 
+    meas = ImageDraw.Draw(Image.new("RGBA", (10, 10)))
+
+    def _row_w(line: str, font) -> float:
+        return sum(meas.textlength(w + " ", font=font) for w in line.split())
+
+    # width_px/(chars*0.62) is only a starting guess -- bold caps run wider
+    # than that for some text, and PIL silently draws (and clips) past the
+    # canvas edge rather than erroring, so a bad guess baked a clipped
+    # headline right into the asset. Measure for real and shrink to fit.
+    avail_w = width_px * 0.88
     size = max(70, min(190, int(width_px / (max(len(l) for l in lines) * 0.62))))
     font = _font(size)
+    max_row_w = max(_row_w(l, font) for l in lines)
+    for _ in range(3):
+        if max_row_w <= avail_w:
+            break
+        size = max(36, int(size * avail_w / max_row_w))
+        font = _font(size)
+        max_row_w = max(_row_w(l, font) for l in lines)
+
     pad = int(size * 0.5)
     lh = int(size * 1.16)
-    canvas_h = lh * len(lines) + pad * 2 + int(size * 0.35)   # room for the underline
-    img = Image.new("RGBA", (width_px, canvas_h), (0, 0, 0, 0))
+    canvas_h = lh * len(lines) + pad * 2 + int(size * 0.35)
+    # size the canvas to what the text actually measures (+ margin for the
+    # stroke outline), not just the nominal width_px -- belt-and-suspenders
+    # so no measurement error can clip a glyph again
+    canvas_w = max(width_px, int(max_row_w + pad * 2))
+    img = Image.new("RGBA", (canvas_w, canvas_h), (0, 0, 0, 0))
     d = ImageDraw.Draw(img)
     stroke = max(6, size // 12)
 
     y = pad
     line_words = [ln.split(" ") for ln in lines]
-    text_l, text_r = width_px, 0.0
+    text_l, text_r = canvas_w, 0.0
     for lw in line_words:
         widths = [d.textlength(w + " ", font=font) for w in lw]
         row_w = sum(widths)
-        x = (width_px - row_w) / 2
+        x = (canvas_w - row_w) / 2
         text_l = min(text_l, x)
         text_r = max(text_r, x + row_w - d.textlength(" ", font=font))
         for w, wdt in zip(lw, widths):

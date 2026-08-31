@@ -41,9 +41,29 @@ rules:
 formats: [explainer, skit]     # the generator picks one per video based on the topic
 cooldown: 26                   # don't reuse a topic until this many videos have passed
 
-# Ordered strongest-hook-first (the generator works down the list). Each one
-# should be genuinely "wait, WHAT" -- lead with the number or the trick.
+# Ordered strongest-hook-first (the generator works down the list, least-
+# recently-used first, ties broken by this order). Each one should be
+# genuinely "wait, WHAT" -- lead with the number or the trick.
 topics:
+  # "What if you'd invested" / market-history content -- the viral-finance-creator pillar. Real, well-known
+  # companies and assets, strictly past tense, round widely-cited figures, always lands on a lesson (time in
+  # the market / compounding / diversification), never a buy signal for today. Listed first so it actually
+  # surfaces soon instead of losing every tiebreak to the long tail of never-yet-used fine-print topics below.
+  - What $1,000 in Apple stock at its 1980 IPO would be worth today -- and why almost nobody held it that long
+  - What $1,000 in Amazon at its 1997 IPO would be worth today -- it fell over 90% twice on the way there
+  - Missing just the 10 best days in the stock market over 20 years can cut your total return roughly in half
+  - What $1,000 in Bitcoin in 2010 would be worth today -- and the guy who spent 10,000 of them on two pizzas
+  - Warren Buffett made over 99% of his net worth after age 50 -- compounding needs time more than it needs skill
+  - $100 a month invested from age 25 to 35 then left alone beats $100 a month invested from 35 to 65
+  - Berkshire Hathaway turned $1,000 into roughly $30 million since 1965 -- at "only" about 20% a year, compounded
+  - The S&P 500 has never lost money over any historical 20-year holding period, including through every crash
+  - Cash sitting under the mattress for 30 years loses most of its buying power to inflation alone
+  - Trying to time the market historically loses to just staying invested the whole time, most years running
+  - What $1,000 in Netflix at its 2002 IPO would be worth today -- through a stock that also crashed 80% in 2011
+  - Dollar-cost averaging into an index fund beats most people who try to pick individual winning stocks
+  - The Rule of 72 says money doubling every 8 years (9% return) turns $10,000 into over $150,000 in 30 years
+  - GameStop's 2021 short squeeze made a few people millions and wiped out most who bought in after the spike
+
   - Banks reorder your daily purchases largest-first so more of them overdraft -- and each overdraft is ~$35
   - Deferred-interest "same as cash" financing -- miss the payoff date by a day and months of interest hit retroactively
   - Paying only the minimum on a $5,000 credit card at 24% APR takes over 20 years and roughly doubles what you owe
@@ -61,7 +81,6 @@ topics:
   - Beneficiary designations on your accounts override whatever your will says -- an ex can still inherit
   - The wash-sale rule -- claim a tax loss then rebuy within 30 days and the IRS disallows the whole deduction
   - Sequence-of-returns risk -- a market crash in your first retirement years does far more damage than the same crash later
-  - The Rule of 72 -- divide 72 by your rate to get the doubling time; 114 triples, 144 quadruples
   - I bonds -- U.S. savings bonds whose rate resets with inflation, with a hard yearly purchase cap
   - Target-date funds are great inside a 401k and quietly tax-inefficient in a regular brokerage account
   - Money market funds and high-yield savings pay similar rates but one is FDIC-insured and one isn't
@@ -73,21 +92,3 @@ topics:
   - A 15-year vs a 30-year mortgage -- the rate is lower but the payment jump is bigger than most people expect
   - A "no-fee" checking account still earns the bank money -- on your idle balance and on interchange when you swipe
   - Overdraft "protection" is usually an opt-in short-term loan at an effective APR in the triple digits
-
-  # "What if you'd invested" / market-history content -- the viral-finance-creator pillar. Real, well-known
-  # companies and assets, strictly past tense, round widely-cited figures, always lands on a lesson (time in
-  # the market / compounding / diversification), never a buy signal for today.
-  - What $1,000 in Apple stock at its 1980 IPO would be worth today -- and why almost nobody held it that long
-  - What $1,000 in Amazon at its 1997 IPO would be worth today -- it fell over 90% twice on the way there
-  - Missing just the 10 best days in the stock market over 20 years can cut your total return roughly in half
-  - What $1,000 in Bitcoin in 2010 would be worth today -- and the guy who spent 10,000 of them on two pizzas
-  - Warren Buffett made over 99% of his net worth after age 50 -- compounding needs time more than it needs skill
-  - $100 a month invested from age 25 to 35 then left alone beats $100 a month invested from 35 to 65
-  - Berkshire Hathaway turned $1,000 into roughly $30 million since 1965 -- at "only" about 20% a year, compounded
-  - The S&P 500 has never lost money over any historical 20-year holding period, including through every crash
-  - Cash sitting under the mattress for 30 years loses most of its buying power to inflation alone
-  - Trying to time the market historically loses to just staying invested the whole time, most years running
-  - What $1,000 in Netflix at its 2002 IPO would be worth today -- through a stock that also crashed 80% in 2011
-  - Dollar-cost averaging into an index fund beats most people who try to pick individual winning stocks
-  - The Rule of 72 says money doubling every 8 years (9% return) turns $10,000 into over $150,000 in 30 years
-  - GameStop's 2021 short squeeze made a few people millions and wiped out most who bought in after the spike

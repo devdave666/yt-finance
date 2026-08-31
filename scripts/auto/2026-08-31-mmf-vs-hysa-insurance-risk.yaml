@@ -1,0 +1,89 @@
+title: That High-Yield Account Might Not Be Insured
+slug: 2026-08-31-mmf-vs-hysa-insurance-risk
+format: short
+caption_style: explainer
+cast:
+  host:
+    look: 'the ''Anti Broke'' host: a minimalist black-marker stick figure with a
+      round OPEN white head, four or five short spiky lines of hair on top, two small
+      dot eyes, two short sharp angled eyebrows, and always a visible mouth that shows
+      the expression (flat, frown, grimace, open shout). The body is ONE single straight
+      vertical black line (spine), with four more single straight black lines for
+      the two arms and two legs, dot hands, short line feet -- plus one small thin
+      necktie shape (a short strip + a little triangle) hanging at the neck. NO torso
+      shape, NO filled body, NO solid black wedge, NO shirt block -- the figure is
+      a head, spiky hair, five thin lines and a skinny tie. It is never a black silhouette.'
+    anchor: center
+    voice: Orus
+scenes:
+  stage:
+    color: '#f4efe4'
+beats:
+- id: b01
+  scene: stage
+  who: host
+  say: These high-yield accounts look the same, but they're not.
+  cast:
+    host: standing, arms wide, questioning expression
+  headline: ONE IS NOT SAFE.
+  props: []
+- id: b02
+  scene: stage
+  who: host
+  say: Both offer high rates, often near five percent.
+  cast:
+    host: pointing at a chart, neutral
+  chart:
+    type: hbar
+    title: Typical Yields
+    labels:
+    - HYSA
+    - MMF
+    values:
+    - 5.1
+    - 5.2
+    unit: '%'
+    highlight: 1
+  props: []
+- id: b03
+  scene: stage
+  who: host
+  say: A high-yield savings account is a bank deposit.
+  cast:
+    host: gesturing to the side, confident
+  props:
+  - bank
+- id: b04
+  scene: stage
+  who: host
+  say: It's FDIC insured up to two-hundred-fifty thousand dollars.
+  cast:
+    host: serious expression, hands making a protective shape
+  props:
+  - shield
+- id: b05
+  scene: stage
+  who: host
+  say: A money market fund is an investment product.
+  cast:
+    host: gesturing to the other side, serious
+  props:
+  - chart-up
+- id: b06
+  scene: stage
+  who: host
+  say: It is not government insured against loss.
+  cast:
+    host: shaking head, hands up in a 'stop' gesture
+  props:
+  - warning
+- id: b07
+  scene: stage
+  who: host
+  say: Similar yields do not mean similar risk.
+  cast:
+    host: standing, neutral, direct gaze
+  props:
+  - receipt
+narrator:
+  voice: Orus

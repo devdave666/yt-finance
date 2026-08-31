@@ -1,0 +1,66 @@
+name: Batch Build
+
+# Build N shorts end-to-end and queue them (state/queue.json) for the Post
+# Queued Short workflow to post later. Uses Vertex; the poster does not.
+
+on:
+  workflow_dispatch:
+    inputs:
+      count:
+        description: "How many shorts to build and queue"
+        type: number
+        default: 15
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  batch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350   # GitHub's hard per-job cap is 360
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud (WIF)
+        uses: google-github-actions/auth@v2
+        with:
+          project_id: "project-58f4f689-36b9-406b-bfa"
+          workload_identity_provider: "projects/584573644858/locations/global/workloadIdentityPools/github-pool/providers/github-provider"
+          service_account: "vertex-ai-runner@project-58f4f689-36b9-406b-bfa.iam.gserviceaccount.com"
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install ffmpeg
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+
+      - name: Cache pip + rembg model
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/pip
+            ~/.u2net
+          key: deps-${{ runner.os }}-${{ hashFiles('requirements.txt') }}
+
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt
+
+      - name: Configure git
+        run: |
+          git config user.name "stickfin bot"
+          git config user.email "automation@users.noreply.github.com"
+
+      - name: Batch build
+        run: python tools/batch_build.py --count ${{ inputs.count }}
+
+      - name: Upload QA reports for anything that failed (always)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: batch-${{ github.run_id }}-qa
+          path: |
+            build/**/qa.json
+            build/**/qa_critique.json
+          if-no-files-found: warn

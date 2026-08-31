@@ -18,6 +18,8 @@ Env:
 """
 from __future__ import annotations
 
+import datetime as dt
+import json
 import os
 import subprocess
 from pathlib import Path
@@ -25,6 +27,7 @@ from pathlib import Path
 from . import config
 
 YT_CATEGORY_EDUCATION = "27"
+QUEUE_PATH = Path("state/queue.json")
 
 _CREATE_POST = """
 mutation CreatePost($input: CreatePostInput!) {
@@ -151,3 +154,75 @@ def publish(script, meta: dict, repo_root: Path) -> dict:
             print(f"[publish] {platform} post FAILED (non-fatal): {e}")
 
     return out
+
+
+# ---------------------------------------------------------------------------
+# Batch mode: build now, post later. enqueue() hosts a finished short and
+# records it in state/queue.json without posting anywhere; a separate,
+# lightweight poster (tools/poster.py) later pulls one entry at a time and
+# does ONLY the Buffer calls -- no GCP/Vertex call in that path at all, so
+# the posting cadence can't be broken by trial-credit expiry or quota once
+# the queue is full.
+# ---------------------------------------------------------------------------
+
+def _load_queue(repo_root: Path) -> list[dict]:
+    p = repo_root / QUEUE_PATH
+    return json.loads(p.read_text()) if p.exists() else []
+
+
+def _save_queue(repo_root: Path, queue: list[dict]) -> None:
+    p = repo_root / QUEUE_PATH
+    p.parent.mkdir(parents=True, exist_ok=True)
+    p.write_text(json.dumps(queue, indent=2))
+
+
+def enqueue(script, meta: dict, repo_root: Path) -> dict:
+    """Host a finished short and append it to the queue. No social post."""
+    url = host_in_repo(script.out_path, script.slug, repo_root)
+    entry = {
+        "slug": script.slug,
+        "title": meta.get("title") or script.title,
+        "description": meta.get("description") or script.title,
+        "hosted_url": url,
+        "queued_date": dt.date.today().isoformat(),
+        "posted": False,
+        "posted_date": None,
+        "post_ids": None,
+    }
+    queue = _load_queue(repo_root)
+    queue.append(entry)
+    _save_queue(repo_root, queue)
+    print(f"[publish] queued: {entry['slug']}")
+    return entry
+
+
+def post_next_queued(repo_root: Path) -> dict | None:
+    """Post the oldest un-posted queue entry to every configured channel.
+    Buffer-only -- no GCP call. Returns the updated entry, or None if the
+    queue has nothing left to post."""
+    queue = _load_queue(repo_root)
+    pending = [e for e in queue if not e["posted"]]
+    if not pending:
+        return None
+    entry = pending[0]
+
+    post_ids = {"youtube": None, "instagram": None, "tiktok": None}
+    post_ids["youtube"] = buffer_post(
+        entry["hosted_url"], entry["description"],
+        config.BUFFER_YOUTUBE_CHANNEL_ID, "youtube", title=entry["title"])
+
+    for platform, channel in (("instagram", config.BUFFER_INSTAGRAM_CHANNEL_ID),
+                              ("tiktok", config.BUFFER_TIKTOK_CHANNEL_ID)):
+        if not channel:
+            continue
+        try:
+            post_ids[platform] = buffer_post(
+                entry["hosted_url"], entry["description"], channel, platform)
+        except Exception as e:  # non-fatal: YouTube already went out
+            print(f"[poster] {platform} post FAILED (non-fatal): {e}")
+
+    entry["posted"] = True
+    entry["posted_date"] = dt.date.today().isoformat()
+    entry["post_ids"] = post_ids
+    _save_queue(repo_root, queue)
+    return entry

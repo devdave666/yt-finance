@@ -1,0 +1,43 @@
+name: Post Queued Short
+
+# The primary posting cron now that shorts are batch-built ahead of time
+# (see Batch Build). No Vertex/GCP call in this path at all -- pure Buffer +
+# git -- so it keeps posting even if the Vertex trial credit runs out.
+# Same 3x/day cadence daily.yml used to run live; daily.yml's own schedule
+# is disabled so the two can't double-post.
+
+on:
+  schedule:
+    - cron: "0 13 * * *"        # ~9am ET / 6am PT
+    - cron: "0 17 * * *"        # ~1pm ET / 10am PT
+    - cron: "0 21 * * *"        # ~5pm ET / 2pm PT
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: post-queued-short
+  cancel-in-progress: false
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - run: pip install requests
+
+      - name: Configure git
+        run: |
+          git config user.name "stickfin bot"
+          git config user.email "automation@users.noreply.github.com"
+
+      - name: Post next queued short
+        env:
+          BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
+        run: python tools/poster.py

@@ -1,10 +1,12 @@
 name: Daily Short
 
+# Manual fallback / live single-video path (generate through publish, one
+# Vertex + Buffer run). The automatic 3x/day schedule now lives on the
+# batch/queue path instead -- see batch-build.yml (build ahead, Vertex) and
+# poster.yml (post from the queue, Buffer only, no Vertex). Kept here,
+# workflow_dispatch only, for whenever a live one-off is actually wanted.
+
 on:
-  schedule:                    # 3 shorts a day, spread across US daytime
-    - cron: "0 13 * * *"       # 13:00 UTC  (~9am ET / 6am PT)
-    - cron: "0 17 * * *"       # 17:00 UTC  (~1pm ET / 10am PT)
-    - cron: "0 21 * * *"       # 21:00 UTC  (~5pm ET / 2pm PT)
   workflow_dispatch:
     inputs:
       autopublish:
@@ -61,7 +63,7 @@ jobs:
           BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
           BUFFER_YOUTUBE_CHANNEL_ID: ${{ secrets.BUFFER_YOUTUBE_CHANNEL_ID }}
           BUFFER_INSTAGRAM_CHANNEL_ID: ${{ secrets.BUFFER_INSTAGRAM_CHANNEL_ID }}
-          STICKFIN_AUTOPUBLISH: ${{ (github.event_name == 'schedule' || inputs.autopublish) && '1' || '0' }}
+          STICKFIN_AUTOPUBLISH: ${{ inputs.autopublish && '1' || '0' }}
         run: python run_daily.py
 
       - name: Upload build as artifact (always, so paid work is never lost)

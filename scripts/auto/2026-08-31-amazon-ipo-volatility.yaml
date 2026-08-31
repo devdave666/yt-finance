@@ -1,0 +1,98 @@
+title: 'Amazon IPO: $1000 to $1.5M Was Not A Smooth Ride'
+slug: 2026-08-31-amazon-ipo-volatility
+format: short
+caption_style: explainer
+cast:
+  host:
+    look: 'the ''Anti Broke'' host: a minimalist black-marker stick figure with a
+      round OPEN white head, four or five short spiky lines of hair on top, two small
+      dot eyes, two short sharp angled eyebrows, and always a visible mouth that shows
+      the expression (flat, frown, grimace, open shout). The body is ONE single straight
+      vertical black line (spine), with four more single straight black lines for
+      the two arms and two legs, dot hands, short line feet -- plus one small thin
+      necktie shape (a short strip + a little triangle) hanging at the neck. NO torso
+      shape, NO filled body, NO solid black wedge, NO shirt block -- the figure is
+      a head, spiky hair, five thin lines and a skinny tie. It is never a black silhouette.'
+    anchor: center
+    voice: Orus
+scenes:
+  stage:
+    color: '#f4efe4'
+beats:
+- id: b01
+  scene: stage
+  who: host
+  say: One thousand dollars in Amazon's IPO is worth $1.5 million.
+  cast:
+    host: arms open wide, looking up at the headline
+  headline: $1.5 MILLION
+  props: []
+- id: b02
+  scene: stage
+  who: host
+  say: But almost nobody actually got that return. Here's why.
+  cast:
+    host: shrugging, looking at camera, unimpressed
+  props:
+  - question
+- id: b03
+  scene: stage
+  who: host
+  say: First, the dot-com bubble burst.
+  cast:
+    host: standing, gesturing at chart
+  chart:
+    type: line
+    title: 'Amazon: Dot-Com Crash'
+    labels:
+    - Dec '99
+    - Sep '01
+    values:
+    - 106
+    - 6
+    unit: $
+    highlight: 1
+    note: -94%
+  props: []
+- id: b04
+  scene: stage
+  who: host
+  say: Your entire investment was almost completely wiped out.
+  cast:
+    host: wincing, one hand over eyes
+  props:
+  - wallet
+- id: b05
+  scene: stage
+  who: host
+  say: It recovered, and then the 2008 crisis hit.
+  cast:
+    host: standing straight, serious expression
+  props:
+  - bars-down
+- id: b06
+  scene: stage
+  who: host
+  say: The stock crashed again, dropping over sixty percent.
+  cast:
+    host: hands on hips, shaking head slowly
+  props:
+  - arrow-down
+- id: b07
+  scene: stage
+  who: host
+  say: The price of life-changing returns is gut-wrenching volatility.
+  cast:
+    host: arms crossed, looking at camera, serious
+  props:
+  - scale
+- id: b08
+  scene: stage
+  who: host
+  say: Holding on through the panic is the actual investment.
+  cast:
+    host: standing calm, hands clasped in front
+  props:
+  - shield
+narrator:
+  voice: Orus

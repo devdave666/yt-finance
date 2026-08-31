@@ -1,0 +1,100 @@
+title: Why Your Life Insurance Might Cost 10x Too Much
+slug: 2026-08-31-whole-life-vs-term-insurance-cost
+format: short
+caption_style: explainer
+cast:
+  host:
+    look: 'the ''Anti Broke'' host: a minimalist black-marker stick figure with a
+      round OPEN white head, four or five short spiky lines of hair on top, two small
+      dot eyes, two short sharp angled eyebrows, and always a visible mouth that shows
+      the expression (flat, frown, grimace, open shout). The body is ONE single straight
+      vertical black line (spine), with four more single straight black lines for
+      the two arms and two legs, dot hands, short line feet -- plus one small thin
+      necktie shape (a short strip + a little triangle) hanging at the neck. NO torso
+      shape, NO filled body, NO solid black wedge, NO shirt block -- the figure is
+      a head, spiky hair, five thin lines and a skinny tie. It is never a black silhouette.'
+    anchor: center
+    voice: Orus
+scenes:
+  stage:
+    color: '#f4efe4'
+beats:
+- id: b01
+  scene: stage
+  who: host
+  say: Your life insurance could be ten times too expensive.
+  cast:
+    host: standing, pointing up and, serious expression
+  headline: 10X THE COST
+  props: []
+- id: b02
+  scene: stage
+  who: host
+  say: The difference is between Term and Whole life policies.
+  cast:
+    host: standing, hands open to either side, neutral
+  props:
+  - scale
+- id: b03
+  scene: stage
+  who: host
+  say: 'Term life is simple: you pay for pure protection.'
+  cast:
+    host: gesturing, explaining
+  props:
+  - shield
+- id: b04
+  scene: stage
+  who: host
+  say: Whole life bundles that with a high-fee investment account.
+  cast:
+    host: gesturing, explaining
+  props:
+  - piggy-bank
+- id: b05
+  scene: stage
+  who: host
+  say: But a huge slice of your premium goes to fees.
+  cast:
+    host: standing, gesturing towards a chart on the
+  chart:
+    type: bar
+    title: Whole Life Premium
+    labels:
+    - Insurance
+    - Fees
+    - Investment
+    values:
+    - 10
+    - 60
+    - 30
+    unit: '%'
+    highlight: 1
+    note: Agent Commission
+  props: []
+- id: b06
+  scene: stage
+  who: host
+  say: First-year agent commissions are often over fifty percent.
+  cast:
+    host: standing, arms crossed, unimpressed
+  props:
+  - handshake
+- id: b07
+  scene: stage
+  who: host
+  say: It's an 'investment' where most of your money vanishes.
+  cast:
+    host: palms up, shrugging, looking at camera
+  props:
+  - receipt
+- id: b08
+  scene: stage
+  who: host
+  say: Always separate your insurance from your investments.
+  cast:
+    host: standing, hands making a cutting motion, serious
+  props:
+  - padlock
+narrator:
+  voice: Orus

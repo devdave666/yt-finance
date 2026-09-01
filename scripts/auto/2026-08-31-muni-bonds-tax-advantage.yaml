@@ -1,0 +1,90 @@
+title: How a 3.5% Bond Can Beat a 4.5% Bond
+slug: 2026-08-31-muni-bonds-tax-advantage
+format: short
+caption_style: explainer
+cast:
+  host:
+    look: 'the ''Anti Broke'' host: a minimalist black-marker stick figure with a
+      round OPEN white head, four or five short spiky lines of hair on top, two small
+      dot eyes, two short sharp angled eyebrows, and always a visible mouth that shows
+      the expression (flat, frown, grimace, open shout). The body is ONE single straight
+      vertical black line (spine), with four more single straight black lines for
+      the two arms and two legs, dot hands, short line feet -- plus one small thin
+      necktie shape (a short strip + a little triangle) hanging at the neck. NO torso
+      shape, NO filled body, NO solid black wedge, NO shirt block -- the figure is
+      a head, spiky hair, five thin lines and a skinny tie. It is never a black silhouette.'
+    anchor: center
+    voice: Orus
+scenes:
+  stage:
+    color: '#f4efe4'
+beats:
+- id: b01
+  scene: stage
+  who: host
+  say: A 3.5% investment can actually beat a 4.5% one.
+  cast:
+    host: standing, arms open wide, serious expression
+  headline: 3.5% > 4.5%
+  props: []
+- id: b02
+  scene: stage
+  who: host
+  say: 'The entire difference is one word: taxes.'
+  cast:
+    host: standing, pointing to a prop on the, neutral
+  props:
+  - shield
+- id: b03
+  scene: stage
+  who: host
+  say: A corporate bond's interest is taxed as regular income.
+  cast:
+    host: standing, gestures to a prop on the, neutral
+  props:
+  - bank
+- id: b04
+  scene: stage
+  who: host
+  say: But municipal bond interest is usually federal tax-free.
+  cast:
+    host: standing, gestures to a prop on the, neutral
+  props:
+  - house
+- id: b05
+  scene: stage
+  who: host
+  say: So that 4.5% is really 3.4% in a 24% tax bracket.
+  cast:
+    host: standing, pointing at a chart to his, explaining
+  chart:
+    type: bar
+    title: After-Tax Yield
+    labels:
+    - Taxable Bond
+    - Muni Bond
+    values:
+    - 3.4
+    - 3.5
+    unit: '%'
+    highlight: 1
+    note: 24% Bracket
+  props: []
+- id: b06
+  scene: stage
+  who: host
+  say: This is called the tax-equivalent yield.
+  cast:
+    host: standing, hands held out as if weighing them, neutral
+  props:
+  - scale
+- id: b07
+  scene: stage
+  who: host
+  say: The real return is what you keep, not what you're promised.
+  cast:
+    host: standing, holding a prop up, stern expression
+  props:
+  - receipt
+narrator:
+  voice: Orus

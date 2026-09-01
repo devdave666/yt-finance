@@ -339,5 +339,12 @@
     "slug": "2026-09-01-closing-oldest-card-hurts-score",
     "direction": "timeline-walk",
     "format": "explainer"
+  },
+  {
+    "date": "2026-09-01",
+    "topic": "$100 a month invested from age 25 to 35 then left alone beats $100 a month invested from 35 to 65",
+    "slug": "2026-09-01-early-investor-wins",
+    "direction": "explain-like-five",
+    "format": "explainer"
   }
 ]

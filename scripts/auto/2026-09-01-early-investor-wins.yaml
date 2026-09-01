@@ -1,0 +1,98 @@
+title: Why a 10-Year Investor Can Beat a 30-Year Investor
+slug: 2026-09-01-early-investor-wins
+format: short
+caption_style: explainer
+cast:
+  host:
+    look: 'the ''Anti Broke'' host: a minimalist black-marker stick figure with a
+      round OPEN white head, four or five short spiky lines of hair on top, two small
+      dot eyes, two short sharp angled eyebrows, and always a visible mouth that shows
+      the expression (flat, frown, grimace, open shout). The body is ONE single straight
+      vertical black line (spine), with four more single straight black lines for
+      the two arms and two legs, dot hands, short line feet -- plus one small thin
+      necktie shape (a short strip + a little triangle) hanging at the neck. NO torso
+      shape, NO filled body, NO solid black wedge, NO shirt block -- the figure is
+      a head, spiky hair, five thin lines and a skinny tie. It is never a black silhouette.'
+    anchor: center
+    voice: Orus
+scenes:
+  stage:
+    color: '#f4efe4'
+beats:
+- id: b01
+  scene: stage
+  who: host
+  say: You can invest less money and end up with more.
+  cast:
+    host: standing, arms open, looks serious
+  headline: LESS IS MORE
+  props: []
+- id: b02
+  scene: stage
+  who: host
+  say: Two people invest one hundred dollars a month.
+  cast:
+    host: standing, neutral, gestures to the side
+  props:
+  - scale
+- id: b03
+  scene: stage
+  who: host
+  say: The first invests from age 25 to 35, then stops.
+  cast:
+    host: standing, points to one side
+  props:
+  - calendar
+- id: b04
+  scene: stage
+  who: host
+  say: The second invests from 35 all the way to 65.
+  cast:
+    host: standing, points to other side
+  props:
+  - hourglass
+- id: b05
+  scene: stage
+  who: host
+  say: The early starter only invested twelve thousand dollars.
+  cast:
+    host: standing, neutral, looking at camera
+  props:
+  - coins-stack
+- id: b06
+  scene: stage
+  who: host
+  say: The late starter invested thirty-six thousand dollars.
+  cast:
+    host: standing, raises an eyebrow slightly
+  props:
+  - cash
+- id: b07
+  scene: stage
+  who: host
+  say: But the early starter wins, by over one hundred thousand.
+  cast:
+    host: standing, pointing at chart
+  chart:
+    type: hbar
+    title: Value at Age 65
+    labels:
+    - Started at 25 ($12k total invested)
+    - Started at 35 ($36k total invested)
+    values:
+    - 357000
+    - 226000
+    unit: ''
+    highlight: 0
+    note: Wins by $131k
+  props: []
+- id: b08
+  scene: stage
+  who: host
+  say: Your earliest money has the most time to do the work.
+  cast:
+    host: standing, hands clasped, calm
+  props:
+  - snowball
+narrator:
+  voice: Orus

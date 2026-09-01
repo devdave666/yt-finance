@@ -311,5 +311,12 @@
     "slug": "2026-09-01-401k-expense-ratio-fee-drag",
     "direction": "myth-vs-reality",
     "format": "skit"
+  },
+  {
+    "date": "2026-09-01",
+    "topic": "Missing just the 10 best days in the stock market over 20 years can cut your total return roughly in half",
+    "slug": "2026-09-01-missing-best-days-market",
+    "direction": "insider-reveal",
+    "format": "explainer"
   }
 ]

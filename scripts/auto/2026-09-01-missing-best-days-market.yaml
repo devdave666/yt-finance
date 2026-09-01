@@ -1,0 +1,100 @@
+title: Missing 10 Days in the Market Can Halve Your Returns
+slug: 2026-09-01-missing-best-days-market
+format: short
+caption_style: explainer
+cast:
+  host:
+    look: 'the ''Anti Broke'' host: a minimalist black-marker stick figure with a
+      round OPEN white head, four or five short spiky lines of hair on top, two small
+      dot eyes, two short sharp angled eyebrows, and always a visible mouth that shows
+      the expression (flat, frown, grimace, open shout). The body is ONE single straight
+      vertical black line (spine), with four more single straight black lines for
+      the two arms and two legs, dot hands, short line feet -- plus one small thin
+      necktie shape (a short strip + a little triangle) hanging at the neck. NO torso
+      shape, NO filled body, NO solid black wedge, NO shirt block -- the figure is
+      a head, spiky hair, five thin lines and a skinny tie. It is never a black silhouette.'
+    anchor: center
+    voice: Orus
+scenes:
+  stage:
+    color: '#f4efe4'
+beats:
+- id: b01
+  scene: stage
+  who: host
+  say: Missing ten days can cost you half your returns.
+  cast:
+    host: standing, looking shocked, hands on cheeks
+  headline: LOSE 54%
+  props: []
+- id: b02
+  scene: stage
+  who: host
+  say: J.P. Morgan studied the S&P 500 for twenty years.
+  cast:
+    host: standing, hands clasped, looking serious
+  props:
+  - calendar
+- id: b03
+  scene: stage
+  who: host
+  say: Staying invested turned ten grand into sixty-five thousand dollars.
+  cast:
+    host: pointing side of the chart, looking impressed
+  chart:
+    type: bar
+    title: $10k Invested (2004-2023)
+    labels:
+    - Fully Invested
+    - Missed 10 Best Days
+    values:
+    - 64844
+    - 29758
+    unit: $
+    highlight: 0
+  props: []
+- id: b04
+  scene: stage
+  who: host
+  say: But missing the ten best days left just twenty-nine.
+  cast:
+    host: pointing side of the chart, unimpressed
+  chart:
+    type: bar
+    title: $10k Invested (2004-2023)
+    labels:
+    - Fully Invested
+    - Missed 10 Best Days
+    values:
+    - 64844
+    - 29758
+    unit: $
+    highlight: 1
+    note: -54%
+  props: []
+- id: b05
+  scene: stage
+  who: host
+  say: The market's best days often follow its worst days.
+  cast:
+    host: standing, arms crossed, knowing expression
+  props:
+  - chart-up
+- id: b06
+  scene: stage
+  who: host
+  say: People who sell in a panic miss the rebound.
+  cast:
+    host: shaking head, disappointed expression
+  props:
+  - arrow-down
+- id: b07
+  scene: stage
+  who: host
+  say: It’s not about timing the market, it’s time in.
+  cast:
+    host: standing, hands open, calm and definitive
+  props:
+  - hourglass
+narrator:
+  voice: Orus

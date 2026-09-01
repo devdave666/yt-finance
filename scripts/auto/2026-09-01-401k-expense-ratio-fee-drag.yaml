@@ -1,0 +1,105 @@
+title: How a 1% Fee Can Cost You 30% of Your Retirement
+slug: 2026-09-01-401k-expense-ratio-fee-drag
+format: short
+caption_style: title
+title_card: THAT 1% FEE ISN'T 1% 🧐
+cast:
+  Chris:
+    look: 'the ''Anti Broke'' host: a minimalist black-marker stick figure with a
+      round OPEN white head, four or five short spiky lines of hair on top, two small
+      dot eyes, two short sharp angled eyebrows, and always a visible mouth that shows
+      the expression (flat, frown, grimace, open shout). The body is ONE single straight
+      vertical black line (spine), with four more single straight black lines for
+      the two arms and two legs, dot hands, short line feet -- plus one small thin
+      necktie shape (a short strip + a little triangle) hanging at the neck. NO torso
+      shape, NO filled body, NO solid black wedge, NO shirt block -- the figure is
+      a head, spiky hair, five thin lines and a skinny tie. It is never a black silhouette.'
+    anchor: left
+    voice: Orus
+  Alex:
+    look: 'a classic minimalist stick figure like the host but drawn slightly shorter,
+      same construction: round open white head, ONE straight vertical line for the
+      spine, single straight lines for arms and legs, dot hands. No torso shape, no
+      fill, no silhouette. A small plain teal collar is the only difference from the
+      host.'
+    anchor: right
+    voice: Aoede
+scenes:
+  park:
+    bg: A simple 2D vector park background with a bench, a tree, and a path.
+beats:
+- id: b01
+  scene: park
+  who: Chris
+  say: My 401k's expense ratio is only one percent.
+  cast:
+    Chris: standing, arms crossed, looking confident at Alex.
+    Alex: standing, looking at Chris, neutral expression.
+  headline: NEARLY 30% GONE
+  props: []
+- id: b02
+  scene: park
+  who: Alex
+  say: So you're losing almost thirty percent of your returns.
+  cast:
+    Chris: standing, looking confused, arms uncrossed.
+    Alex: standing, pointing to the headline text, unimpressed.
+  props: []
+- id: b03
+  scene: park
+  who: Chris
+  say: What? One percent isn't thirty percent.
+  cast:
+    Chris: shrugging, palms up, looking confused.
+    Alex: standing, hands on hips, still unimpressed.
+  props:
+  - question
+- id: b04
+  scene: park
+  who: Alex
+  say: It's one percent of your *entire balance*, every year.
+  cast:
+    Chris: listening, looking worried.
+    Alex: standing, holding up one finger, stern expression.
+  props:
+  - hourglass
+- id: b05
+  scene: park
+  who: Alex
+  say: That fee compounds against you over forty years.
+  cast:
+    Chris: eyes wide, starting to get it.
+    Alex: looking at the viewer, gesturing to a chart.
+  chart:
+    type: hbar
+    title: Retirement Pot (40 Years)
+    labels:
+    - With 1% Fee
+    - With 0.1% Fee
+    values:
+    - 1030000
+    - 1480000
+    unit: $
+    highlight: 0
+    note: $450k LOST
+  props: []
+- id: b06
+  scene: park
+  who: Chris
+  say: That's hundreds of thousands of dollars.
+  cast:
+    Chris: head in hands, shocked.
+    Alex: standing, arms crossed, nodding slightly.
+  props:
+  - cash
+- id: b07
+  scene: park
+  who: Alex
+  say: The fee is small. The cost is huge.
+  cast:
+    Chris: looking down, defeated.
+    Alex: looking directly at the camera, calm.
+  props:
+  - receipt
+narrator:
+  voice: Orus

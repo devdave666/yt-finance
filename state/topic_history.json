@@ -304,5 +304,12 @@
     "slug": "2026-09-01-401k-vesting-schedule",
     "direction": "two-paths",
     "format": "skit"
+  },
+  {
+    "date": "2026-09-01",
+    "topic": "Your 401k's expense ratio, even at 1%, can quietly eat close to a third of your lifetime returns",
+    "slug": "2026-09-01-401k-expense-ratio-fee-drag",
+    "direction": "myth-vs-reality",
+    "format": "skit"
   }
 ]

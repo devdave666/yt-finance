@@ -346,5 +346,12 @@
     "slug": "2026-09-01-early-investor-wins",
     "direction": "explain-like-five",
     "format": "explainer"
+  },
+  {
+    "date": "2026-09-01",
+    "topic": "Suggested tip screens crept from 15-20% to 25-30% defaults after contactless payment made tipping a tap instead of a decision",
+    "slug": "2026-09-01-tip-screen-defaults-increase",
+    "direction": "pov-confession",
+    "format": "skit"
   }
 ]

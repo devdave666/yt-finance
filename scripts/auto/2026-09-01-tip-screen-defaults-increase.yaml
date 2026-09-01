@@ -1,0 +1,103 @@
+title: Why Your Tip Screen Defaults Are Higher Now
+slug: 2026-09-01-tip-screen-defaults-increase
+format: short
+caption_style: title
+title_card: Tipping Defaults Got Higher 💸
+cast:
+  Customer:
+    look: 'the ''Anti Broke'' host: a minimalist black-marker stick figure with a
+      round OPEN white head, four or five short spiky lines of hair on top, two small
+      dot eyes, two short sharp angled eyebrows, and always a visible mouth that shows
+      the expression (flat, frown, grimace, open shout). The body is ONE single straight
+      vertical black line (spine), with four more single straight black lines for
+      the two arms and two legs, dot hands, short line feet -- plus one small thin
+      necktie shape (a short strip + a little triangle) hanging at the neck. NO torso
+      shape, NO filled body, NO solid black wedge, NO shirt block -- the figure is
+      a head, spiky hair, five thin lines and a skinny tie. It is never a black silhouette.'
+    anchor: left
+    voice: Orus
+  Host:
+    look: 'a classic minimalist stick figure like the host but drawn slightly shorter,
+      same construction: round open white head, ONE straight vertical line for the
+      spine, single straight lines for arms and legs, dot hands. No torso shape, no
+      fill, no silhouette. A small plain teal collar is the only difference from the
+      host.'
+    anchor: right
+    voice: Aoede
+scenes:
+  Cafe Counter:
+    bg: a clean, modern cafe counter with a prominent POS terminal
+beats:
+- id: b01
+  scene: Cafe Counter
+  who: Customer
+  say: I just tipped 25% for a pre-made sandwich.
+  cast:
+    Customer: standing at counter, looking stressed at the POS screen
+    Host: standing, arms crossed, unimpressed
+  headline: 25%? For WHAT?
+  props: []
+- id: b02
+  scene: Cafe Counter
+  who: Host
+  say: Contactless payments quietly raised tipping defaults.
+  cast:
+    Customer: looking at Host, surprised
+    Host: standing, pointing, calm
+  props: []
+- id: b03
+  scene: Cafe Counter
+  who: Host
+  say: Pre-COVID, defaults were 15 to 20 percent.
+  cast:
+    Customer: listening intently
+    Host: standing, explaining, one hand open
+  props:
+  - percent
+- id: b04
+  scene: Cafe Counter
+  who: Host
+  say: Now, default options often start at 25% to 30%.
+  cast:
+    Customer: nodding slowly, processing
+    Host: standing, gesturing with both hands
+  props:
+  - percent
+- id: b05
+  scene: Cafe Counter
+  who: Customer
+  say: It's so awkward to change it back.
+  cast:
+    Customer: shrugging, looking exasperated
+    Host: nodding empathetically
+  props:
+  - question
+- id: b06
+  scene: Cafe Counter
+  who: Host
+  say: The default option is chosen for you, not by you.
+  cast:
+    Customer: looking down, discouraged
+    Host: standing, arms wide, explaining the mechanism
+  props:
+  - magnet
+- id: b07
+  scene: Cafe Counter
+  who: Host
+  say: This adds billions to consumer spending annually.
+  cast:
+    Customer: looking shocked, mouth slightly open
+    Host: standing, holding up hands to emphasize a large number
+  props:
+  - cash
+- id: b08
+  scene: Cafe Counter
+  who: Host
+  say: The 'suggested' tip is rarely a suggestion.
+  cast:
+    Customer: frowning, understanding dawns
+    Host: standing, firm, pointing directly at the camera
+  props:
+  - warning
+narrator:
+  voice: Orus

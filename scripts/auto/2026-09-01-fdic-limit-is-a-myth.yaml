@@ -1,0 +1,103 @@
+title: The FDIC's $250,000 Limit Is a Myth
+slug: 2026-09-01-fdic-limit-is-a-myth
+format: short
+caption_style: explainer
+cast:
+  host:
+    look: 'the ''Anti Broke'' host: a minimalist black-marker stick figure with a
+      round OPEN white head, four or five short spiky lines of hair on top, two small
+      dot eyes, two short sharp angled eyebrows, and always a visible mouth that shows
+      the expression (flat, frown, grimace, open shout). The body is ONE single straight
+      vertical black line (spine), with four more single straight black lines for
+      the two arms and two legs, dot hands, short line feet -- plus one small thin
+      necktie shape (a short strip + a little triangle) hanging at the neck. NO torso
+      shape, NO filled body, NO solid black wedge, NO shirt block -- the figure is
+      a head, spiky hair, five thin lines and a skinny tie. It is never a black silhouette.'
+    anchor: center
+    voice: Orus
+scenes:
+  stage:
+    color: '#f4efe4'
+beats:
+- id: b01
+  scene: stage
+  who: host
+  say: The FDIC's $250,000 insurance limit isn't the real limit.
+  cast:
+    host: standing, arms wide, looking surprised at the audience
+  headline: THE $250K MYTH
+  props: []
+- id: b02
+  scene: stage
+  who: host
+  say: When it started in 1934, the limit was just $2,500.
+  cast:
+    host: standing, pointing, neutral
+  props:
+  - coin
+- id: b03
+  scene: stage
+  who: host
+  say: Today's standard coverage is one hundred times that amount.
+  cast:
+    host: standing, hands on hips, confident
+  props:
+  - shield
+- id: b04
+  scene: stage
+  who: host
+  say: But the limit isn't per person, per bank.
+  cast:
+    host: shaking head 'no', one hand raised, stern
+  props:
+  - bank
+- id: b05
+  scene: stage
+  who: host
+  say: It's per person, per 'ownership category' at a bank.
+  cast:
+    host: pointing, explaining
+  props:
+  - padlock
+- id: b06
+  scene: stage
+  who: host
+  say: Your single account is one category. A joint is another.
+  cast:
+    host: gesturing between and with open hands
+  props: []
+- id: b07
+  scene: stage
+  who: host
+  say: So a couple can insure up to $1.5 million.
+  cast:
+    host: pointing at the chart, looking at the audience
+  chart:
+    type: hbar
+    title: FDIC Coverage (Couple)
+    labels:
+    - You (Single)
+    - Spouse (Single)
+    - Joint Acct
+    - Your IRA
+    - Spouse's IRA
+    values:
+    - 250
+    - 250
+    - 500
+    - 250
+    - 250
+    unit: $k
+    highlight: 2
+    note: 'Total: $1.5M'
+  props: []
+- id: b08
+  scene: stage
+  who: host
+  say: It's not about having more banks, it's about having more account types.
+  cast:
+    host: standing still, arms crossed, looking directly at camera
+  props:
+  - safe
+narrator:
+  voice: Orus

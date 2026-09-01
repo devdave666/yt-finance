@@ -318,5 +318,12 @@
     "slug": "2026-09-01-missing-best-days-market",
     "direction": "insider-reveal",
     "format": "explainer"
+  },
+  {
+    "date": "2026-09-01",
+    "topic": "FDIC insurance covers far more than $250k at one bank if the money sits in different ownership categories",
+    "slug": "2026-09-01-fdic-limit-is-a-myth",
+    "direction": "then-vs-now",
+    "format": "explainer"
   }
 ]

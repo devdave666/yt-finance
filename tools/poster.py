@@ -37,7 +37,7 @@ def main() -> int:
     print(f"[poster] posted {entry['slug']}: {entry['post_ids']}")
     _run(["git", "-C", str(REPO), "add", "state/queue.json"])
     _run(["git", "-C", str(REPO), "commit", "-m", f"post: {entry['slug']}"])
-    _run(["git", "-C", str(REPO), "push"])
+    publish_mod.push_with_retry(REPO)
     return 0
 
 

@@ -51,6 +51,35 @@ def _run(cmd: list[str]) -> None:
         raise RuntimeError(f"{' '.join(cmd)} failed:\n{r.stderr[-1500:]}")
 
 
+def push_with_retry(repo_root: Path, attempts: int = 6) -> None:
+    """git push, rebasing onto whatever a concurrent writer pushed in the
+    meantime and retrying, instead of failing outright on the first
+    conflict.
+
+    A plain `git push` failing here used to blow up the whole enqueue/
+    publish call -- for a batch run that's a fully-built, QA-passed video
+    (minutes of real render + a real Gemini/TTS/image-gen bill) thrown away
+    over a conflict that a rebase+retry would have resolved in seconds. Real
+    incident: a long batch job and a human pushing code fixes from another
+    session collided repeatedly and this lost 10 finished videos in a row.
+    """
+    for attempt in range(attempts):
+        r = subprocess.run(["git", "-C", str(repo_root), "push"], capture_output=True, text=True)
+        if r.returncode == 0:
+            return
+        if attempt == attempts - 1:
+            raise RuntimeError(f"git push failed after {attempts} attempts:\n{r.stderr[-1500:]}")
+        _run(["git", "-C", str(repo_root), "fetch", "origin"])
+        branch = subprocess.run(["git", "-C", str(repo_root), "rev-parse", "--abbrev-ref", "HEAD"],
+                                capture_output=True, text=True).stdout.strip() or "main"
+        rebase = subprocess.run(["git", "-C", str(repo_root), "rebase", f"origin/{branch}"],
+                                capture_output=True, text=True)
+        if rebase.returncode != 0:
+            subprocess.run(["git", "-C", str(repo_root), "rebase", "--abort"], capture_output=True)
+            raise RuntimeError(f"git rebase failed after a push conflict "
+                               f"(attempt {attempt + 1}):\n{rebase.stderr[-1500:]}")
+
+
 def host_in_repo(video: Path, slug: str, repo_root: Path) -> str:
     """Copy the video into media/, commit + push, return its raw URL."""
     media = repo_root / "media"
@@ -60,7 +89,7 @@ def host_in_repo(video: Path, slug: str, repo_root: Path) -> str:
 
     _run(["git", "-C", str(repo_root), "add", "media", "state", "scripts/auto"])
     _run(["git", "-C", str(repo_root), "commit", "-m", f"auto: {slug}"])
-    _run(["git", "-C", str(repo_root), "push"])
+    push_with_retry(repo_root)
 
     repo = os.environ.get("GITHUB_REPOSITORY")
     if not repo:
@@ -204,7 +233,7 @@ def enqueue(script, meta: dict, repo_root: Path) -> dict:
     _save_queue(repo_root, queue)
     _run(["git", "-C", str(repo_root), "add", "state"])
     _run(["git", "-C", str(repo_root), "commit", "-m", f"queue: {script.slug}"])
-    _run(["git", "-C", str(repo_root), "push"])
+    push_with_retry(repo_root)
     print(f"[publish] queued: {entry['slug']}")
     return entry
 

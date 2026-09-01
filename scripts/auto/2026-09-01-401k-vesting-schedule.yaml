@@ -1,0 +1,115 @@
+title: Your 401k Match Can Vanish. Here's How.
+slug: 2026-09-01-401k-vesting-schedule
+format: short
+caption_style: title
+title_card: leaves job 1 year too early 💀
+cast:
+  Alex:
+    look: 'the ''Anti Broke'' host: a minimalist black-marker stick figure with a
+      round OPEN white head, four or five short spiky lines of hair on top, two small
+      dot eyes, two short sharp angled eyebrows, and always a visible mouth that shows
+      the expression (flat, frown, grimace, open shout). The body is ONE single straight
+      vertical black line (spine), with four more single straight black lines for
+      the two arms and two legs, dot hands, short line feet -- plus one small thin
+      necktie shape (a short strip + a little triangle) hanging at the neck. NO torso
+      shape, NO filled body, NO solid black wedge, NO shirt block -- the figure is
+      a head, spiky hair, five thin lines and a skinny tie. It is never a black silhouette.'
+    anchor: left
+    voice: Orus
+  Ben:
+    look: 'a classic minimalist stick figure like the host but drawn slightly shorter,
+      same construction: round open white head, ONE straight vertical line for the
+      spine, single straight lines for arms and legs, dot hands. No torso shape, no
+      fill, no silhouette. A small plain teal collar is the only difference from the
+      host.'
+    anchor: right
+    voice: Aoede
+scenes:
+  office:
+    bg: Vector illustration of a simple, modern office interior with a window and
+      a potted plant.
+beats:
+- id: b01
+  scene: office
+  who: Alex
+  say: My 401k balance just dropped by ten thousand dollars.
+  cast:
+    Alex: standing, looking at phone, shocked
+    Ben: not present
+  headline: $10,000 GONE.
+  props: []
+- id: b02
+  scene: office
+  who: Ben
+  say: Dropped? The market has been flat.
+  cast:
+    Alex: looking up from phone, confused
+    Ben: walking in, hands in pockets, inquisitive
+  props: []
+- id: b03
+  scene: office
+  who: Alex
+  say: No, the company took their match money back.
+  cast:
+    Alex: gesturing to phone, frustrated
+    Ben: standing, listening
+  props:
+  - arrow-down
+- id: b04
+  scene: office
+  who: Ben
+  say: Ah. How long were you there?
+  cast:
+    Alex: shrugging, annoyed
+    Ben: crossing arms, figuring it out
+  props: []
+- id: b05
+  scene: office
+  who: Alex
+  say: Two years. Why?
+  cast:
+    Alex: impatient
+    Ben: nodding, like he expected that answer
+  props: []
+- id: b06
+  scene: office
+  who: Ben
+  say: That's why. It's called a three-year cliff vesting.
+  cast:
+    Alex: listening, confused
+    Ben: pointing at the chart
+  chart:
+    type: bar
+    title: 3-Year Cliff Vesting
+    labels:
+    - Year 1
+    - Year 2
+    - Year 3
+    values:
+    - 0
+    - 0
+    - 100
+    unit: '%'
+    highlight: 2
+    note: 100% Vested
+  props: []
+- id: b07
+  scene: office
+  who: Alex
+  say: So... if I'd stayed one more year...?
+  cast:
+    Alex: dawning horror, looking at Ben
+    Ben: nodding, serious
+  props:
+  - question
+- id: b08
+  scene: office
+  who: Ben
+  say: You would have kept all of it.
+  cast:
+    Alex: facepalming, defeated
+    Ben: standing, neutral expression
+  props:
+  - padlock
+narrator:
+  voice: Orus

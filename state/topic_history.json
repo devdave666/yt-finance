@@ -262,5 +262,12 @@
     "slug": "2026-09-01-first-paycheck-withholding-shock",
     "direction": "pov-confession",
     "format": "skit"
+  },
+  {
+    "date": "2026-09-01",
+    "topic": "Paying only the minimum on a $5,000 credit card at 24% APR takes over 20 years and roughly doubles what you owe",
+    "slug": "2026-09-01-credit-card-minimum-payment-trap",
+    "direction": "countdown",
+    "format": "explainer"
   }
 ]

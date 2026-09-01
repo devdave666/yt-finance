@@ -1,0 +1,98 @@
+title: Why Minimum Payments Can Take 20+ Years
+slug: 2026-09-01-credit-card-minimum-payment-trap
+format: short
+caption_style: explainer
+cast:
+  host:
+    look: 'the ''Anti Broke'' host: a minimalist black-marker stick figure with a
+      round OPEN white head, four or five short spiky lines of hair on top, two small
+      dot eyes, two short sharp angled eyebrows, and always a visible mouth that shows
+      the expression (flat, frown, grimace, open shout). The body is ONE single straight
+      vertical black line (spine), with four more single straight black lines for
+      the two arms and two legs, dot hands, short line feet -- plus one small thin
+      necktie shape (a short strip + a little triangle) hanging at the neck. NO torso
+      shape, NO filled body, NO solid black wedge, NO shirt block -- the figure is
+      a head, spiky hair, five thin lines and a skinny tie. It is never a black silhouette.'
+    anchor: center
+    voice: Orus
+scenes:
+  stage:
+    color: '#f4efe4'
+beats:
+- id: b01
+  scene: stage
+  who: host
+  say: That five thousand dollar card balance can take over twenty years.
+  cast:
+    host: standing, arms wide, looking shocked
+  headline: A 20-YEAR DEBT
+  props: []
+- id: b02
+  scene: stage
+  who: host
+  say: The trap isn't the interest rate, it's the payment itself.
+  cast:
+    host: standing, pointing, serious
+  props:
+  - credit-card
+- id: b03
+  scene: stage
+  who: host
+  say: Your minimum payment is designed to shrink over time.
+  cast:
+    host: standing, neutral, looking at a downward arrow
+  props:
+  - arrow-down
+- id: b04
+  scene: stage
+  who: host
+  say: On a twenty-four percent card, your first payment is about one-fifty.
+  cast:
+    host: standing, holding up one hand, explaining
+  props:
+  - receipt
+- id: b05
+  scene: stage
+  who: host
+  say: But one hundred dollars of that is just interest.
+  cast:
+    host: standing, arms crossed, unimpressed
+  props:
+  - coins-stack
+- id: b06
+  scene: stage
+  who: host
+  say: By the time you're done, you've paid nearly double.
+  cast:
+    host: standing, pointing at chart, grim
+  chart:
+    type: hbar
+    title: The Real Cost
+    labels:
+    - You Borrowed
+    - You Paid Back
+    values:
+    - 5000
+    - 9845
+    unit: $
+    highlight: 1
+    note: Almost 2x
+  props: []
+- id: b07
+  scene: stage
+  who: host
+  say: It turns a short-term debt into a permanent one.
+  cast:
+    host: standing, looking at a padlock, serious
+  props:
+  - padlock
+- id: b08
+  scene: stage
+  who: host
+  say: The minimum isn't a payment plan, it's a penalty.
+  cast:
+    host: standing, arms crossed, looking at camera
+  props:
+  - warning
+narrator:
+  voice: Orus

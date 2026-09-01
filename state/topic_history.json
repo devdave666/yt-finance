@@ -325,5 +325,19 @@
     "slug": "2026-09-01-fdic-limit-is-a-myth",
     "direction": "then-vs-now",
     "format": "explainer"
+  },
+  {
+    "date": "2026-09-01",
+    "topic": "Free-trial subscriptions are a business model built on people forgetting to cancel before the real charge hits",
+    "slug": "2026-09-01-free-trial-trap",
+    "direction": "personification",
+    "format": "skit"
+  },
+  {
+    "date": "2026-09-01",
+    "topic": "Closing your oldest credit card can drop your score, because it shortens your average account age",
+    "slug": "2026-09-01-closing-oldest-card-hurts-score",
+    "direction": "timeline-walk",
+    "format": "explainer"
   }
 ]

@@ -1,0 +1,91 @@
+title: Why Closing Your Oldest Credit Card Hurts Your Score
+slug: 2026-09-01-closing-oldest-card-hurts-score
+format: short
+caption_style: explainer
+cast:
+  host:
+    look: 'the ''Anti Broke'' host: a minimalist black-marker stick figure with a
+      round OPEN white head, four or five short spiky lines of hair on top, two small
+      dot eyes, two short sharp angled eyebrows, and always a visible mouth that shows
+      the expression (flat, frown, grimace, open shout). The body is ONE single straight
+      vertical black line (spine), with four more single straight black lines for
+      the two arms and two legs, dot hands, short line feet -- plus one small thin
+      necktie shape (a short strip + a little triangle) hanging at the neck. NO torso
+      shape, NO filled body, NO solid black wedge, NO shirt block -- the figure is
+      a head, spiky hair, five thin lines and a skinny tie. It is never a black silhouette.'
+    anchor: center
+    voice: Orus
+scenes:
+  stage:
+    color: '#f4efe4'
+beats:
+- id: b01
+  scene: stage
+  who: host
+  say: Closing a credit card can actually drop your score.
+  cast:
+    host: standing, arms open wide, surprised expression
+  headline: YOUR SCORE DROPS.
+  props: []
+- id: b02
+  scene: stage
+  who: host
+  say: Let's say you have three cards, opened years apart.
+  cast:
+    host: standing, gesturing, explaining
+  chart:
+    type: hbar
+    title: Age of Accounts
+    labels:
+    - Card A
+    - Card B
+    - Card C
+    values:
+    - 10
+    - 4
+    - 2
+    unit: yrs
+    highlight: 0
+  props: []
+- id: b03
+  scene: stage
+  who: host
+  say: You decide to close the ten-year-old one you never use.
+  cast:
+    host: making a 'cutting' motion with one hand, looking determined
+  props:
+  - credit-card
+- id: b04
+  scene: stage
+  who: host
+  say: Before, your average account age was over five years.
+  cast:
+    host: standing, pointing to a thought bubble above head, neutral
+  props:
+  - scale
+- id: b05
+  scene: stage
+  who: host
+  say: After, it's only three years.
+  cast:
+    host: arms down, palms up, shrugging, looking disappointed
+  props:
+  - arrow-down
+- id: b06
+  scene: stage
+  who: host
+  say: Fifteen percent of your score is your credit history's length.
+  cast:
+    host: holding up hands to frame a percentage, serious expression
+  props:
+  - percent
+- id: b07
+  scene: stage
+  who: host
+  say: That old account is an anchor holding your score up.
+  cast:
+    host: standing firm, hands on hips, neutral expression
+  props:
+  - safe
+narrator:
+  voice: Orus

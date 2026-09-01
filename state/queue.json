@@ -47,9 +47,13 @@
     "description": "Warren Buffett is seen as an investing genius, but the real source of his wealth is simpler: time. Over 99% of his net worth was generated after his 50th birthday, proving the incredible power of long-term compounding.\n\n#compounding #investing #warrenbuffett #personalfinance #longterminvesting",
     "hosted_url": "https://raw.githubusercontent.com/devdave666/yt-finance/main/media/2026-08-31-buffett-compounding-after-50.mp4",
     "queued_date": "2026-08-31",
-    "posted": false,
-    "posted_date": null,
-    "post_ids": null
+    "posted": true,
+    "posted_date": "2026-09-01",
+    "post_ids": {
+      "youtube": "6a9757f28636374aa649b8d2",
+      "instagram": "6a9757f63bb977dabf6993c7",
+      "tiktok": "6a97580112353bde6223d2f3"
+    }
   },
   {
     "slug": "2026-08-31-invest-early-not-more",

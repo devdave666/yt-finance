@@ -1,0 +1,100 @@
+title: How Most GameStop Investors Actually Lost Money
+slug: 2026-09-01-gamestop-squeeze-losses
+format: short
+caption_style: explainer
+cast:
+  host:
+    look: 'the ''Anti Broke'' host: a minimalist black-marker stick figure with a
+      round OPEN white head, four or five short spiky lines of hair on top, two small
+      dot eyes, two short sharp angled eyebrows, and always a visible mouth that shows
+      the expression (flat, frown, grimace, open shout). The body is ONE single straight
+      vertical black line (spine), with four more single straight black lines for
+      the two arms and two legs, dot hands, short line feet -- plus one small thin
+      necktie shape (a short strip + a little triangle) hanging at the neck. NO torso
+      shape, NO filled body, NO solid black wedge, NO shirt block -- the figure is
+      a head, spiky hair, five thin lines and a skinny tie. It is never a black silhouette.'
+    anchor: center
+    voice: Orus
+scenes:
+  stage:
+    color: '#f4efe4'
+beats:
+- id: b01
+  scene: stage
+  who: host
+  say: Most people who bought GameStop during the squeeze lost money.
+  cast:
+    host: standing, looking directly at camera, serious expression
+  headline: MOST PEOPLE LOST
+  props: []
+- id: b02
+  scene: stage
+  who: host
+  say: Hedge funds were shorting the stock, betting it would fail.
+  cast:
+    host: standing, gesturing down with one hand
+  props:
+  - bars-down
+- id: b03
+  scene: stage
+  who: host
+  say: Retail traders online saw this and began buying shares.
+  cast:
+    host: standing, pointing up and to the side
+  props:
+  - chart-up
+- id: b04
+  scene: stage
+  who: host
+  say: This forced the funds to buy back shares at any price.
+  cast:
+    host: standing, hands pulling inwards as if towards a magnet
+  props:
+  - magnet
+- id: b05
+  scene: stage
+  who: host
+  say: In days, the price went from twenty dollars to over $340.
+  cast:
+    host: standing, pointing to the peak of the chart
+  chart:
+    type: line
+    title: GME Price (Jan-Feb 2021)
+    labels:
+    - Jan 12
+    - Jan 27
+    - Feb 23
+    values:
+    - 20
+    - 347
+    - 45
+    unit: $
+    highlight: 1
+    note: THE PEAK
+  props: []
+- id: b06
+  scene: stage
+  who: host
+  say: But the media hype was loudest at the very top.
+  cast:
+    host: standing, indicating the peak again, looks concerned
+  props:
+  - warning
+- id: b07
+  scene: stage
+  who: host
+  say: Anyone buying then was just providing the winners an exit.
+  cast:
+    host: standing, arms wide in a 'what can you do' gesture
+  props:
+  - handshake
+- id: b08
+  scene: stage
+  who: host
+  say: By the time it's a headline, the trade is over.
+  cast:
+    host: standing, hands on hips, looks grimly at camera
+  props:
+  - clock
+narrator:
+  voice: Orus

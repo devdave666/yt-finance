@@ -283,5 +283,12 @@
     "slug": "2026-09-01-proportional-rent-split",
     "direction": "interview",
     "format": "skit"
+  },
+  {
+    "date": "2026-09-01",
+    "topic": "GameStop's 2021 short squeeze made a few people millions and wiped out most who bought in after the spike",
+    "slug": "2026-09-01-gamestop-squeeze-losses",
+    "direction": "news-flash",
+    "format": "explainer"
   }
 ]

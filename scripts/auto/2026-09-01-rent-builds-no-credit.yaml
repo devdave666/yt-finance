@@ -1,0 +1,87 @@
+title: Your Biggest Monthly Bill Builds Zero Credit
+slug: 2026-09-01-rent-builds-no-credit
+format: short
+caption_style: explainer
+cast:
+  host:
+    look: 'the ''Anti Broke'' host: a minimalist black-marker stick figure with a
+      round OPEN white head, four or five short spiky lines of hair on top, two small
+      dot eyes, two short sharp angled eyebrows, and always a visible mouth that shows
+      the expression (flat, frown, grimace, open shout). The body is ONE single straight
+      vertical black line (spine), with four more single straight black lines for
+      the two arms and two legs, dot hands, short line feet -- plus one small thin
+      necktie shape (a short strip + a little triangle) hanging at the neck. NO torso
+      shape, NO filled body, NO solid black wedge, NO shirt block -- the figure is
+      a head, spiky hair, five thin lines and a skinny tie. It is never a black silhouette.'
+    anchor: center
+    voice: Orus
+scenes:
+  stage:
+    color: '#f4efe4'
+beats:
+- id: b01
+  scene: stage
+  who: host
+  say: Your biggest monthly payment does nothing for your credit.
+  cast:
+    host: standing, arms open wide, looking surprised at the camera
+  headline: BUILDS ZERO CREDIT.
+  props: []
+- id: b02
+  scene: stage
+  who: host
+  say: Your landlord can report late payments that hurt you.
+  cast:
+    host: pointing, looking concerned
+  props:
+  - arrow-down
+- id: b03
+  scene: stage
+  who: host
+  say: But they don't report on-time payments that help you.
+  cast:
+    host: pointing, looking frustrated
+  props:
+  - arrow-up
+- id: b04
+  scene: stage
+  who: host
+  say: That's because credit bureaus don't track rent by default.
+  cast:
+    host: shrugging, hands up, neutral expression
+  props:
+  - house
+- id: b05
+  scene: stage
+  who: host
+  say: To fix this, you have to use a rent-reporting service.
+  cast:
+    host: standing, pointing up as if having an idea
+  props:
+  - lightbulb
+- id: b06
+  scene: stage
+  who: host
+  say: These services verify your payments and add them to your file.
+  cast:
+    host: standing, gesturing towards a checklist, neutral
+  props:
+  - receipt
+- id: b07
+  scene: stage
+  who: host
+  say: Many of them charge a monthly fee for the privilege.
+  cast:
+    host: looking at camera, unimpressed, holding out one hand
+  props:
+  - coin
+- id: b08
+  scene: stage
+  who: host
+  say: The system defaults to ignoring your good behavior.
+  cast:
+    host: standing still, hands at sides, looking directly at camera
+  props:
+  - padlock
+narrator:
+  voice: Orus

@@ -1,0 +1,122 @@
+title: Why Splitting Rent 50/50 Is Actually Unfair
+slug: 2026-09-01-proportional-rent-split
+format: short
+caption_style: title
+title_card: That 'Fair' 50/50 Split... 👀
+cast:
+  Interviewer:
+    look: 'the ''Anti Broke'' host: a minimalist black-marker stick figure with a
+      round OPEN white head, four or five short spiky lines of hair on top, two small
+      dot eyes, two short sharp angled eyebrows, and always a visible mouth that shows
+      the expression (flat, frown, grimace, open shout). The body is ONE single straight
+      vertical black line (spine), with four more single straight black lines for
+      the two arms and two legs, dot hands, short line feet -- plus one small thin
+      necktie shape (a short strip + a little triangle) hanging at the neck. NO torso
+      shape, NO filled body, NO solid black wedge, NO shirt block -- the figure is
+      a head, spiky hair, five thin lines and a skinny tie. It is never a black silhouette.'
+    anchor: left
+    voice: Orus
+  You:
+    look: 'a classic minimalist stick figure like the host but drawn slightly shorter,
+      same construction: round open white head, ONE straight vertical line for the
+      spine, single straight lines for arms and legs, dot hands. No torso shape, no
+      fill, no silhouette. A small plain teal collar is the only difference from the
+      host.'
+    anchor: right
+    voice: Aoede
+scenes:
+  street:
+    bg: A simple vector background of a city sidewalk with a blurred building facade.
+beats:
+- id: b01
+  scene: street
+  who: Interviewer
+  say: You split the rent 50/50. You think that's fair?
+  cast:
+    Interviewer: shoving microphone towards You, sharp expression
+    You: startled, taking a step back
+  headline: THE 50/50 LIE
+  props: []
+- id: b02
+  scene: street
+  who: You
+  say: Of course. We both pay the exact same amount.
+  cast:
+    Interviewer: unimpressed, lowers mic slightly
+    You: shrugging defensively, hands open
+  props: []
+- id: b03
+  scene: street
+  who: Interviewer
+  say: Let's use some real numbers. Rent is two thousand.
+  cast:
+    Interviewer: gesturing with free hand, matter-of-fact
+    You: nodding, listening
+  props:
+  - receipt
+- id: b04
+  scene: street
+  who: Interviewer
+  say: You make $6,000 a month. Your partner makes $3,000.
+  cast:
+    Interviewer: pointing at You, then to the side
+    You: face starts to look worried
+  props: []
+- id: b05
+  scene: street
+  who: Interviewer
+  say: Your $1,000 share is 17% of your income.
+  cast:
+    Interviewer: calm, analytical
+    You: processing the number, confused
+  chart:
+    type: hbar
+    title: Rent Burden
+    labels:
+    - You
+    - Partner
+    values:
+    - 17
+    - 33
+    unit: '%'
+    highlight: 0
+  props: []
+- id: b06
+  scene: street
+  who: Interviewer
+  say: Theirs is 33%. Double the financial pressure.
+  cast:
+    Interviewer: leans in, intense
+    You: eyes wide with shock, jaw slightly open
+  chart:
+    type: hbar
+    title: Rent Burden
+    labels:
+    - You
+    - Partner
+    values:
+    - 17
+    - 33
+    unit: '%'
+    highlight: 1
+    note: DOUBLE THE STRESS
+  props: []
+- id: b07
+  scene: street
+  who: Interviewer
+  say: Fair isn't equal. It's proportional to what you earn.
+  cast:
+    Interviewer: stands back, arms crossed, looking smug
+    You: staring blankly, stunned
+  props:
+  - scale
+- id: b08
+  scene: street
+  who: You
+  say: Wait... so who's been overpaying this whole time?
+  cast:
+    Interviewer: smirking, silent
+    You: looks directly at the camera, a dawning horror
+  props: []
+narrator:
+  voice: Orus

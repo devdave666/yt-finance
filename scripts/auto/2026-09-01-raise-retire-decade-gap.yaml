@@ -1,0 +1,102 @@
+title: How One Choice After a Raise Can Cost You a Decade of Work
+slug: 2026-09-01-raise-retire-decade-gap
+format: short
+caption_style: explainer
+cast:
+  host:
+    look: 'the ''Anti Broke'' host: a minimalist black-marker stick figure with a
+      round OPEN white head, four or five short spiky lines of hair on top, two small
+      dot eyes, two short sharp angled eyebrows, and always a visible mouth that shows
+      the expression (flat, frown, grimace, open shout). The body is ONE single straight
+      vertical black line (spine), with four more single straight black lines for
+      the two arms and two legs, dot hands, short line feet -- plus one small thin
+      necktie shape (a short strip + a little triangle) hanging at the neck. NO torso
+      shape, NO filled body, NO solid black wedge, NO shirt block -- the figure is
+      a head, spiky hair, five thin lines and a skinny tie. It is never a black silhouette.'
+    anchor: center
+    voice: Orus
+scenes:
+  stage:
+    color: '#f4efe4'
+beats:
+- id: b01
+  scene: stage
+  who: host
+  say: Two people get the same raise.
+  cast:
+    host: standing, arms open wide, serious
+  headline: ONE RETIRES 10 YEARS EARLIER.
+  props: []
+- id: b02
+  scene: stage
+  who: host
+  say: The first person increases their spending with every pay bump.
+  cast:
+    host: pointing, looking unimpressed
+  props:
+  - bars-up
+- id: b03
+  scene: stage
+  who: host
+  say: This is called lifestyle creep.
+  cast:
+    host: standing, neutral, arms crossed
+  props:
+  - credit-card
+- id: b04
+  scene: stage
+  who: host
+  say: The second person invests every single raise they get.
+  cast:
+    host: pointing, looking determined
+  props:
+  - arrow-up
+- id: b05
+  scene: stage
+  who: host
+  say: That money, compounded, grows dramatically over a career.
+  cast:
+    host: standing to the side of the chart, indicating it
+  chart:
+    type: line
+    title: Growth of One $5k/yr Raise
+    labels:
+    - 10 Yrs
+    - 20 Yrs
+    - 30 Yrs
+    - 40 Yrs
+    values:
+    - 78000
+    - 247000
+    - 611000
+    - 1400000
+    unit: $
+    highlight: 3
+    note: at 8% avg return
+  props: []
+- id: b06
+  scene: stage
+  who: host
+  say: Do that with every raise, you can shorten your career.
+  cast:
+    host: standing, looking directly at camera, serious
+  props:
+  - hourglass
+- id: b07
+  scene: stage
+  who: host
+  say: The financial system is designed for you to spend more.
+  cast:
+    host: looking down at prop with disdain
+  props:
+  - padlock
+- id: b08
+  scene: stage
+  who: host
+  say: Your salary funds your life. Your raises fund your freedom.
+  cast:
+    host: standing, calm, neutral expression
+  props:
+  - shield
+narrator:
+  voice: Orus

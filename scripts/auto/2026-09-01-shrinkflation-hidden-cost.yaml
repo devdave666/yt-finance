@@ -1,0 +1,97 @@
+title: Shrinkflation Is Costing You Hundreds Without Changing a Price
+slug: 2026-09-01-shrinkflation-hidden-cost
+format: short
+caption_style: explainer
+cast:
+  host:
+    look: 'the ''Anti Broke'' host: a minimalist black-marker stick figure with a
+      round OPEN white head, four or five short spiky lines of hair on top, two small
+      dot eyes, two short sharp angled eyebrows, and always a visible mouth that shows
+      the expression (flat, frown, grimace, open shout). The body is ONE single straight
+      vertical black line (spine), with four more single straight black lines for
+      the two arms and two legs, dot hands, short line feet -- plus one small thin
+      necktie shape (a short strip + a little triangle) hanging at the neck. NO torso
+      shape, NO filled body, NO solid black wedge, NO shirt block -- the figure is
+      a head, spiky hair, five thin lines and a skinny tie. It is never a black silhouette.'
+    anchor: center
+    voice: Orus
+scenes:
+  stage:
+    color: '#f4efe4'
+beats:
+- id: b01
+  scene: stage
+  who: host
+  say: You're paying more, even when the price tag doesn't change.
+  cast:
+    host: standing, arms wide, looking directly at camera, serious
+  headline: THE HIDDEN PRICE HIKE
+  props: []
+- id: b02
+  scene: stage
+  who: host
+  say: It’s called shrinkflation.
+  cast:
+    host: standing, pointing, neutral expression
+  props:
+  - arrow-down
+- id: b03
+  scene: stage
+  who: host
+  say: The company keeps the price the same.
+  cast:
+    host: standing still, holding hands out, palms up, as if weighing two options
+  props:
+  - credit-card
+- id: b04
+  scene: stage
+  who: host
+  say: But quietly makes the product smaller.
+  cast:
+    host: looking at the chart on the, pointing to it
+  chart:
+    type: bar
+    title: Price Per Ounce
+    labels:
+    - Last Year
+    - This Year
+    values:
+    - 0.4
+    - 0.5
+    unit: $
+    highlight: 1
+    note: +25% cost
+  props: []
+- id: b05
+  scene: stage
+  who: host
+  say: Your bag of chips has the same five dollar price.
+  cast:
+    host: standing, neutral, looking at camera
+  props: []
+- id: b06
+  scene: stage
+  who: host
+  say: But it has fewer chips.
+  cast:
+    host: shrugging, looking slightly annoyed
+  props:
+  - bars-down
+- id: b07
+  scene: stage
+  who: host
+  say: Over a year, that difference can cost you a full grocery trip.
+  cast:
+    host: looking at a prop, unimpressed
+  props:
+  - receipt
+- id: b08
+  scene: stage
+  who: host
+  say: They're betting you only check the price, not the weight.
+  cast:
+    host: standing, arms crossed, looking directly at camera
+  props:
+  - scale
+narrator:
+  voice: Orus

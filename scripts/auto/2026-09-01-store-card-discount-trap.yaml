@@ -1,0 +1,105 @@
+title: How Stores Trick You Into "Saving" Money
+slug: 2026-09-01-store-card-discount-trap
+format: short
+caption_style: title
+title_card: The 'Discount' That Costs You Money 🤑
+cast:
+  alex:
+    look: 'the ''Anti Broke'' host: a minimalist black-marker stick figure with a
+      round OPEN white head, four or five short spiky lines of hair on top, two small
+      dot eyes, two short sharp angled eyebrows, and always a visible mouth that shows
+      the expression (flat, frown, grimace, open shout). The body is ONE single straight
+      vertical black line (spine), with four more single straight black lines for
+      the two arms and two legs, dot hands, short line feet -- plus one small thin
+      necktie shape (a short strip + a little triangle) hanging at the neck. NO torso
+      shape, NO filled body, NO solid black wedge, NO shirt block -- the figure is
+      a head, spiky hair, five thin lines and a skinny tie. It is never a black silhouette.'
+    anchor: left
+    voice: Orus
+  chloe:
+    look: 'a classic minimalist stick figure like the host but drawn slightly shorter,
+      same construction: round open white head, ONE straight vertical line for the
+      spine, single straight lines for arms and legs, dot hands. No torso shape, no
+      fill, no silhouette. A small plain teal collar is the only difference from the
+      host.'
+    anchor: right
+    voice: Aoede
+scenes:
+  living_room:
+    bg: A simple 2D vector background of a living room. Contains a simple couch on
+      one side and a floor lamp on the other. Flat, neutral colors.
+beats:
+- id: b01
+  scene: living_room
+  who: chloe
+  say: I saved twenty bucks on this jacket!
+  cast:
+    chloe: holding up a new jacket, smiling wide
+    alex: standing, arms crossed, skeptical
+  headline: YOU DIDN'T SAVE $20
+  props: []
+- id: b02
+  scene: living_room
+  who: alex
+  say: It was a hundred dollars, twenty percent off?
+  cast:
+    chloe: nodding enthusiastically
+    alex: neutral, calculating
+  props:
+  - receipt
+- id: b03
+  scene: living_room
+  who: chloe
+  say: Yep! I signed up for the store card.
+  cast:
+    chloe: proud, holds up plastic card
+    alex: raises an eyebrow
+  props:
+  - credit-card
+- id: b04
+  scene: living_room
+  who: alex
+  say: So you spent eighty dollars to save twenty.
+  cast:
+    chloe: confused, smile fading
+    alex: deadpan, stating a fact
+  props:
+  - arrow-down
+- id: b05
+  scene: living_room
+  who: chloe
+  say: No, I saved money. It was a deal.
+  cast:
+    chloe: defensive, holding jacket tighter
+    alex: shaking head slightly
+  props:
+  - percent
+- id: b06
+  scene: living_room
+  who: alex
+  say: Did you plan to buy a jacket today?
+  cast:
+    chloe: hesitates, looks away
+    alex: waiting, arms still crossed
+  props:
+  - question
+- id: b07
+  scene: living_room
+  who: chloe
+  say: Well, no, but it was on sale...
+  cast:
+    chloe: deflated, looking at the jacket
+    alex: neutral, lets the silence hang
+  props:
+  - warning
+- id: b08
+  scene: living_room
+  who: alex
+  say: You didn't save twenty. You just spent eighty.
+  cast:
+    chloe: eyes wide, realization dawning
+    alex: nods once, point made
+  props:
+  - cash
+narrator:
+  voice: Orus

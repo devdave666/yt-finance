@@ -69,6 +69,10 @@ ICONS = {
                "with different real numbers, so it must not show any specific number)",
                "white paper"),
     "magnet": ("a horseshoe magnet", "red and grey"),
+    "comment": ("a speech-bubble/comment-bubble shape with three small dots inside it "
+               "in a row -- NO other text, NO letters, just the three dots", "white bubble, black dots"),
+    "bookmark": ("a simple ribbon-shaped bookmark tag, rectangular with a V notch cut "
+                "into the bottom edge", "solid blue"),
 }
 
 

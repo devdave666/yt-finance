@@ -146,10 +146,21 @@ SCHEMA_DOC = """Return ONLY a JSON object, no prose, with this shape:
       // EVERY beat needs something on screen besides the host: a prop, a chart, or (beat 1) the headline.
       //   A beat that is just the host talking is a dead frame -- give the last beat a prop too (the
       //   villain object: the contract, the fine print, the fee schedule, the default toggle).
-      // At most one prop OR one chart per beat. 1-2 beats with a chart is ideal
-      //   for a data topic; the chart's numbers MUST be ones the narration states
-      //   and MUST be roughly accurate. A beat with a chart should not also list a prop.
-      // Props must be concrete and instantly readable -- not abstract.
+      // At most one prop OR one chart per beat. A beat with a chart should not also list a prop.
+      // USE A CHART, not a generic prop icon, on any beat that states a trend, a comparison, a
+      //   before/after, or "X of Y" statistic -- a bare arrow-up/bars-up/calendar icon on a beat
+      //   like that is a missed real number, not a stylistic choice. A data-driven topic (market
+      //   history, any topic with 2+ real figures) should have a chart on MOST of its numeric
+      //   beats, not just one -- err toward more charts, fewer generic icons.
+      // The chart's numbers MUST be ones the narration states and MUST be roughly accurate.
+      // NUMBER MATCH: whatever a beat's `say` states a figure as (a percent, "half", "double",
+      //   a dollar amount), the chart/prop on that SAME beat must show that same figure, not a
+      //   looser or rounder one -- e.g. if the chart shows 46%, `say` should reference 46%
+      //   ("cut to forty-six percent") or "less than half", not the looser "cut in half". A viewer
+      //   who can read catches the mismatch immediately.
+      // Props must be concrete and instantly readable -- not abstract. `comment` and `bookmark`
+      //   are reserved for the closing CTA beat the pipeline appends automatically -- don't use
+      //   them elsewhere.
     ]
   }
 }
@@ -275,6 +286,40 @@ def _inject_identity(script_obj: dict) -> None:
         beats[0]["headline"] = (m.group(0).strip() if m
                                 else " ".join(say.split()[:4]).rstrip(".,"))
         beats[0]["props"] = []
+
+    _append_cta(script_obj)
+
+
+# Every video now ends on a branded call-to-action beat -- appended here,
+# guaranteed, rather than asked of the model (SCHEMA_DOC explicitly tells it
+# NOT to end on a CTA, so its own closer stays a real takeaway line; this is
+# a separate beat bolted on after). A comment prompt + a save prompt both
+# feed the platform's own distribution algorithm, and the old ending just
+# left that on the table. Rotates through a few lines/icons so it isn't
+# purely identical every time, same spirit as the direction/topic variety.
+_CTA_LINES = [
+    ("Have you been through something like this? Comment below, and save this for later.", "comment"),
+    ("Comment your take below -- then save this so future-you remembers.", "bookmark"),
+    ("Agree or disagree? Say it in the comments, and save this for later.", "comment"),
+    ("Which side are you on? Comment below, and save this before you need it.", "bookmark"),
+]
+
+
+def _append_cta(script_obj: dict) -> None:
+    beats = script_obj.get("beats", [])
+    cast = script_obj.get("cast") or {}
+    primary = next(iter(cast), None)
+    if not beats or not primary:
+        return
+    say, icon = _CTA_LINES[len(beats) % len(_CTA_LINES)]
+    beats.append({
+        "id": f"cta{len(beats):03d}",
+        "scene": beats[-1].get("scene"),
+        "who": primary,
+        "say": say,
+        "cast": {primary: "standing, warm inviting expression, gesturing out and down towards the viewer"},
+        "props": [icon],
+    })
 
 
 # Picked LRU, same mechanism as _pick_topic (not a fixed rotation -- a fixed

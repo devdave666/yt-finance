@@ -1,0 +1,108 @@
+title: The Real Cost of a 15-Year Mortgage
+slug: 2026-09-01-15-vs-30-year-mortgage-payment
+format: short
+caption_style: explainer
+cast:
+  host:
+    look: 'the ''Anti Broke'' host: a minimalist black-marker stick figure with a
+      round OPEN white head, four or five short spiky lines of hair on top, two small
+      dot eyes, two short sharp angled eyebrows, and always a visible mouth that shows
+      the expression (flat, frown, grimace, open shout). The body is ONE single straight
+      vertical black line (spine), with four more single straight black lines for
+      the two arms and two legs, dot hands, short line feet -- plus one small thin
+      necktie shape (a short strip + a little triangle) hanging at the neck. NO torso
+      shape, NO filled body, NO solid black wedge, NO shirt block -- the figure is
+      a head, spiky hair, five thin lines and a skinny tie. It is never a black silhouette.'
+    anchor: center
+    voice: Orus
+scenes:
+  stage:
+    color: '#f4efe4'
+beats:
+- id: b01
+  scene: stage
+  who: host
+  say: The rate on a 15-year mortgage is lower.
+  cast:
+    host: standing, pointing up, looking at camera
+  headline: A 29% HIGHER PAYMENT
+  props: []
+- id: b02
+  scene: stage
+  who: host
+  say: But the monthly payment is much, much higher.
+  cast:
+    host: arms wide, emphasizing the point, serious
+  props:
+  - arrow-up
+- id: b03
+  scene: stage
+  who: host
+  say: Let's use a four hundred thousand dollar loan.
+  cast:
+    host: standing, hands framing the space to his
+  props:
+  - house
+- id: b04
+  scene: stage
+  who: host
+  say: The thirty-year payment is about twenty-seven hundred.
+  cast:
+    host: pointing at the chart
+  chart:
+    type: hbar
+    title: Monthly Payment ($400k Loan)
+    labels:
+    - 30-Year (7%)
+    - 15-Year (6.25%)
+    values:
+    - 2661
+    - 3429
+    unit: $
+    highlight: 0
+  props: []
+- id: b05
+  scene: stage
+  who: host
+  say: The fifteen-year is over thirty-four hundred.
+  cast:
+    host: pointing at the chart
+  chart:
+    type: hbar
+    title: Monthly Payment ($400k Loan)
+    labels:
+    - 30-Year (7%)
+    - 15-Year (6.25%)
+    values:
+    - 2661
+    - 3429
+    unit: $
+    highlight: 1
+    note: +$768/mo
+  props: []
+- id: b06
+  scene: stage
+  who: host
+  say: You're paying off the same loan in half the time.
+  cast:
+    host: shrugging, as if it's obvious
+  props:
+  - hourglass
+- id: b07
+  scene: stage
+  who: host
+  say: You save thousands in interest, but lose cash flow.
+  cast:
+    host: hands out, weighing options
+  props:
+  - scale
+- id: b08
+  scene: stage
+  who: host
+  say: The lower rate buys you less time, not a bigger house.
+  cast:
+    host: standing firm, looking at camera, neutral
+  props:
+  - house
+narrator:
+  voice: Orus

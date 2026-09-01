@@ -73,7 +73,15 @@ Two content pillars, both in play: (1) the fine-print mechanic nobody explains, 
 invested" / market-history reveal real finance creators go viral with -- a real, well-known stock, index,
 or asset, a real (rounded, widely-cited) dollar outcome, landing on a lesson about time in the market or
 compounding. You explain how the machine works or what history actually shows; you never tell anyone
-what to buy today, promise future returns, or give individualised advice."""
+what to buy today, promise future returns, or give individualised advice.
+
+Sameness is a real failure mode, not just a style nitpick -- a channel where every video is "one figure
+states a number next to a chart" is boring no matter how good any single fact is. The topic is the WHAT;
+the FORMAT/STRUCTURE instruction you're given below is the HOW, and you follow it, not your own default.
+If you're given "what if you'd invested" material, do NOT just reach for "$1,000 in [company]'s IPO is
+worth $X today" again -- that shape has already been used repeatedly. Find the angle in the specific
+topic that's actually interesting: the surprising REASON, the person it happened to, the moment things
+could have gone the other way, the counterintuitive comparison -- not a fill-in-the-blank template."""
 
 SCHEMA_DOC = """Return ONLY a JSON object, no prose, with this shape:
 
@@ -155,7 +163,12 @@ Rules:
   This kind of topic should almost always use a `chart` beat (type "line" for growth-over-time reveals)
   instead of a prop, since the number IS the hook.
 - explainer = one narrator ("host") explaining to camera; keep gestures simple ("pointing to the right", "shrugging", "arms open").
-- skit = two characters, a short situation, a punchline in the final beat.
+- skit = two named, distinct characters (give them different anchors, different poses/energy -- not two
+  copies of the host) in one concrete, specific situation the topic actually implies (a customer and a
+  bank employee, two friends comparing choices, present-you and past-you, a person and their own
+  reflection). Real back-and-forth dialogue -- neither character just recites facts at the other. One of
+  them is wrong, surprised, or caught out by the fact; the punchline lands ON that, in the final beat, not
+  as a tacked-on moral.
 - Every `say` must land in about 1-2 seconds of speech. Short. Punchy. Spoken, not written.
 """
 
@@ -183,7 +196,7 @@ def _pick_topic(themes: dict, history: list[dict]) -> str:
     return eligible[0]
 
 
-def _ask(topic: str, themes: dict) -> dict:
+def _ask(topic: str, themes: dict, format_hint: str, structure_hint: str) -> dict:
     # NOTE: keep a reference to the genai Client for the whole call. If it is
     # only a throwaway in an expression (mk().models.generate_content(...)) the
     # SDK's httpx transport gets closed on GC mid-request -> "client has been
@@ -199,6 +212,9 @@ def _ask(topic: str, themes: dict) -> dict:
         f"NARRATION VOICE:\n{themes['voice']}\n\n"
         f"HARD RULES:\n- " + "\n- ".join(themes.get("rules", [])) + "\n\n"
         f"TODAY'S TOPIC: {topic}\n\n"
+        f"FORMAT FOR THIS ONE (not your choice -- the channel rotates formats so "
+        f"every video doesn't look the same): \"format\" MUST be \"{format_hint}\". "
+        f"{structure_hint}\n\n"
         "Write the video now. JSON only."
     )
     cfg = types.GenerateContentConfig(
@@ -262,6 +278,31 @@ def _inject_identity(script_obj: dict) -> None:
         beats[0]["props"] = []
 
 
+# Rotated (not left to the model -- it defaulted to "explainer" + plain-reveal
+# every single time across 40+ real generations until this was forced) so the
+# channel actually gets visual and structural variety instead of the same
+# "one figure states a fact next to a chart" shape on repeat.
+_STRUCTURES = [
+    "Structure: state the surprising fact, then reveal the mechanism. The default shape -- keep it sharp, not generic.",
+    "Structure: MYTH VS REALITY -- open with the common belief almost everyone assumes is true, then flip it with the real number or rule.",
+    "Structure: THEN VS NOW -- anchor on a concrete before/after comparison (a price, a rule, a payout) so the scale of change is visceral, not abstract.",
+    "Structure: A RELATABLE MISTAKE -- frame it as the specific mistake a normal, reasonably smart person makes without realizing it, and what it quietly costs them.",
+    "Structure: TWO PATHS -- put two people or two choices side by side and reveal the gap between where they end up.",
+]
+
+
+def _format_and_structure(history: list[dict]) -> tuple[str, str]:
+    n = len(history)
+    fmt = "skit" if n % 3 == 2 else "explainer"
+    structure = _STRUCTURES[n % len(_STRUCTURES)]
+    if fmt == "skit":
+        structure += (" Written as a skit: two characters in a real, specific situation "
+                      "(not two voices splitting a lecture) -- natural back-and-forth, "
+                      "one of them learns or is caught out by the fact, a punchline landing "
+                      "on the last beat.")
+    return fmt, structure
+
+
 def _slugify(s: str) -> str:
     return re.sub(r"[^a-z0-9]+", "-", s.lower()).strip("-")[:60] or "video"
 
@@ -285,11 +326,13 @@ def generate(out_dir: Path | None = None, dry_topic: str | None = None) -> tuple
         return yml, meta
 
     topic = dry_topic or _pick_topic(themes, history)
+    format_hint, structure_hint = _format_and_structure(history)
     print(f"[generate] topic: {topic}")
+    print(f"[generate] format: {format_hint}  |  {structure_hint[:70]}...")
 
     obj = None
     for attempt in range(3):
-        cand = _ask(topic, themes)
+        cand = _ask(topic, themes, format_hint, structure_hint)
         script_obj = cand["script"]
         script_obj["slug"] = f"{date}-{_slugify(cand.get('slug') or topic)}"
         script_obj["title"] = cand.get("title") or script_obj.get("title") or topic
@@ -300,6 +343,10 @@ def generate(out_dir: Path | None = None, dry_topic: str | None = None) -> tuple
         if script_obj["slug"] in published:
             print(f"  slug collides with an already-published video "
                  f"(attempt {attempt + 1}): {script_obj['slug']}")
+            continue
+        if cand.get("format") != format_hint:
+            print(f"  model ignored the forced format ({cand.get('format')!r} != "
+                 f"{format_hint!r}, attempt {attempt + 1})")
             continue
         _inject_identity(script_obj)
         path = AUTO_DIR / f"{script_obj['slug']}.yaml"

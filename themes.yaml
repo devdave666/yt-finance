@@ -2,19 +2,29 @@
 # (round-robin, skipping anything used in the last `cooldown` videos), decides
 # explainer vs skit, and writes a full script YAML. Edit this file to steer the
 # channel; everything downstream is hands-off.
+#
+# Format (explainer/skit) and structural angle (myth-vs-reality, then-vs-now,
+# a relatable mistake, two-paths...) are FORCED on rotation in generate.py,
+# not left to the model -- across 40+ real generations it picked "explainer"
+# + "state a fact next to a chart" every single time otherwise. Don't remove
+# that rotation without something else in its place; it's the fix for the
+# channel visibly feeling repetitive.
 
 channel: "Anti Broke (@AntiBrokee)"
 
 niche: >
   Personal finance for people who want to stop being broke -- but the LESS
-  obvious stuff. Not "what is a budget". Two pillars, alternating: (1) the
-  mechanics and gotchas most people never had explained -- how a rule
+  obvious stuff. Not "what is a budget". Three pillars, all in rotation: (1)
+  the mechanics and gotchas most people never had explained -- how a rule
   actually works, the trap hidden in the fine print, the counterintuitive
   thing that's true anyway; (2) the compounding/market-history content real
-  finance creators actually go viral with -- "what $1,000 would be worth
-  today" reveals, famous historical stock/index runs, the math of time in
-  the market, viral market stats. Both pillars: one sharp idea per short,
-  evergreen, advertiser-safe, no forward-looking buy advice.
+  finance creators go viral with -- historical stock/index runs, the math of
+  time in the market, viral market stats, in strictly past-tense framing;
+  (3) everyday money psychology and relatable comparisons -- lifestyle creep,
+  dark-pattern subscriptions and BNPL, the mistake a normal person makes
+  without noticing. One sharp idea per short, evergreen, advertiser-safe, no
+  forward-looking buy advice, and no two videos should feel like the same
+  template with the numbers swapped.
 
 voice: >
   A sharp market analyst who's a little pissed off on the viewer's behalf.
@@ -92,3 +102,22 @@ topics:
   - A 15-year vs a 30-year mortgage -- the rate is lower but the payment jump is bigger than most people expect
   - A "no-fee" checking account still earns the bank money -- on your idle balance and on interchange when you swipe
   - Overdraft "protection" is usually an opt-in short-term loan at an effective APR in the triple digits
+
+  # Everyday money psychology, comparisons and relatable/skit-friendly scenarios -- deliberately NOT
+  # another "$X in [stock]" template. Real finance creators live here as much as in market stats.
+  - Cutting the daily coffee doesn't fix a budget -- the math on why income and big fixed costs matter far more than small habits
+  - Two people earning the same salary can retire a decade apart -- the gap is entirely what happens to the raise, not the raise itself
+  - Shrinkflation -- the same price for quietly less product -- has cost the average household real money without a single price tag changing
+  - Payroll withholding makes a new job's first paycheck feel smaller than the salary implied, and almost nobody explains why in advance
+  - Gym memberships and streaming trials are designed to auto-renew because cancelling is deliberately made a few steps harder than signing up
+  - Splitting rent 50/50 on unequal incomes isn't actually fair -- the math on splitting by income percentage instead
+  - Treat-yourself purchases each feel harmless alone, but the pattern is usually the single biggest leak in a normal budget
+  - A store's "20% off your first purchase" card is a discount only on something you were already buying -- otherwise it's a new expense with a bow on it
+  - Buy-now-pay-later's "four easy payments" reframes a purchase as smaller than it is, and the missed-payment fees can erase the entire convenience
+  - Lifestyle creep -- a raise that quietly gets absorbed into slightly nicer everyday spending before you ever notice it arrived
+  - Co-signing a loan for family puts the debt on your own credit report -- if they miss one payment, it's your score that drops, not just theirs
+  - Free-trial subscriptions are a business model built on people forgetting to cancel before the real charge hits
+  - Limited-time and only-3-left urgency tags are often untrue and tested specifically because they still work on shoppers who know that
+  - A used car's true cost per mile is usually higher than people assume once depreciation is counted, not just gas and insurance
+  - Suggested tip screens crept from 15-20% to 25-30% defaults after contactless payment made tipping a tap instead of a decision
+  - The "minimum payment" number on a bill is calculated to look small on purpose -- it is not what a responsible payment looks like

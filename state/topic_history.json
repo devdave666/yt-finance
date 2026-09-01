@@ -248,5 +248,12 @@
     "date": "2026-09-01",
     "topic": "Shrinkflation -- the same price for quietly less product -- has cost the average household real money without a single price tag changing",
     "slug": "2026-09-01-shrinkflation-hidden-cost"
+  },
+  {
+    "date": "2026-09-01",
+    "topic": "The \"minimum payment\" number on a bill is calculated to look small on purpose -- it is not what a responsible payment looks like",
+    "slug": "2026-09-01-minimum-payment-trap",
+    "direction": "reveal",
+    "format": "explainer"
   }
 ]

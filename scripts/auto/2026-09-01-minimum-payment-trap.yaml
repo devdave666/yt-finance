@@ -1,0 +1,98 @@
+title: The Minimum Payment Is A 20-Year Trap
+slug: 2026-09-01-minimum-payment-trap
+format: short
+caption_style: explainer
+cast:
+  host:
+    look: 'the ''Anti Broke'' host: a minimalist black-marker stick figure with a
+      round OPEN white head, four or five short spiky lines of hair on top, two small
+      dot eyes, two short sharp angled eyebrows, and always a visible mouth that shows
+      the expression (flat, frown, grimace, open shout). The body is ONE single straight
+      vertical black line (spine), with four more single straight black lines for
+      the two arms and two legs, dot hands, short line feet -- plus one small thin
+      necktie shape (a short strip + a little triangle) hanging at the neck. NO torso
+      shape, NO filled body, NO solid black wedge, NO shirt block -- the figure is
+      a head, spiky hair, five thin lines and a skinny tie. It is never a black silhouette.'
+    anchor: center
+    voice: Orus
+scenes:
+  stage:
+    color: '#f4efe4'
+beats:
+- id: b01
+  scene: stage
+  who: host
+  say: Paying the minimum can make a $5,000 debt take 20 years.
+  cast:
+    host: standing, arms wide, looking shocked
+  headline: OVER 20 YEARS
+  props: []
+- id: b02
+  scene: stage
+  who: host
+  say: That number on your bill is not a helpful suggestion.
+  cast:
+    host: standing, pointing, serious expression
+  props:
+  - credit-card
+- id: b03
+  scene: stage
+  who: host
+  say: It's a formula, designed to be as small as possible.
+  cast:
+    host: standing, looking down at his hands as if calculating, neutral
+  props:
+  - percent
+- id: b04
+  scene: stage
+  who: host
+  say: Usually one percent of your balance, plus that month's interest.
+  cast:
+    host: standing, shrugging, looking unimpressed
+  props:
+  - scale
+- id: b05
+  scene: stage
+  who: host
+  say: So almost your entire payment goes to interest, not the debt.
+  cast:
+    host: pointing at the chart, explaining
+  chart:
+    type: hbar
+    title: Cost of a $5k Debt
+    labels:
+    - Original Debt
+    - Total Interest Paid
+    values:
+    - 5000
+    - 7500
+    unit: $
+    highlight: 1
+    note: On Minimum Payments
+  props: []
+- id: b06
+  scene: stage
+  who: host
+  say: The bank makes its money by keeping you in debt longer.
+  cast:
+    host: standing, arms crossed, stern look
+  props:
+  - bank
+- id: b07
+  scene: stage
+  who: host
+  say: The minimum isn't there to help you pay things off.
+  cast:
+    host: shaking head slightly, direct look to camera
+  props:
+  - warning
+- id: b08
+  scene: stage
+  who: host
+  say: It's the most profitable number for them, not for you.
+  cast:
+    host: holding up prop, firm expression
+  props:
+  - receipt
+narrator:
+  voice: Orus

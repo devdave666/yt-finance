@@ -1,0 +1,102 @@
+title: That 'Safe' Account Can Still Lose Money
+slug: 2026-09-01-money-market-vs-hysa-risk
+format: short
+caption_style: title
+title_card: They're NOT the same thing ⚠️
+cast:
+  Eager:
+    look: 'the ''Anti Broke'' host: a minimalist black-marker stick figure with a
+      round OPEN white head, four or five short spiky lines of hair on top, two small
+      dot eyes, two short sharp angled eyebrows, and always a visible mouth that shows
+      the expression (flat, frown, grimace, open shout). The body is ONE single straight
+      vertical black line (spine), with four more single straight black lines for
+      the two arms and two legs, dot hands, short line feet -- plus one small thin
+      necktie shape (a short strip + a little triangle) hanging at the neck. NO torso
+      shape, NO filled body, NO solid black wedge, NO shirt block -- the figure is
+      a head, spiky hair, five thin lines and a skinny tie. It is never a black silhouette.'
+    anchor: left
+    voice: Orus
+  Cautious:
+    look: 'a classic minimalist stick figure like the host but drawn slightly shorter,
+      same construction: round open white head, ONE straight vertical line for the
+      spine, single straight lines for arms and legs, dot hands. No torso shape, no
+      fill, no silhouette. A small plain teal collar is the only difference from the
+      host.'
+    anchor: right
+    voice: Aoede
+scenes:
+  Office:
+    bg: A simple, minimalist office with a window showing a generic city skyline and
+      a single potted plant on a sill.
+beats:
+- id: b01
+  scene: Office
+  who: Eager
+  say: My money market fund pays the same as your savings.
+  cast:
+    Eager: smiling smugly, holding up a phone
+    Cautious: standing with arms crossed, unimpressed
+  headline: SAME PAY. DIFFERENT RISK.
+  props: []
+- id: b02
+  scene: Office
+  who: Cautious
+  say: So you get no reward for the extra risk.
+  cast:
+    Eager: looking confused, lowering phone
+    Cautious: raising one eyebrow
+  props:
+  - question
+- id: b03
+  scene: Office
+  who: Eager
+  say: What risk? It’s not like it's stocks.
+  cast:
+    Eager: shrugging defensively, hands open
+    Cautious: shaking head slightly
+  props: []
+- id: b04
+  scene: Office
+  who: Cautious
+  say: My account is FDIC insured. Yours isn't.
+  cast:
+    Eager: starting to look concerned
+    Cautious: calm, pointing a thumb at their chest
+  props:
+  - shield
+- id: b05
+  scene: Office
+  who: Cautious
+  say: A money market fund is an investment.
+  cast:
+    Eager: looking down at his phone, worried
+    Cautious: gesturing simply towards Eager
+  props: []
+- id: b06
+  scene: Office
+  who: Cautious
+  say: And investments can lose value.
+  cast:
+    Eager: eyes wide, looking up from phone
+    Cautious: neutral expression, stating a fact
+  props:
+  - arrow-down
+- id: b07
+  scene: Office
+  who: Eager
+  say: Wait, my principal isn't actually guaranteed?
+  cast:
+    Eager: looking shocked, directly at camera
+    Cautious: nodding once, grimly
+  props: []
+- id: b08
+  scene: Office
+  who: Cautious
+  say: They're sold like savings, but they are not the same.
+  cast:
+    Eager: in background, staring at phone in disbelief
+    Cautious: looking directly at camera, calm and firm
+  props:
+  - scale
+narrator:
+  voice: Orus

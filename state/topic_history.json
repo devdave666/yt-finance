@@ -353,5 +353,12 @@
     "slug": "2026-09-01-tip-screen-defaults-increase",
     "direction": "pov-confession",
     "format": "skit"
+  },
+  {
+    "date": "2026-09-01",
+    "topic": "Money market funds and high-yield savings pay similar rates but one is FDIC-insured and one isn't",
+    "slug": "2026-09-01-money-market-vs-hysa-risk",
+    "direction": "debate",
+    "format": "skit"
   }
 ]

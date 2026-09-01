@@ -1,0 +1,97 @@
+title: Your Roth IRA Is Secretly An Emergency Fund
+slug: 2026-09-01-roth-ira-emergency-fund
+format: short
+caption_style: explainer
+cast:
+  host:
+    look: 'the ''Anti Broke'' host: a minimalist black-marker stick figure with a
+      round OPEN white head, four or five short spiky lines of hair on top, two small
+      dot eyes, two short sharp angled eyebrows, and always a visible mouth that shows
+      the expression (flat, frown, grimace, open shout). The body is ONE single straight
+      vertical black line (spine), with four more single straight black lines for
+      the two arms and two legs, dot hands, short line feet -- plus one small thin
+      necktie shape (a short strip + a little triangle) hanging at the neck. NO torso
+      shape, NO filled body, NO solid black wedge, NO shirt block -- the figure is
+      a head, spiky hair, five thin lines and a skinny tie. It is never a black silhouette.'
+    anchor: center
+    voice: Orus
+scenes:
+  stage:
+    color: '#f4efe4'
+beats:
+- id: b01
+  scene: stage
+  who: host
+  say: Your retirement account can be your emergency fund.
+  cast:
+    host: standing, arms open wide, surprised expression
+  headline: A SECRET EXIT
+  props: []
+- id: b02
+  scene: stage
+  who: host
+  say: Most think IRA money is locked up for decades.
+  cast:
+    host: standing, shrugging, hands up
+  props:
+  - padlock
+- id: b03
+  scene: stage
+  who: host
+  say: But a Roth IRA has a special back door.
+  cast:
+    host: leaning forward slightly, raising an eyebrow
+  props:
+  - question
+- id: b04
+  scene: stage
+  who: host
+  say: Imagine you invested ten thousand, and it grew.
+  cast:
+    host: standing of the chart, pointing at it
+  chart:
+    type: hbar
+    title: Roth IRA Balance
+    labels:
+    - Contributions
+    - Gains
+    values:
+    - 10000
+    - 4000
+    unit: $
+    highlight: 0
+    note: Can Withdraw
+  props: []
+- id: b05
+  scene: stage
+  who: host
+  say: You can pull out your original ten thousand anytime.
+  cast:
+    host: standing, pointing clearly to the 'Contributions' bar of the chart
+  props: []
+- id: b06
+  scene: stage
+  who: host
+  say: It comes out tax-free and penalty-free.
+  cast:
+    host: standing, arms open, calm expression
+  props:
+  - shield
+- id: b07
+  scene: stage
+  who: host
+  say: The earnings, however, stay locked until retirement.
+  cast:
+    host: hand up in a 'stop' gesture, pointing to the 'Gains' bar
+  props:
+  - clock
+- id: b08
+  scene: stage
+  who: host
+  say: It's a retirement plan with a built-in escape hatch.
+  cast:
+    host: standing, arms crossed, looking satisfied
+  props:
+  - safe
+narrator:
+  voice: Orus

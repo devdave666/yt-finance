@@ -198,5 +198,10 @@
     "date": "2026-09-01",
     "topic": "A Roth IRA's quiet feature -- your contributions (not the gains) can come back out anytime, tax and penalty free",
     "slug": "2026-09-01-roth-ira-emergency-fund"
+  },
+  {
+    "date": "2026-09-01",
+    "topic": "Your effective tax rate is much lower than your bracket -- a raise into a new bracket never lowers your take-home",
+    "slug": "2026-09-01-tax-brackets-marginal-rate"
   }
 ]

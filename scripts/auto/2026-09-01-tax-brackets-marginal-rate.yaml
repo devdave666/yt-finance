@@ -1,0 +1,91 @@
+title: Why a Raise Can't Lower Your Take-Home Pay
+slug: 2026-09-01-tax-brackets-marginal-rate
+format: short
+caption_style: explainer
+cast:
+  host:
+    look: 'the ''Anti Broke'' host: a minimalist black-marker stick figure with a
+      round OPEN white head, four or five short spiky lines of hair on top, two small
+      dot eyes, two short sharp angled eyebrows, and always a visible mouth that shows
+      the expression (flat, frown, grimace, open shout). The body is ONE single straight
+      vertical black line (spine), with four more single straight black lines for
+      the two arms and two legs, dot hands, short line feet -- plus one small thin
+      necktie shape (a short strip + a little triangle) hanging at the neck. NO torso
+      shape, NO filled body, NO solid black wedge, NO shirt block -- the figure is
+      a head, spiky hair, five thin lines and a skinny tie. It is never a black silhouette.'
+    anchor: center
+    voice: Orus
+scenes:
+  stage:
+    color: '#f4efe4'
+beats:
+- id: b01
+  scene: stage
+  who: host
+  say: Getting a raise can't lower your take-home pay.
+  cast:
+    host: standing, arms crossed, looking serious
+  headline: A RAISE CAN'T HURT YOU.
+  props: []
+- id: b02
+  scene: stage
+  who: host
+  say: Your tax bracket isn't one flat rate on everything.
+  cast:
+    host: hand up in a 'stop' gesture, looking firm
+  props:
+  - warning
+- id: b03
+  scene: stage
+  who: host
+  say: The system is progressive. Think of your income in buckets.
+  cast:
+    host: gesturing
+  props:
+  - bars-up
+- id: b04
+  scene: stage
+  who: host
+  say: Only the dollars *in* a bracket get taxed that rate.
+  cast:
+    host: standing of the chart, pointing to it
+  chart:
+    type: hbar
+    title: Taxed In Brackets (2024)
+    labels:
+    - First $11k
+    - Next to $47k
+    - Dollars over $47k
+    values:
+    - 10
+    - 12
+    - 22
+    unit: '%'
+    highlight: 2
+    note: Higher rate
+  props: []
+- id: b05
+  scene: stage
+  who: host
+  say: A raise just adds a little to the highest bucket.
+  cast:
+    host: pointing to the top bar of the chart
+  props: []
+- id: b06
+  scene: stage
+  who: host
+  say: Your real, effective tax rate is a blend of all brackets.
+  cast:
+    host: hands open, shrugging slightly
+  props:
+  - scale
+- id: b07
+  scene: stage
+  who: host
+  say: Don't fear the bracket. Fear leaving money on the table.
+  cast:
+    host: neutral expression, holding prop
+  props:
+  - cash
+narrator:
+  voice: Orus

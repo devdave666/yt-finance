@@ -1,0 +1,98 @@
+title: Your Bank's Overdraft 'Protection' Is a Trap
+slug: 2026-09-01-overdraft-protection-trap
+format: short
+caption_style: explainer
+cast:
+  host:
+    look: 'the ''Anti Broke'' host: a minimalist black-marker stick figure with a
+      round OPEN white head, four or five short spiky lines of hair on top, two small
+      dot eyes, two short sharp angled eyebrows, and always a visible mouth that shows
+      the expression (flat, frown, grimace, open shout). The body is ONE single straight
+      vertical black line (spine), with four more single straight black lines for
+      the two arms and two legs, dot hands, short line feet -- plus one small thin
+      necktie shape (a short strip + a little triangle) hanging at the neck. NO torso
+      shape, NO filled body, NO solid black wedge, NO shirt block -- the figure is
+      a head, spiky hair, five thin lines and a skinny tie. It is never a black silhouette.'
+    anchor: center
+    voice: Orus
+scenes:
+  stage:
+    color: '#f4efe4'
+beats:
+- id: b01
+  scene: stage
+  who: host
+  say: Your bank's overdraft 'protection' can have a 7,000% APR.
+  cast:
+    host: standing, looking shocked, arms wide
+  headline: 7,000% APR
+  props: []
+- id: b02
+  scene: stage
+  who: host
+  say: They call it protection, but it's just an expensive loan.
+  cast:
+    host: arms crossed, looking stern
+  props:
+  - padlock
+- id: b03
+  scene: stage
+  who: host
+  say: By law, you must opt *in* for debit card overdrafts.
+  cast:
+    host: pointing, explaining
+  props:
+  - credit-card
+- id: b04
+  scene: stage
+  who: host
+  say: The fee is often bigger than the overdraft itself.
+  cast:
+    host: pointing to the chart, unimpressed
+  chart:
+    type: bar
+    title: The Overdraft Trap
+    labels:
+    - Overdraft
+    - Fee
+    values:
+    - 20
+    - 35
+    unit: $
+    highlight: 1
+    note: Typical Cost
+  props: []
+- id: b05
+  scene: stage
+  who: host
+  say: And you usually pay it back in days, not a year.
+  cast:
+    host: pointing at a calendar, looking serious
+  props:
+  - calendar
+- id: b06
+  scene: stage
+  who: host
+  say: That short timeline makes the effective annual rate skyrocket.
+  cast:
+    host: gesturing upwards with both hands
+  props:
+  - bars-up
+- id: b07
+  scene: stage
+  who: host
+  say: Banks collect billions from these fees every single year.
+  cast:
+    host: shaking head, disappointed
+  props:
+  - cash
+- id: b08
+  scene: stage
+  who: host
+  say: Real protection is simply declining to opt in.
+  cast:
+    host: standing firm, holding up one hand to say 'stop'
+  props:
+  - shield
+narrator:
+  voice: Orus

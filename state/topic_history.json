@@ -218,5 +218,15 @@
     "date": "2026-09-01",
     "topic": "A 15-year vs a 30-year mortgage -- the rate is lower but the payment jump is bigger than most people expect",
     "slug": "2026-09-01-15-vs-30-year-mortgage-payment"
+  },
+  {
+    "date": "2026-09-01",
+    "topic": "A \"no-fee\" checking account still earns the bank money -- on your idle balance and on interchange when you swipe",
+    "slug": "2026-09-01-no-fee-checking-isnt-free"
+  },
+  {
+    "date": "2026-09-01",
+    "topic": "Overdraft \"protection\" is usually an opt-in short-term loan at an effective APR in the triple digits",
+    "slug": "2026-09-01-overdraft-protection-trap"
   }
 ]

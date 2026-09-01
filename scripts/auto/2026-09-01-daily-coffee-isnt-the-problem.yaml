@@ -1,0 +1,115 @@
+title: Your Daily Coffee Isn't Making You Broke
+slug: 2026-09-01-daily-coffee-isnt-the-problem
+format: short
+caption_style: title
+title_card: That one friend's 'advice' 🙄
+cast:
+  Alex:
+    look: 'the ''Anti Broke'' host: a minimalist black-marker stick figure with a
+      round OPEN white head, four or five short spiky lines of hair on top, two small
+      dot eyes, two short sharp angled eyebrows, and always a visible mouth that shows
+      the expression (flat, frown, grimace, open shout). The body is ONE single straight
+      vertical black line (spine), with four more single straight black lines for
+      the two arms and two legs, dot hands, short line feet -- plus one small thin
+      necktie shape (a short strip + a little triangle) hanging at the neck. NO torso
+      shape, NO filled body, NO solid black wedge, NO shirt block -- the figure is
+      a head, spiky hair, five thin lines and a skinny tie. It is never a black silhouette.'
+    anchor: left
+    voice: Orus
+  Jamie:
+    look: 'a classic minimalist stick figure like the host but drawn slightly shorter,
+      same construction: round open white head, ONE straight vertical line for the
+      spine, single straight lines for arms and legs, dot hands. No torso shape, no
+      fill, no silhouette. A small plain teal collar is the only difference from the
+      host.'
+    anchor: right
+    voice: Aoede
+scenes:
+  street:
+    bg: A simple 2D vector city street with a sidewalk and building facades.
+beats:
+- id: b01
+  scene: street
+  who: Jamie
+  say: You know, that coffee is why you're broke.
+  cast:
+    Jamie: pointing accusingly at Alex, frowning
+    Alex: standing, holding an invisible coffee cup, looking unimpressed
+  headline: THAT'S NOT THE PROBLEM.
+  props: []
+- id: b02
+  scene: street
+  who: Alex
+  say: This is five dollars a day.
+  cast:
+    Alex: holding up five fingers, calm expression
+    Jamie: arms crossed, looking skeptical
+  props:
+  - coin
+- id: b03
+  scene: street
+  who: Alex
+  say: That's eighteen hundred dollars a year.
+  cast:
+    Alex: shrugging, looking at camera
+    Jamie: still skeptical, tapping foot
+  props:
+  - calendar
+- id: b04
+  scene: street
+  who: Alex
+  say: My rent just went up five hundred a month.
+  cast:
+    Alex: looking frustrated, hands up in the air
+    Jamie: expression shifts to surprise
+  props:
+  - house
+- id: b05
+  scene: street
+  who: Alex
+  say: That is six *thousand* dollars a year.
+  cast:
+    Alex: arms wide, emphasizing the point
+    Jamie: eyes wide, mouth open in shock
+  props:
+  - arrow-up
+- id: b06
+  scene: street
+  who: Alex
+  say: The scale isn't even close.
+  cast:
+    Alex: pointing to his (at the chart)
+    Jamie: looking at the chart, stunned
+  chart:
+    type: hbar
+    title: Annual Cost Increase
+    labels:
+    - Daily Coffee
+    - Rent Hike
+    values:
+    - 1800
+    - 6000
+    unit: $
+    highlight: 1
+    note: Over 3x More
+  props: []
+- id: b07
+  scene: street
+  who: Jamie
+  say: Oh. So the coffee is… irrelevant.
+  cast:
+    Jamie: looking down, hand on chin, thinking
+    Alex: nodding slowly, arms crossed again
+  props:
+  - question
+- id: b08
+  scene: street
+  who: Alex
+  say: Focus on the biggest expenses, not the smallest ones.
+  cast:
+    Alex: looking directly at the camera, calm and firm
+    Jamie: faded into the background, no longer visible
+  props:
+  - target
+narrator:
+  voice: Orus

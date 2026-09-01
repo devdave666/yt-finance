@@ -62,7 +62,12 @@ ICONS = {
     "target": ("a bullseye target with an arrow stuck in the centre", "red and white rings"),
     "percent": ("a large percent sign", "black"),
     "handshake": ("two hands shaking", "black outline, light skin"),
-    "receipt": ("a long paper receipt with lines of text and a total", "white paper"),
+    "receipt": ("a long paper receipt with a wavy zigzag bottom edge and several "
+               "horizontal squiggly lines representing rows of text -- NO readable "
+               "digits, NO readable words, NO dollar sign, NO total figure, just "
+               "abstract wavy line placeholders (this is reused across many videos "
+               "with different real numbers, so it must not show any specific number)",
+               "white paper"),
     "magnet": ("a horseshoe magnet", "red and grey"),
 }
 

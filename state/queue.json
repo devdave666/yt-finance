@@ -328,5 +328,15 @@
     "posted": false,
     "posted_date": null,
     "post_ids": null
+  },
+  {
+    "slug": "2026-09-01-bank-overdraft-reordering",
+    "title": "How Banks Reorder Your Buys To Maximize Fees",
+    "description": "Banks can legally change the order of your daily transactions, processing the largest one first. This trick makes it more likely you'll overdraft on smaller purchases that follow, each one costing you a fee.\n\n#personalfinance #overdraft #bankfees #moneytips #finance",
+    "hosted_url": "https://raw.githubusercontent.com/devdave666/yt-finance/main/media/2026-09-01-bank-overdraft-reordering.mp4",
+    "queued_date": "2026-09-01",
+    "posted": false,
+    "posted_date": null,
+    "post_ids": null
   }
 ]

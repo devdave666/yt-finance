@@ -1,0 +1,120 @@
+title: Why Your First Paycheck Is Smaller Than You Think
+slug: 2026-09-01-first-paycheck-withholding-shock
+format: short
+caption_style: title
+title_card: Got my first paycheck... 🥲
+cast:
+  Alex:
+    look: 'the ''Anti Broke'' host: a minimalist black-marker stick figure with a
+      round OPEN white head, four or five short spiky lines of hair on top, two small
+      dot eyes, two short sharp angled eyebrows, and always a visible mouth that shows
+      the expression (flat, frown, grimace, open shout). The body is ONE single straight
+      vertical black line (spine), with four more single straight black lines for
+      the two arms and two legs, dot hands, short line feet -- plus one small thin
+      necktie shape (a short strip + a little triangle) hanging at the neck. NO torso
+      shape, NO filled body, NO solid black wedge, NO shirt block -- the figure is
+      a head, spiky hair, five thin lines and a skinny tie. It is never a black silhouette.'
+    anchor: left
+    voice: Orus
+  Reality:
+    look: 'a classic minimalist stick figure like the host but drawn slightly shorter,
+      same construction: round open white head, ONE straight vertical line for the
+      spine, single straight lines for arms and legs, dot hands. No torso shape, no
+      fill, no silhouette. A small plain teal collar is the only difference from the
+      host.'
+    anchor: right
+    voice: Aoede
+scenes:
+  stage:
+    bg: A simple, flat gray office wall.
+beats:
+- id: b01
+  scene: stage
+  who: Alex
+  say: My first 'real' paycheck was a huge disappointment.
+  cast:
+    Alex: standing, looking down at a prop, confused
+    Reality: offscreen
+  props:
+  - receipt
+  headline: WHERE'S MY MONEY?
+- id: b02
+  scene: stage
+  who: Alex
+  say: It was hundreds of dollars less than I calculated.
+  cast:
+    Alex: standing, looking at camera, frustrated
+    Reality: offscreen
+  props:
+  - question
+- id: b03
+  scene: stage
+  who: Reality
+  say: It's not a mistake. It's called withholding.
+  cast:
+    Alex: standing, surprised, looking
+    Reality: standing, arms crossed, neutral
+  props:
+  - padlock
+- id: b04
+  scene: stage
+  who: Reality
+  say: First, FICA takes about 7.65 percent for everyone.
+  cast:
+    Alex: standing, looking at the chart, listening
+    Reality: pointing toward the chart, neutral
+  chart:
+    type: hbar
+    title: Paycheck Deductions
+    labels:
+    - Gross Pay
+    - After FICA
+    - After Federal
+    - Net Pay
+    values:
+    - 100
+    - 92
+    - 78
+    - 72
+    unit: '%'
+    highlight: 1
+    note: 7.65%
+  props: []
+- id: b05
+  scene: stage
+  who: Reality
+  say: Then, federal income tax, based on your W-4.
+  cast:
+    Alex: standing, looking, concerned
+    Reality: standing, arms crossed, neutral
+  props:
+  - bank
+- id: b06
+  scene: stage
+  who: Reality
+  say: Then state and sometimes local taxes get their share.
+  cast:
+    Alex: standing, looking down, dejected
+    Reality: standing, gesturing with one hand, neutral
+  props:
+  - house
+- id: b07
+  scene: stage
+  who: Alex
+  say: So my salary isn't what I actually take home.
+  cast:
+    Alex: standing, holding a small prop, resigned look at camera
+    Reality: standing, looking at Alex, unimpressed
+  props:
+  - cash
+- id: b08
+  scene: stage
+  who: Reality
+  say: Your salary is the number before the government gets paid.
+  cast:
+    Alex: standing, looking at Reality, frowning
+    Reality: standing, arms crossed, looking at camera, neutral
+  props:
+  - shield
+narrator:
+  voice: Orus

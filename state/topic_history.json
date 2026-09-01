@@ -255,5 +255,12 @@
     "slug": "2026-09-01-minimum-payment-trap",
     "direction": "reveal",
     "format": "explainer"
+  },
+  {
+    "date": "2026-09-01",
+    "topic": "Payroll withholding makes a new job's first paycheck feel smaller than the salary implied, and almost nobody explains why in advance",
+    "slug": "2026-09-01-first-paycheck-withholding-shock",
+    "direction": "pov-confession",
+    "format": "skit"
   }
 ]

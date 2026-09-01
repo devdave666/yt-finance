@@ -111,20 +111,45 @@ def _groups(words: list[str]) -> list[tuple[int, int]]:
 def _reveal(text: str, start: float, speech_end: float, hold_until: float) -> list[str]:
     """Word-by-word reveal between `start` and `speech_end`; the last group then
     holds (still) until `hold_until`. NOTHING is emitted past `hold_until` -- that
-    is the next beat's caption start, so there's never two caption lines stacked."""
+    is the next beat's caption start, so there's never two caption lines stacked.
+
+    Every word's onset is clamped into one monotonically non-decreasing list
+    FIRST, and each event's end is always exactly the NEXT word's (already-
+    clamped) onset -- never independently reclamped. A word's onset used to
+    be capped at `hold_until - 0.08` while the PRECEDING word's end was capped
+    at plain `hold_until`; whenever a word's natural time landed in that 80ms
+    gap (common -- trimmed TTS speech usually fills most of a beat) the new
+    caption started before the old one's end, i.e. two lines on screen at
+    once. Sharing one clamped boundary between consecutive events makes that
+    structurally impossible now.
+    """
     words = [w for w in text.split() if w]
     if not words:
         return []
-    times = _word_times(words, start, speech_end)
+    raw_times = _word_times(words, start, speech_end)
     groups = _groups(words)
+
+    eps = 0.08
+    starts, prev = [], start
+    for w0, _w1 in raw_times:
+        s = max(min(w0, hold_until - eps), prev)
+        # hard ceiling AFTER the monotonic floor: if `prev` alone has already
+        # cascaded past hold_until-eps (several words bunched near the
+        # boundary), don't let it punch through hold_until itself -- clamp
+        # back down. Still monotonic: once `s` sits at the ceiling, every
+        # later word's max(..., prev) keeps it pinned there, never below.
+        s = min(s, hold_until)
+        starts.append(s)
+        prev = s
+
     events = []
     for gi, (lo, hi) in enumerate(groups):
-        # this group holds until the next one starts (no gap, no overlap); the
-        # final group holds to the beat boundary
-        next_start = min(times[hi][0], hold_until) if hi < len(words) else hold_until
         for j in range(lo, hi):
-            e_start = min(times[j][0], hold_until - 0.08)
-            e_end = next_start if j == hi - 1 else min(times[j + 1][0], hold_until)
+            e_start = starts[j]
+            e_end = starts[hi] if j == hi - 1 and hi < len(words) else \
+                    (hold_until if j == hi - 1 else starts[j + 1])
+            if e_end <= e_start:
+                continue          # degenerate (two words clamped to the same instant)
             shown = []
             for k in range(lo, j + 1):
                 w = words[k]
@@ -138,7 +163,6 @@ def _reveal(text: str, start: float, speech_end: float, hold_until: float) -> li
             # fade ONLY on the first frame of a group; within a group the line
             # is solid and only the new word animates (no per-word flicker)
             fade = r"{\fad(70,0)}" if j == lo else ""
-            e_end = min(max(e_end, e_start + 0.10), hold_until)
             events.append(f"Dialogue: 0,{_ts(e_start)},{_ts(e_end)},"
                           f"Cap,,0,0,0,,{fade}" + " ".join(shown))
     return events

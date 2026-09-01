@@ -1,0 +1,98 @@
+title: How Banks Reorder Your Buys To Maximize Fees
+slug: 2026-09-01-bank-overdraft-reordering
+format: short
+caption_style: explainer
+cast:
+  host:
+    look: 'the ''Anti Broke'' host: a minimalist black-marker stick figure with a
+      round OPEN white head, four or five short spiky lines of hair on top, two small
+      dot eyes, two short sharp angled eyebrows, and always a visible mouth that shows
+      the expression (flat, frown, grimace, open shout). The body is ONE single straight
+      vertical black line (spine), with four more single straight black lines for
+      the two arms and two legs, dot hands, short line feet -- plus one small thin
+      necktie shape (a short strip + a little triangle) hanging at the neck. NO torso
+      shape, NO filled body, NO solid black wedge, NO shirt block -- the figure is
+      a head, spiky hair, five thin lines and a skinny tie. It is never a black silhouette.'
+    anchor: center
+    voice: Orus
+scenes:
+  stage:
+    color: '#f4efe4'
+beats:
+- id: b01
+  scene: stage
+  who: host
+  say: Your bank can reorder your daily purchases from largest to smallest.
+  cast:
+    host: standing, pointing at headline, serious
+  headline: THEY REORDER YOUR BUYS.
+  props: []
+- id: b02
+  scene: stage
+  who: host
+  say: Imagine you have one hundred dollars in your account.
+  cast:
+    host: standing, hands framing an imaginary box, explaining
+  props:
+  - wallet
+- id: b03
+  scene: stage
+  who: host
+  say: You buy coffee, lunch, and then a ninety-dollar item.
+  cast:
+    host: standing, ticking off items on fingers, neutral
+  props:
+  - receipt
+- id: b04
+  scene: stage
+  who: host
+  say: In that order, only one purchase should overdraft.
+  cast:
+    host: standing, holding up one finger, firm
+  props:
+  - warning
+- id: b05
+  scene: stage
+  who: host
+  say: But they can process the ninety-dollar transaction first.
+  cast:
+    host: standing, arms crossed, annoyed
+  props:
+  - scale
+- id: b06
+  scene: stage
+  who: host
+  say: This leaves ten dollars for your first two purchases.
+  cast:
+    host: standing, looking down at open palms, disappointed
+  props:
+  - bars-down
+- id: b07
+  scene: stage
+  who: host
+  say: Suddenly, you have three overdrafts, not one.
+  cast:
+    host: standing, gesturing toward chart, sharp
+  chart:
+    type: bar
+    title: Overdraft Cost
+    labels:
+    - Expected
+    - Actual
+    values:
+    - 35
+    - 105
+    unit: $
+    highlight: 1
+    note: TRIPLED
+  props: []
+- id: b08
+  scene: stage
+  who: host
+  say: The default settings are designed to be profitable, not fair.
+  cast:
+    host: standing, holding prop, serious
+  props:
+  - padlock
+narrator:
+  voice: Orus

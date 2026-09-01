@@ -33,9 +33,13 @@
     "description": "In 2010, a programmer paid 10,000 bitcoin for two pizzas. We break down what that amount of BTC would be worth at its peak, and the lesson it teaches about volatility and risk.\n\n#bitcoin #investing #personalfinance #crypto #market",
     "hosted_url": "https://raw.githubusercontent.com/devdave666/yt-finance/main/media/2026-08-31-bitcoin-pizza-day-value.mp4",
     "queued_date": "2026-08-31",
-    "posted": false,
-    "posted_date": null,
-    "post_ids": null
+    "posted": true,
+    "posted_date": "2026-09-01",
+    "post_ids": {
+      "youtube": "6a974a1a2258b9ddebda5cfc",
+      "instagram": "6a974a1ea01ff5804108784f",
+      "tiktok": "6a974a28a01ff58041087963"
+    }
   },
   {
     "slug": "2026-08-31-buffett-compounding-after-50",

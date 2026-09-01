@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import datetime as dt
 import json
+import random
 import re
 from pathlib import Path
 
@@ -187,13 +188,11 @@ def _pick_topic(themes: dict, history: list[dict]) -> str:
     topics = themes["topics"]
     cooldown = int(themes.get("cooldown", 10))
     recent = {h["topic"] for h in history[-cooldown:]}
-    last_used = {}
-    for i, h in enumerate(history):
-        last_used[h["topic"]] = i
     eligible = [t for t in topics if t not in recent] or topics
-    # least-recently-used first, then themes.yaml order
-    eligible.sort(key=lambda t: (last_used.get(t, -1), topics.index(t)))
-    return eligible[0]
+    # random among whatever's outside the cooldown window, not a fixed
+    # order -- a deterministic pick is still a pattern a frequent viewer
+    # can eventually notice, even if the cycle is long.
+    return random.choice(eligible)
 
 
 def _ask(topic: str, themes: dict, format_hint: str, structure_hint: str) -> dict:
@@ -278,29 +277,52 @@ def _inject_identity(script_obj: dict) -> None:
         beats[0]["props"] = []
 
 
-# Rotated (not left to the model -- it defaulted to "explainer" + plain-reveal
-# every single time across 40+ real generations until this was forced) so the
-# channel actually gets visual and structural variety instead of the same
-# "one figure states a fact next to a chart" shape on repeat.
-_STRUCTURES = [
-    "Structure: state the surprising fact, then reveal the mechanism. The default shape -- keep it sharp, not generic.",
-    "Structure: MYTH VS REALITY -- open with the common belief almost everyone assumes is true, then flip it with the real number or rule.",
-    "Structure: THEN VS NOW -- anchor on a concrete before/after comparison (a price, a rule, a payout) so the scale of change is visceral, not abstract.",
-    "Structure: A RELATABLE MISTAKE -- frame it as the specific mistake a normal, reasonably smart person makes without realizing it, and what it quietly costs them.",
-    "Structure: TWO PATHS -- put two people or two choices side by side and reveal the gap between where they end up.",
+# Picked LRU, same mechanism as _pick_topic (not a fixed rotation -- a fixed
+# cycle of even a dozen shapes is still a pattern a 3x/day viewer notices
+# within days). Left to the model's free choice it picked "explainer" +
+# plain-reveal on literally every one of the first 40+ real generations, so
+# it isn't picked freely either -- but the pool is now large and growing
+# rather than a tight cycle, and cooldown keeps a direction from repeating
+# until most of the others have had a turn.
+_DIRECTIONS = [
+    {"id": "reveal", "format": "explainer",
+     "hint": "State the surprising fact plainly, then reveal the mechanism. Direct and sharp -- the baseline shape, not a crutch."},
+    {"id": "myth-vs-reality", "format": "skit",
+     "hint": "One character states the common belief everyone assumes is true, confidently, to the other. The other flips it with the real number. A real disagreement, not a lecture in two voices."},
+    {"id": "then-vs-now", "format": "explainer",
+     "hint": "Anchor on a concrete before/after comparison across time (a price, a payout, a rule) so the scale of change is visceral, not abstract."},
+    {"id": "relatable-mistake", "format": "skit",
+     "hint": "A specific, mundane moment where one character is caught making this mistake by the other -- a roommate, a partner, a friend noticing the receipt/statement/bill."},
+    {"id": "two-paths", "format": "skit",
+     "hint": "Two characters start from the same point (same job, same paycheck) and make one different choice early on; the beats jump to where each of them ends up."},
+    {"id": "pov-confession", "format": "skit",
+     "hint": "One character confesses a money mistake straight to camera, documentary-testimonial style; the other interrupts or reacts from the side."},
+    {"id": "insider-reveal", "format": "explainer",
+     "hint": "Delivered like someone leaking a secret the industry doesn't want said out loud -- conspiratorial energy, not a lecture."},
+    {"id": "countdown", "format": "explainer",
+     "hint": "A numbered countdown/listicle shape -- each beat is a distinct point, building to the sharpest one last."},
+    {"id": "debate", "format": "skit",
+     "hint": "Two characters openly argue opposite takes on the same decision; one lands the correct read by the final beat, but both get real lines."},
+    {"id": "explain-like-five", "format": "explainer",
+     "hint": "Radically simplify -- explain it the way you'd explain it to a confused friend who's never heard of this, leaning on the most everyday analogy you can find."},
+    {"id": "news-flash", "format": "explainer",
+     "hint": "Delivered like a breaking-news anchor cutting in with urgent energy -- headline-first, short declarative bursts."},
+    {"id": "interview", "format": "skit",
+     "hint": "One character interrogates the other street-interview style -- rapid-fire questions, genuine surprised reactions to the answers."},
+    {"id": "timeline-walk", "format": "explainer",
+     "hint": "Walk chronologically through a sequence of moments/events, each beat one step forward in time, building to the payoff at the end."},
+    {"id": "personification", "format": "skit",
+     "hint": "Personify the financial concept itself as a character (Interest, Inflation, the Fine Print) who shows up and confronts the other character directly."},
 ]
 
 
-def _format_and_structure(history: list[dict]) -> tuple[str, str]:
-    n = len(history)
-    fmt = "skit" if n % 3 == 2 else "explainer"
-    structure = _STRUCTURES[n % len(_STRUCTURES)]
-    if fmt == "skit":
-        structure += (" Written as a skit: two characters in a real, specific situation "
-                      "(not two voices splitting a lecture) -- natural back-and-forth, "
-                      "one of them learns or is caught out by the fact, a punchline landing "
-                      "on the last beat.")
-    return fmt, structure
+def _pick_direction(history: list[dict]) -> dict:
+    ids = [d["id"] for d in _DIRECTIONS]
+    cooldown = max(len(_DIRECTIONS) - 3, 4)
+    recent = {h["direction"] for h in history[-cooldown:] if h.get("direction")}
+    eligible = [d for d in ids if d not in recent] or ids
+    chosen = random.choice(eligible)
+    return next(d for d in _DIRECTIONS if d["id"] == chosen)
 
 
 def _slugify(s: str) -> str:
@@ -326,9 +348,11 @@ def generate(out_dir: Path | None = None, dry_topic: str | None = None) -> tuple
         return yml, meta
 
     topic = dry_topic or _pick_topic(themes, history)
-    format_hint, structure_hint = _format_and_structure(history)
+    direction = _pick_direction(history)
+    format_hint = direction["format"]
+    structure_hint = f"[{direction['id']}] {direction['hint']}"
     print(f"[generate] topic: {topic}")
-    print(f"[generate] format: {format_hint}  |  {structure_hint[:70]}...")
+    print(f"[generate] direction: {direction['id']} ({format_hint})  |  {direction['hint'][:70]}...")
 
     obj = None
     for attempt in range(3):
@@ -373,7 +397,8 @@ def generate(out_dir: Path | None = None, dry_topic: str | None = None) -> tuple
     }
     (AUTO_DIR / f"{script_obj['slug']}.meta.json").write_text(json.dumps(meta, indent=2))
 
-    history.append({"date": date, "topic": topic, "slug": script_obj["slug"]})
+    history.append({"date": date, "topic": topic, "slug": script_obj["slug"],
+                    "direction": direction["id"], "format": format_hint})
     STATE.parent.mkdir(parents=True, exist_ok=True)
     STATE.write_text(json.dumps(history, indent=2))
 

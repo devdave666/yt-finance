@@ -1,0 +1,98 @@
+title: Why You Can Lose Money on a 'Safe' CD
+slug: 2026-09-01-brokered-cd-risk
+format: short
+caption_style: explainer
+cast:
+  host:
+    look: 'the ''Anti Broke'' host: a minimalist black-marker stick figure with a
+      round OPEN white head, four or five short spiky lines of hair on top, two small
+      dot eyes, two short sharp angled eyebrows, and always a visible mouth that shows
+      the expression (flat, frown, grimace, open shout). The body is ONE single straight
+      vertical black line (spine), with four more single straight black lines for
+      the two arms and two legs, dot hands, short line feet -- plus one small thin
+      necktie shape (a short strip + a little triangle) hanging at the neck. NO torso
+      shape, NO filled body, NO solid black wedge, NO shirt block -- the figure is
+      a head, spiky hair, five thin lines and a skinny tie. It is never a black silhouette.'
+    anchor: center
+    voice: Orus
+scenes:
+  stage:
+    color: '#f4efe4'
+beats:
+- id: b01
+  scene: stage
+  who: host
+  say: You can actually lose money on a Certificate of Deposit.
+  cast:
+    host: standing, looking alarmed, arms wide
+  headline: YOU CAN LOSE MONEY
+  props: []
+- id: b02
+  scene: stage
+  who: host
+  say: I'm talking about brokered CDs, not bank CDs.
+  cast:
+    host: standing hand pointing hand pointing
+  props:
+  - handshake
+- id: b03
+  scene: stage
+  who: host
+  say: They're sold by brokerages and often have higher interest rates.
+  cast:
+    host: standing, smiling slightly, pointing up and
+  props:
+  - arrow-up
+- id: b04
+  scene: stage
+  who: host
+  say: 'The catch: you can''t just break them early.'
+  cast:
+    host: standing, hand up in a 'stop' gesture, concerned face
+  props:
+  - padlock
+- id: b05
+  scene: stage
+  who: host
+  say: You have to sell them to another investor.
+  cast:
+    host: standing, neutral, gesturing between two unseen points
+  props:
+  - scale
+- id: b06
+  scene: stage
+  who: host
+  say: If market rates have gone up, your CD is worth less.
+  cast:
+    host: standing, pointing down, looking disappointed
+  chart:
+    type: hbar
+    title: When New Rates Rise
+    labels:
+    - Your 4% CD
+    - New 5% CDs
+    values:
+    - 98
+    - 100
+    unit: ''
+    highlight: 0
+    note: Less attractive
+  props: []
+- id: b07
+  scene: stage
+  who: host
+  say: You might have to sell it for a principal loss.
+  cast:
+    host: standing, shrugging, palms up, looks resigned
+  props:
+  - bars-down
+- id: b08
+  scene: stage
+  who: host
+  say: Higher yield can mean a totally different kind of risk.
+  cast:
+    host: standing, looking directly at camera, serious expression
+  props:
+  - warning
+narrator:
+  voice: Orus

@@ -1,0 +1,100 @@
+title: How You Accidentally Pay Interest on New Purchases
+slug: 2026-09-01-credit-card-grace-period-trap
+format: short
+caption_style: title
+title_card: That 'small balance' on your credit card? 😠
+cast:
+  Alex:
+    look: 'the ''Anti Broke'' host: a minimalist black-marker stick figure with a
+      round OPEN white head, four or five short spiky lines of hair on top, two small
+      dot eyes, two short sharp angled eyebrows, and always a visible mouth that shows
+      the expression (flat, frown, grimace, open shout). The body is ONE single straight
+      vertical black line (spine), with four more single straight black lines for
+      the two arms and two legs, dot hands, short line feet -- plus one small thin
+      necktie shape (a short strip + a little triangle) hanging at the neck. NO torso
+      shape, NO filled body, NO solid black wedge, NO shirt block -- the figure is
+      a head, spiky hair, five thin lines and a skinny tie. It is never a black silhouette.'
+    anchor: left
+    voice: Orus
+  Ben:
+    look: 'a classic minimalist stick figure like the host but drawn slightly shorter,
+      same construction: round open white head, ONE straight vertical line for the
+      spine, single straight lines for arms and legs, dot hands. No torso shape, no
+      fill, no silhouette. A small plain teal collar is the only difference from the
+      host.'
+    anchor: right
+    voice: Aoede
+scenes:
+  cafe:
+    bg: Simple vector art of an out-of-focus cafe interior, with a table in the foreground.
+beats:
+- id: b01
+  scene: cafe
+  who: Ben
+  say: I paid off most of my card. I'm good.
+  headline: NO GRACE PERIOD
+  cast:
+    Ben: standing, looking smug, arms crossed
+    Alex: standing, looking skeptical
+  props: []
+- id: b02
+  scene: cafe
+  who: Alex
+  say: The *entire* statement balance? All the way to zero?
+  cast:
+    Alex: leaning forward slightly, raising an eyebrow
+    Ben: un-crossing arms, looking surprised
+  props: []
+- id: b03
+  scene: cafe
+  who: Ben
+  say: No, I left a small balance on there.
+  cast:
+    Ben: shrugging, dismissive
+    Alex: unimpressed
+  props: []
+- id: b04
+  scene: cafe
+  who: Alex
+  say: Then you just lost your grace period completely.
+  props:
+  - warning
+  cast:
+    Alex: standing straight, arms crossed, serious
+    Ben: looking confused
+- id: b05
+  scene: cafe
+  who: Ben
+  say: What does that actually mean for me?
+  cast:
+    Ben: hands open, questioning gesture
+    Alex: neutral
+  props: []
+- id: b06
+  scene: cafe
+  who: Alex
+  say: New purchases collect interest from day one.
+  props:
+  - clock
+  cast:
+    Alex: pointing, explaining
+    Ben: listening, starting to look concerned
+- id: b07
+  scene: cafe
+  who: Ben
+  say: From the purchase date? Not the due date?
+  cast:
+    Ben: eyes wide, shocked
+    Alex: nodding grimly
+  props: []
+- id: b08
+  scene: cafe
+  who: Alex
+  say: That float is a reward for paying in full.
+  props:
+  - padlock
+  cast:
+    Alex: firm stance, arms crossed
+    Ben: slumping, defeated
+narrator:
+  voice: Orus

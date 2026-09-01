@@ -269,5 +269,12 @@
     "slug": "2026-09-01-credit-card-minimum-payment-trap",
     "direction": "countdown",
     "format": "explainer"
+  },
+  {
+    "date": "2026-09-01",
+    "topic": "Carry any balance on a credit card and you lose the interest-free grace period -- new purchases start charging from day one",
+    "slug": "2026-09-01-credit-card-grace-period-trap",
+    "direction": "debate",
+    "format": "skit"
   }
 ]

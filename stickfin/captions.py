@@ -174,6 +174,55 @@ def _reveal(text: str, start: float, speech_end: float, hold_until: float) -> li
     return events
 
 
+def _subtitle_cues(text: str, start: float, speech_end: float, hold_until: float,
+                   wrap: int) -> list[str]:
+    """Lower-third subtitle with the word currently being spoken picked out.
+
+    The whole line stays on screen and never re-flows -- the wrap is computed
+    once and only the colour tags move -- so it reads as a calm subtitle that
+    happens to follow the voice, not as the word-by-word pop-in used on Shorts
+    (which is exhausting to read for five minutes). One cue per word, each
+    rendering the identical wrapped line.
+    """
+    words = [w for w in text.split() if w]
+    if not words:
+        return []
+    times = _word_times(words, start, speech_end)
+
+    rows, cur, cur_len = [], [], 0
+    for i, w in enumerate(words):
+        add = len(w) + (1 if cur else 0)
+        if cur and cur_len + add > wrap:
+            rows.append(cur)
+            cur, cur_len = [i], len(w)
+        else:
+            cur.append(i)
+            cur_len += add
+    if cur:
+        rows.append(cur)
+
+    events = []
+    for j in range(len(words)):
+        e_start = times[j][0]
+        e_end = times[j + 1][0] if j + 1 < len(words) else hold_until
+        if e_end <= e_start:
+            continue
+        out_rows = []
+        for row in rows:
+            parts = []
+            for i in row:
+                w = words[i]
+                if i == j or _key(w):
+                    parts.append(r"{\c" + _GREEN + "}" + w + r"{\c" + _WHITE + "}")
+                else:
+                    parts.append(w)
+            out_rows.append(" ".join(parts))
+        fade = r"{\fad(120,0)}" if j == 0 else ""
+        events.append(f"Dialogue: 0,{_ts(e_start)},{_ts(e_end)},"
+                      f"Cap,,0,0,0,,{fade}" + "\\N".join(out_rows))
+    return events
+
+
 def build(script, out_path):
     style = script.caption_style
     if style == "none":
@@ -204,12 +253,11 @@ def build(script, out_path):
             lines.append(f"Dialogue: 0,{_ts(t)},{_ts(t + max(d - 0.04, 0.2))},Cap,,0,0,0,,"
                          f"{{\\fad(90,60)}}{_wrap(beat.say.upper(), 22)}")
         elif style == "subtitle":
-            # long-form: one calm cue per beat, held for the spoken line and
-            # cleared before the next -- no word-by-word churn to read for six
-            # minutes straight. Mixed case (ALL CAPS is fatiguing at length).
-            lines.append(f"Dialogue: 0,{_ts(t + s0)},{_ts(t + min(s1 + 0.15, d))},"
-                         f"Cap,,0,0,0,,{{\\fad(120,120)}}"
-                         f"{_wrap(beat.say, config.SUBTITLE_WRAP_CHARS)}")
+            # long-form: a calm lower-third line that follows the voice -- the
+            # line itself is static, only the spoken word changes colour
+            lines.extend(_subtitle_cues(beat.say, t + s0, t + s1,
+                                        t + min(s1 + 0.15, d),
+                                        config.SUBTITLE_WRAP_CHARS))
         else:
             # reveal tracks the voice (s0..s1); the last group then holds to the
             # beat boundary minus a hair, so it clears before the next beat's

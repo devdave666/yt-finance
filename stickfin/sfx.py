@@ -13,6 +13,7 @@ assemble.mux().
 """
 from __future__ import annotations
 
+import subprocess
 from pathlib import Path
 
 from . import config
@@ -42,14 +43,39 @@ _RECIPES = {
 }
 
 
+# Every base blip is peak-normalised to this before the per-event gain is
+# applied. Without it the recipes came out at wildly different levels (-11 to
+# -18 dBFS peak depending on the lavfi source and its fades), so the dB gains
+# in _events() meant nothing -- the whole SFX bus ended up ~30 dB under the
+# voice and was simply inaudible in a finished video.
+BASE_PEAK_DB = -6.0
+
+
+def _peak_db(path: Path) -> float:
+    r = subprocess.run(
+        ["ffmpeg", "-hide_banner", "-nostats", "-i", str(path),
+         "-af", "volumedetect", "-f", "null", "-"],
+        capture_output=True, text=True)
+    for line in r.stderr.splitlines():
+        if "max_volume:" in line:
+            return float(line.split("max_volume:")[1].split("dB")[0])
+    return 0.0
+
+
 def _ensure_base(force: bool = False) -> None:
     SFX_DIR.mkdir(parents=True, exist_ok=True)
     for name, (src, chain) in _RECIPES.items():
         out = SFX_DIR / f"{name}.wav"
         if out.exists() and not force:
             continue
+        tmp = SFX_DIR / f"{name}.raw.wav"
         run_ffmpeg(["-f", "lavfi", "-i", src, "-af", f"{chain},aformat=sample_rates={SR}:channel_layouts=mono",
-                    out], f"synth sfx {name}")
+                    tmp], f"synth sfx {name}")
+        gain = BASE_PEAK_DB - _peak_db(tmp)
+        run_ffmpeg(["-i", tmp, "-af", f"volume={gain:.2f}dB",
+                    "-ar", str(SR), "-ac", "1", out],
+                   f"normalise sfx {name} ({gain:+.1f} dB)")
+        tmp.unlink(missing_ok=True)
 
 
 def _events(script, timeline: dict) -> list[tuple[float, str, float]]:
@@ -69,10 +95,17 @@ def _events(script, timeline: dict) -> list[tuple[float, str, float]]:
             if s["beat_id"] == last_beat:
                 ev.append((t + 0.03, "chime", -12.0))
             prev_beat = s["beat_id"]
-        for layer in s.get("layers", []):
-            if layer["type"] in ("prop", "cutout") and layer["asset"] not in seen_props:
-                seen_props.add(layer["asset"])
-                ev.append((max(t + 0.02, 0.0), "pop", -9.0))
+        # Pop on every beat that brings a new visual in -- including charts,
+        # and including a prop the video has used before. Previously this
+        # deduped by asset name across the WHOLE video, so a 5-minute
+        # long-form got one accent every 10 seconds and most beats were
+        # silent. What matters is that something new appeared on screen now,
+        # not whether that icon was used earlier.
+        if s["index"] == 0 and any(
+                l["type"] in ("prop", "cutout", "chart") for l in s.get("layers", [])):
+            # land it just BEFORE the beat, in the inter-beat gap. Fired at the
+            # beat start it sat underneath the speech onset and was masked.
+            ev.append((max(t - 0.06, 0.0), "pop", -12.0))
 
     ev.append((0.0, "whoosh", -8.0))
     return ev

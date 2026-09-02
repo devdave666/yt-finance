@@ -297,12 +297,19 @@ def generate_assets(script, plan: dict, force: bool = False) -> None:
     # ---- charts + headlines (both no-API) ----
     if plan.get("charts"):
         from . import charts as chart_mod
+        animate = getattr(config, "CHART_ANIMATE", True)
         for bid, spec in plan["charts"].items():
             out = a / "chart" / f"{bid}.png"
-            if out.exists() and not force:
+            seq = a / "chart" / bid
+            if out.exists() and not force and (not animate or any(seq.glob("*.png"))):
                 continue
-            chart_mod.render(spec, out)
-            print(f"  chart {bid}  ({spec['type']}, {len(spec['values'])} pts)")
+            if animate:
+                nf = chart_mod.render_animation(spec, out, seq, fps=config.FPS)
+                print(f"  chart {bid}  ({spec['type']}, {len(spec['values'])} pts, "
+                      f"{nf} frames drawing on)")
+            else:
+                chart_mod.render(spec, out)
+                print(f"  chart {bid}  ({spec['type']}, {len(spec['values'])} pts)")
     if plan.get("headlines"):
         from . import headline as hl_mod
         for bid, text in plan["headlines"].items():

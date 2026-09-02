@@ -225,9 +225,19 @@ def synthesize(script, force: bool = False) -> dict:
                 # there.) `final` now only appears once the beat is decided.
                 best_wps = None
                 best = audio_dir / f"{beat.id}.best.wav"
-                for take in range(3):
+                # Last resort: if the styled prompt keeps producing a runaway
+                # take, drop the style prompt entirely. A style prompt is what
+                # triggers Gemini-TTS's pad-and-repeat failure mode, so a plain
+                # read is the reliable escape hatch -- slightly flatter
+                # delivery beats 40 seconds of repeated fragments.
+                takes = 4
+                for take in range(takes):
+                    plain = take == takes - 1
+                    if plain:
+                        print(f"    {beat.id}: styled takes all out of band, "
+                              f"falling back to a plain read")
                     _synth_raw(client, beat.say, script.voice_for(beat), raw,
-                               style=style_base + hint)
+                               style="" if plain else style_base + hint)
                     cand = audio_dir / f"{beat.id}.take.wav"
                     _norm(raw, cand, gap_s=gap_s)
                     w = _wps(cand, n_words, gap_s)
@@ -238,7 +248,7 @@ def synthesize(script, force: bool = False) -> dict:
                         cand.unlink(missing_ok=True)
                     if lo_wps <= w <= hi_wps:
                         break
-                    if take < 2:
+                    if take < takes - 1:
                         print(f"    {beat.id}: take {take + 1} was {w:.2f} wps "
                               f"(want {lo_wps}-{hi_wps}), re-rolling")
                 best.replace(final)

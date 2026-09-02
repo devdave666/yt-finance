@@ -85,8 +85,22 @@ def build_track(script, timeline: dict, out_wav: Path) -> Path | None:
         return None
 
     total = timeline["total_s"] + 0.3
-    inputs: list[str] = ["-f", "lavfi", "-i", f"anullsrc=r={SR}:cl=stereo"]
-    parts = [f"[0:a]atrim=0:{total:.3f}[bed]"]
+    # The bed used to be literal digital silence (anullsrc). Raw TTS over dead
+    # silence is a tell -- both to a listener and to the platforms' own audio
+    # classifiers -- so it is now a very quiet filtered-noise room tone. Brown
+    # noise rolled off hard at both ends gives warmth with no pitch, so it
+    # never fights the voice or implies music (and it is synthesised, so
+    # there is nothing to licence).
+    amb_db = getattr(config, "SFX_AMBIENCE_DB", -26.0)
+    if amb_db is None:
+        inputs = ["-f", "lavfi", "-i", f"anullsrc=r={SR}:cl=stereo"]
+        parts = [f"[0:a]atrim=0:{total:.3f}[bed]"]
+    else:
+        inputs = ["-f", "lavfi", "-i",
+                  f"anoisesrc=d={total:.3f}:c=brown:r={SR}:a=0.7"]
+        parts = [f"[0:a]highpass=f=45,lowpass=f=430,volume={amb_db}dB,"
+                 f"afade=t=in:d=1.2,afade=t=out:st={max(total - 1.5, 0):.3f}:d=1.5,"
+                 f"aformat=channel_layouts=stereo[bed]"]
     mix = ["[bed]"]
 
     for idx, (t, name, gain) in enumerate(events, start=1):

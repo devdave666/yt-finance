@@ -107,14 +107,18 @@ TTS_TRIM_SILENCE = True      # strip leading/trailing silence from each beat cli
 LONGFORM_TARGET_WPS = 2.62    # ~157 wpm: measured documentary-explainer pace
 LONGFORM_WPS_BAND = (2.1, 3.1)
 LONGFORM_BEAT_GAP_S = 0.13
+# NEVER put a duration or a length in this prompt. Gemini-TTS treats the
+# prompt as a delivery instruction and an earlier version of this string
+# ("an even, unhurried pace the listener can follow for several minutes")
+# made it pad to fill time -- 13-word lines came back as 34-43 seconds of
+# repeated fragments, reproducibly, on every take. Describe MANNER only.
 LONGFORM_TTS_STYLE = (
     "You explain money and markets on a channel called Anti Broke. Deliver this "
     "like a sharp market analyst walking someone through a case they haven't "
-    "heard before: measured, confident, a little skeptical. This is a long "
-    "explainer, not a clip -- an even, unhurried pace the listener can follow "
-    "for several minutes. Hold that same steady pace from the first word to the "
-    "last: never rush a phrase, never let one drag. Enunciate every number "
-    "clearly. No hype, no goofiness, no sing-song."
+    "heard before: measured, confident, a little skeptical. Even, unhurried "
+    "pace -- never rush a phrase, never let one drag. Enunciate every number "
+    "clearly. No hype, no goofiness, no sing-song. Read the line exactly once, "
+    "word for word, and stop at the end."
 )
 
 
@@ -148,7 +152,16 @@ BUFFER_TIKTOK_CHANNEL_ID = (
 # ---- Ken Burns (off by default; the reference style has a static camera) ----
 KENBURNS = os.environ.get("STICKFIN_KENBURNS", "0") == "1"
 
+# ---- Charts -----------------------------------------------------------------
+# Draw charts on over ~1s instead of cutting to a finished still. A static
+# chart makes a data beat a slide, which reads as a slideshow to a viewer and
+# to the platforms' own "low-motion content" classifiers.
+CHART_ANIMATE = os.environ.get("STICKFIN_CHART_ANIMATE", "1") == "1"
+
 # ---- SFX ---------------------------------------------------------------------
+# Quiet synthesised room tone under everything (dB). None = digital silence,
+# which is what raw TTS over nothing sounds like.
+SFX_AMBIENCE_DB = float(os.environ.get("STICKFIN_AMBIENCE_DB", "-26"))
 SFX_TICKS = os.environ.get("STICKFIN_SFX_TICKS", "0") == "1"   # per-cut click; off (annoying)
 
 # ---- Long-form subtitles ---------------------------------------------------

@@ -89,9 +89,13 @@
     "description": "The S&P 500 is the benchmark for the US stock market. Its long-term performance is more consistent than most people realize, even through the worst crashes in history. There has never been a 20-year period where it has delivered a negative return.\n\n#sp500 #investing #stockmarket #longterminvesting #personalfinance",
     "hosted_url": "https://raw.githubusercontent.com/devdave666/yt-finance/main/media/2026-08-31-sp500-20-year-record.mp4",
     "queued_date": "2026-08-31",
-    "posted": false,
-    "posted_date": null,
-    "post_ids": null
+    "posted": true,
+    "posted_date": "2026-09-02",
+    "post_ids": {
+      "youtube": "6a98a98fee76bbf0f6115fa0",
+      "instagram": "6a98a993ea0debfb4f6d05c1",
+      "tiktok": "6a98a99dee76bbf0f611600c"
+    }
   },
   {
     "slug": "2026-08-31-inflation-erases-cash-value",

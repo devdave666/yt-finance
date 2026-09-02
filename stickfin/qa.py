@@ -24,6 +24,12 @@ class QAResult:
     critique: dict | None = None
 
 
+def _img_size(path: Path) -> tuple[int, int]:
+    from PIL import Image
+    with Image.open(path) as im:
+        return im.size
+
+
 def _audio_stats(path: Path) -> tuple[float, float]:
     r = subprocess.run(
         ["ffmpeg", "-hide_banner", "-nostats", "-i", str(path),
@@ -47,9 +53,14 @@ def check(script, run_critique: bool = True) -> QAResult:
     video = script.out_path
 
     # ---- duration ----
+    # 16:9 long-form is a different product with a different acceptable length;
+    # the Shorts window would reject every long-form video outright.
+    lo_s, hi_s = (150.0, 1500.0) if script.fmt == "wide" else (12.0, 45.0)
     total = narration["total_s"]
-    if not (12.0 <= total <= 45.0):
-        res.blockers.append(f"length {total:.1f}s out of the 12-45s window")
+    if not (lo_s <= total <= hi_s):
+        res.blockers.append(
+            f"length {total:.1f}s out of the {lo_s:.0f}-{hi_s:.0f}s window "
+            f"for format {script.fmt!r}")
 
     if video.exists():
         vdur = probe_duration(video)
@@ -95,6 +106,37 @@ def check(script, run_critique: bool = True) -> QAResult:
             if sub and not (adir / sub / f"{layer['asset']}.png").exists():
                 res.blockers.append(f"missing {layer['type']} '{layer['asset']}' "
                                     f"(shot {shot['beat_id']})")
+
+    # ---- geometry: nothing off-frame, nothing overlapping ----
+    # Re-solves each shot from the REAL asset sizes (same inputs the compositor
+    # used) and asserts the result is clean. layout.solve tries to guarantee
+    # this, but its last-resort "shrink and hope" path can still leave a
+    # collision on a crowded frame -- this is what catches that before publish
+    # instead of a viewer catching it after.
+    from . import layout
+    geom_bad: list[str] = []
+    for shot in timeline["shots"]:
+        if shot.get("kind") != "composite":
+            continue
+        kinds, whs = [], []
+        for layer in shot.get("layers", []):
+            sub = {"character": "char", "prop": "prop", "cutout": "cutout",
+                   "chart": "chart", "headline": "headline"}.get(layer["type"])
+            p = (adir / sub / f"{layer['asset']}.png") if sub else None
+            if p is None or not p.exists():
+                continue
+            kinds.append(layer["type"])
+            whs.append(_img_size(p))
+        if not kinds:
+            continue
+        boxes = layout.solve([{"type": k, "wh": wh} for k, wh in zip(kinds, whs)],
+                             timeline.get("fmt", script.fmt))
+        for problem in layout.audit(kinds, boxes, timeline.get("fmt", script.fmt)):
+            geom_bad.append(f"{shot['beat_id']}#{shot['index']}: {problem}")
+    if geom_bad:
+        shown = "; ".join(geom_bad[:6])
+        more = f" (+{len(geom_bad) - 6} more)" if len(geom_bad) > 6 else ""
+        res.blockers.append(f"layout problems on {len(geom_bad)} shot(s): {shown}{more}")
 
     # ---- Gemini "would I swipe past this" pass ----
     # Advisory by default; only an *obviously broken* score blocks (the exact
@@ -153,14 +195,31 @@ Return ONLY JSON, no prose:
  "top_problems":["at most 3, concrete, most important first"]}"""
 
 
+MAX_KEYFRAMES = 14
+
+
 def _keyframes(video: Path, timeline: dict, out_dir: Path) -> list[Path]:
-    """One full-res still at the mid-point of each composite beat."""
-    seen, frames = set(), []
-    for shot in timeline["shots"]:
+    """One still at the mid-point of each composite beat, capped at
+    MAX_KEYFRAMES evenly spaced across the video.
+
+    Vertex caps a whole inline request at roughly 20MB. A 25s Short has ~8
+    beats and fits fine; a six-minute long-form has ~45, and sending one still
+    each would blow the limit and lose the critique entirely (which fails
+    open -- so it would silently publish unreviewed).
+    """
+    picks = [s for s in timeline["shots"] if s.get("kind") == "composite"]
+    seen_ids, uniq = set(), []
+    for s in picks:
+        if s["beat_id"] not in seen_ids:
+            seen_ids.add(s["beat_id"])
+            uniq.append(s)
+    if len(uniq) > MAX_KEYFRAMES:
+        step = len(uniq) / MAX_KEYFRAMES
+        uniq = [uniq[min(int(i * step), len(uniq) - 1)] for i in range(MAX_KEYFRAMES)]
+
+    frames = []
+    for shot in uniq:
         bid = shot["beat_id"]
-        if bid in seen or shot.get("kind") != "composite":
-            continue
-        seen.add(bid)
         t = shot["start_s"] + shot["dur_s"] / 2
         fp = out_dir / f"kf_{bid}.jpg"
         try:
@@ -203,7 +262,8 @@ def _critique(video: Path, timeline: dict | None = None) -> dict:
         kf_dir.rmdir()
     except OSError:
         pass
-    parts.append(f"{_CRIT_PROMPT}\n\n(The {len(frames)} stills are beats 1..{len(frames)} in order.)")
+    parts.append(f"{_CRIT_PROMPT}\n\n(The {len(frames)} stills are sampled evenly "
+                 f"across the video, in playback order.)")
 
     client = genai.Client(vertexai=True, project=config.GCP_PROJECT,
                           location="us-central1")

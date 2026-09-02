@@ -18,7 +18,7 @@ import yaml
 from . import config
 
 _SLUG_RE = re.compile(r"^[a-z0-9][a-z0-9-]{1,60}$")
-_CAPTION_STYLES = {"explainer", "skit", "title", "none"}
+_CAPTION_STYLES = {"explainer", "skit", "title", "subtitle", "none"}
 _ANCHORS = {"left", "center", "right"}
 
 

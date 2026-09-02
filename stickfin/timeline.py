@@ -90,7 +90,8 @@ def plan(script, narration: dict) -> dict:
             # every hold of a beat currently shows the same composite, so extra
             # holds are just redundant cuts -- only split when the line is really
             # long (the karaoke caption carries the motion inside one hold).
-            hold_max = config.MAX_HOLD_S * 2.0
+            # Long-form tolerates a much longer hold: see config.hold_max_s.
+            hold_max = config.hold_max_s(script.fmt)
             n_holds = max(1, math.ceil((d - 1e-3) / hold_max))
             while n_holds > 1 and (beat_frames / n_holds) / fps < config.MIN_HOLD_S:
                 n_holds -= 1

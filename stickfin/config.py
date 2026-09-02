@@ -45,6 +45,16 @@ def aspect_ratio(fmt: str | None = None) -> str:
 MAX_HOLD_S = float(os.environ.get("STICKFIN_MAX_HOLD_S", "2.7"))
 MIN_HOLD_S = float(os.environ.get("STICKFIN_MIN_HOLD_S", "0.9"))
 
+# 16:9 long-form is a different medium: a viewer who chose a 6-minute video is
+# not being scroll-stopped, and every hold of a beat draws the SAME composite,
+# so short-form's fast re-cut just reads as a stutter on a static slide. Hold a
+# long-form beat for its whole line unless the line is genuinely long.
+LONGFORM_HOLD_S = float(os.environ.get("STICKFIN_LONGFORM_HOLD_S", "9.0"))
+
+
+def hold_max_s(fmt: str | None = None) -> float:
+    return LONGFORM_HOLD_S if (fmt or DEFAULT_FORMAT) == "wide" else MAX_HOLD_S * 2.0
+
 # ---- Character layout (fraction of canvas) ---------------------------------
 CHAR_HEIGHT_FRAC = 0.54       # default figure height vs canvas height
 CHAR_BASELINE_FRAC = 0.95     # where feet sit
@@ -90,6 +100,39 @@ TTS_WPS_BAND = (2.3, 3.6)    # re-synth only a genuinely broken take (dragged/ru
 BEAT_GAP_S = 0.04
 TTS_TRIM_SILENCE = True      # strip leading/trailing silence from each beat clip
 
+# Long-form is a different read: 3.05 wps sustained for six minutes is
+# exhausting, and the near-zero inter-beat gap that keeps a 25s Short tight
+# reads as breathless over dozens of beats. Calmer target, a real (small)
+# breath between beats, and a delivery prompt without the scroll-stopping urgency.
+LONGFORM_TARGET_WPS = 2.62    # ~157 wpm: measured documentary-explainer pace
+LONGFORM_WPS_BAND = (2.1, 3.1)
+LONGFORM_BEAT_GAP_S = 0.13
+LONGFORM_TTS_STYLE = (
+    "You explain money and markets on a channel called Anti Broke. Deliver this "
+    "like a sharp market analyst walking someone through a case they haven't "
+    "heard before: measured, confident, a little skeptical. This is a long "
+    "explainer, not a clip -- an even, unhurried pace the listener can follow "
+    "for several minutes. Hold that same steady pace from the first word to the "
+    "last: never rush a phrase, never let one drag. Enunciate every number "
+    "clearly. No hype, no goofiness, no sing-song."
+)
+
+
+def tts_target_wps(fmt: str | None = None) -> float:
+    return LONGFORM_TARGET_WPS if (fmt or DEFAULT_FORMAT) == "wide" else TTS_TARGET_WPS
+
+
+def tts_wps_band(fmt: str | None = None) -> tuple[float, float]:
+    return LONGFORM_WPS_BAND if (fmt or DEFAULT_FORMAT) == "wide" else TTS_WPS_BAND
+
+
+def beat_gap_s(fmt: str | None = None) -> float:
+    return LONGFORM_BEAT_GAP_S if (fmt or DEFAULT_FORMAT) == "wide" else BEAT_GAP_S
+
+
+def tts_style(fmt: str | None = None) -> str:
+    return LONGFORM_TTS_STYLE if (fmt or DEFAULT_FORMAT) == "wide" else TTS_STYLE
+
 # ---- Publishing (Buffer) ---------------------------------------------------
 # Both channels live on one Buffer account (org "My organization"). Channel ids
 # aren't secret -- only BUFFER_API_KEY is -- so they carry a default and the
@@ -107,6 +150,24 @@ KENBURNS = os.environ.get("STICKFIN_KENBURNS", "0") == "1"
 
 # ---- SFX ---------------------------------------------------------------------
 SFX_TICKS = os.environ.get("STICKFIN_SFX_TICKS", "0") == "1"   # per-cut click; off (annoying)
+
+# ---- Long-form subtitles ---------------------------------------------------
+# Single source of truth shared by captions.py (which draws them) and layout.py
+# (which reserves the band they sit in). Kept together on purpose: when these
+# lived apart, a 3-line caption silently overlapped the artwork above it.
+SUBTITLE_FONT_PX = 52
+SUBTITLE_MARGIN_V = 78        # gap from frame bottom to the last baseline
+SUBTITLE_MAX_LINES = 3        # worst case the reserved band must survive
+SUBTITLE_WRAP_CHARS = 62      # most lines land in 2 at this width
+SUBTITLE_LINE_H = 1.2         # libass line advance vs font size
+SUBTITLE_CLEARANCE_PX = 24    # visible breathing room under the artwork
+
+
+def subtitle_band_frac(canvas_h: int) -> float:
+    """Fraction of frame height that must stay clear at the bottom."""
+    block = SUBTITLE_MAX_LINES * SUBTITLE_FONT_PX * SUBTITLE_LINE_H
+    return (SUBTITLE_MARGIN_V + block + SUBTITLE_CLEARANCE_PX) / canvas_h
+
 
 # ---- Captions -----------------------------------------------------------
 # ASS colours are &HAABBGGRR. White text with a heavy near-black outline (reads

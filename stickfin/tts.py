@@ -91,7 +91,7 @@ def _parse_trim(trim: str) -> tuple[float, float | None]:
     return to_s(lo), (to_s(hi) if hi else None)
 
 
-def _norm(src: Path, dst: Path, extra_af: str = "") -> None:
+def _norm(src: Path, dst: Path, extra_af: str = "", gap_s: float | None = None) -> None:
     chain = []
     if getattr(config, "TTS_TRIM_SILENCE", False):
         # 1) trim dead air off both ends, 2) collapse any internal pause longer
@@ -107,24 +107,26 @@ def _norm(src: Path, dst: Path, extra_af: str = "") -> None:
     if extra_af:
         chain.append(extra_af)
     chain.append(f"loudnorm=I={config.TTS_TARGET_LUFS}:TP=-1.5:LRA=11")
-    chain.append(f"apad=pad_dur={config.BEAT_GAP_S}")
+    chain.append(f"apad=pad_dur={config.BEAT_GAP_S if gap_s is None else gap_s}")
     run_ffmpeg(["-i", src, "-af", ",".join(chain),
                 "-ar", config.TTS_SAMPLE_RATE, "-ac", "1", dst],
                f"normalize {dst.name}")
 
 
-def _wps(path: Path, n_words: int) -> float:
-    speech = max(probe_duration(path) - config.BEAT_GAP_S, 0.1)
+def _wps(path: Path, n_words: int, gap_s: float | None = None) -> float:
+    speech = max(probe_duration(path) - (config.BEAT_GAP_S if gap_s is None else gap_s), 0.1)
     return n_words / speech
 
 
-def _polish_pace(path: Path, n_words: int) -> float:
-    """Bring a beat to TTS_TARGET_WPS with a pitch-preserving atempo (0.85x-1.28x).
-    Gemini-TTS delivers this voice slow, so this is normally a ~1.2x speed-up."""
+def _polish_pace(path: Path, n_words: int, target: float | None = None,
+                 gap_s: float | None = None) -> float:
+    """Bring a beat to the format's target wps with a pitch-preserving atempo
+    (0.85x-1.28x). Gemini-TTS delivers this voice slow, so this is normally a
+    ~1.2x speed-up for short-form and a gentler nudge for long-form."""
     if n_words < 2:
-        return _wps(path, n_words)
-    target = config.TTS_TARGET_WPS
-    wps = _wps(path, n_words)
+        return _wps(path, n_words, gap_s)
+    target = config.TTS_TARGET_WPS if target is None else target
+    wps = _wps(path, n_words, gap_s)
     factor = target / wps
     if 0.97 <= factor <= 1.03:
         return wps
@@ -137,7 +139,7 @@ def _polish_pace(path: Path, n_words: int) -> float:
                 "-ar", config.TTS_SAMPLE_RATE, "-ac", "1", tmp],
                f"polish pace {path.name} x{factor} ({wps:.2f} wps)")
     tmp.replace(path)
-    return _wps(path, n_words)
+    return _wps(path, n_words, gap_s)
 
 
 def _speech_span(path: Path, total: float) -> tuple[float, float]:
@@ -173,7 +175,11 @@ def synthesize(script, force: bool = False) -> dict:
     audio_dir = script.build_dir / "audio"
     audio_dir.mkdir(parents=True, exist_ok=True)
 
-    lo_wps, hi_wps = config.TTS_WPS_BAND
+    fmt = script.fmt
+    lo_wps, hi_wps = config.tts_wps_band(fmt)
+    target_wps = config.tts_target_wps(fmt)
+    gap_s = config.beat_gap_s(fmt)
+    style_base = config.tts_style(fmt)
     client = None
     entries = []
     for i, beat in enumerate(script.beats):
@@ -188,23 +194,29 @@ def synthesize(script, force: bool = False) -> dict:
                 if hi is not None:
                     seg += ["-t", str(hi - lo)]
                 run_ffmpeg(seg + [raw], f"live audio {beat.id}")
-                _norm(raw, final)
+                _norm(raw, final, gap_s=gap_s)
             else:
                 if client is None:
                     client = _client()
-                hint = (" This is the opening hook -- punch it, make them stop "
-                        "scrolling." if i == 0 else "")
+                if i > 0:
+                    hint = ""
+                elif fmt == "wide":
+                    hint = (" This is the opening line of a long explainer -- set "
+                            "the tone: calm, certain, worth listening to.")
+                else:
+                    hint = (" This is the opening hook -- punch it, make them stop "
+                            "scrolling.")
                 # re-roll the take until its pace lands in band (Gemini-TTS is
                 # stochastic -- a fresh take fixes a rushed/draggy line far
                 # better than time-stretching one)
                 best_wps = None
                 for take in range(3):
                     _synth_raw(client, beat.say, script.voice_for(beat), raw,
-                               style=config.TTS_STYLE + hint)
+                               style=style_base + hint)
                     cand = audio_dir / f"{beat.id}.take.wav"
-                    _norm(raw, cand)
-                    w = _wps(cand, n_words)
-                    if best_wps is None or abs(w - config.TTS_TARGET_WPS) < abs(best_wps - config.TTS_TARGET_WPS):
+                    _norm(raw, cand, gap_s=gap_s)
+                    w = _wps(cand, n_words, gap_s)
+                    if best_wps is None or abs(w - target_wps) < abs(best_wps - target_wps):
                         cand.replace(final)
                         best_wps = w
                     else:
@@ -214,7 +226,7 @@ def synthesize(script, force: bool = False) -> dict:
                     if take < 2:
                         print(f"    {beat.id}: take {take + 1} was {w:.2f} wps "
                               f"(want {lo_wps}-{hi_wps}), re-rolling")
-                w = _polish_pace(final, n_words)
+                w = _polish_pace(final, n_words, target=target_wps, gap_s=gap_s)
                 print(f"    {beat.id}: {w:.2f} wps")
             raw.unlink(missing_ok=True)
 

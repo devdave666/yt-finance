@@ -1,0 +1,389 @@
+title: The Math That Quietly Eats Portfolios (Volatility Drag)
+slug: longform-volatility-drag
+format: wide
+caption_style: subtitle
+
+cast:
+  host:
+    anchor: center
+    voice: Orus
+    look: "the 'Anti Broke' host: a minimalist black-marker stick figure with a round OPEN white head, four or five short spiky lines of hair on top, two small dot eyes, two short sharp angled eyebrows, and always a visible mouth that shows the expression (flat, frown, grimace, open shout). The body is ONE single straight vertical black line (spine), with four more single straight black lines for the two arms and two legs, dot hands, short line feet -- plus one small thin necktie shape (a short strip + a little triangle) hanging at the neck. NO torso shape, NO filled body, NO solid black wedge, NO shirt block -- the figure is a head, spiky hair, five thin lines and a skinny tie. It is never a black silhouette."
+
+scenes:
+  stage:
+    color: '#f4efe4'
+
+narrator:
+  voice: Orus
+
+beats:
+
+# ---------------- HOOK: the riddle ----------------
+- id: b01
+  scene: stage
+  who: host
+  say: "Here is a question that sounds trivial. You lose fifty percent, and then you gain fifty percent back."
+  cast: {host: "standing, arms wide, serious expression"}
+  headline: "DOWN 50%. UP 50%."
+
+- id: b02
+  scene: stage
+  who: host
+  say: "Are you back where you started? Almost everyone says yes, because the average of those two moves is zero."
+  cast: {host: "shrugging, skeptical expression"}
+  props: [question]
+
+- id: b03
+  scene: stage
+  who: host
+  say: "You are not back. You are down twenty-five percent, and that money is simply gone."
+  cast: {host: "pointing, focused expression"}
+  chart:
+    type: bar
+    title: One hundred dollars, two moves
+    labels: [Start, After -50%, After +50%]
+    values: [100, 50, 75]
+    unit: $
+    highlight: 2
+    note: Not back to even
+
+- id: b04
+  scene: stage
+  who: host
+  say: "The gap between the average return and the real result has a name. Volatility drag."
+  cast: {host: "standing, one hand raised, explaining, neutral expression"}
+  props: [warning]
+
+- id: b05
+  scene: stage
+  who: host
+  say: "It is not a fee, it is not a tax, and it is not bad luck. It is arithmetic, and it never takes a day off."
+  cast: {host: "arms crossed, firm expression"}
+  props: [scale]
+
+# ---------------- PARADOX: arithmetic vs geometric ----------------
+- id: b06
+  scene: stage
+  who: host
+  say: "Here is why it happens. Your account does not add returns together. It multiplies them."
+  cast: {host: "standing, one hand raised, explaining, neutral expression"}
+  props: [percent]
+
+- id: b07
+  scene: stage
+  who: host
+  say: "One hundred dollars times zero point five is fifty. Then fifty times one point five is seventy-five."
+  cast: {host: "hands apart comparing two things, explaining"}
+  props: [coins-stack]
+
+- id: b08
+  scene: stage
+  who: host
+  say: "Addition would have given you zero. Multiplication gives you minus twenty-five. Your account only does multiplication."
+  cast: {host: "pointing, focused expression"}
+  props: [arrow-down]
+
+- id: b09
+  scene: stage
+  who: host
+  say: "Per period, the arithmetic average is zero percent. The geometric average, the real one, is minus thirteen point four."
+  cast: {host: "hands apart comparing two things, explaining"}
+  chart:
+    type: bar
+    title: Return per period
+    labels: [Arithmetic average, Geometric (actual)]
+    values: [0, -13.4]
+    unit: '%'
+    highlight: 1
+    note: The one you keep
+
+- id: b10
+  scene: stage
+  who: host
+  say: "The arithmetic mean is the number in the brochure. The geometric mean is the number in your account."
+  cast: {host: "leaning forward, conspiratorial expression"}
+  props: [receipt]
+
+- id: b11
+  scene: stage
+  who: host
+  say: "And the wilder the swings get, the wider that gap opens."
+  cast: {host: "hands apart comparing two things, explaining"}
+  props: [chart-down]
+
+- id: b12
+  scene: stage
+  who: host
+  say: "There is even a rough formula for it. Your compound return is about the average return, minus half the variance."
+  cast: {host: "standing, one hand raised, explaining, neutral expression"}
+  props: [lightbulb]
+
+- id: b13
+  scene: stage
+  who: host
+  say: "Read that again. The volatility is subtracted. Not risked. Subtracted."
+  cast: {host: "pointing, focused expression"}
+  props: [magnet]
+
+- id: b14
+  scene: stage
+  who: host
+  say: "Which means the swings themselves are a cost you pay, whether or not anything actually goes wrong."
+  cast: {host: "arms crossed, firm expression"}
+  props: [wallet]
+
+# ---------------- THE RECOVERY WALL ----------------
+- id: b15
+  scene: stage
+  who: host
+  say: "The second half of the trap is recovery, and recovery is not symmetrical."
+  cast: {host: "one hand up in a warning gesture, alarmed expression"}
+  props: [warning]
+
+- id: b16
+  scene: stage
+  who: host
+  say: "Lose ten percent, and you need about eleven percent to get back. That feels fair enough."
+  cast: {host: "standing, one hand raised, explaining, neutral expression"}
+  props: [arrow-up]
+
+- id: b17
+  scene: stage
+  who: host
+  say: "Lose twenty-five, and you need thirty-three point three. Still recoverable in a decent year."
+  cast: {host: "hands apart comparing two things, explaining"}
+  props: [chart-up]
+
+- id: b18
+  scene: stage
+  who: host
+  say: "But lose fifty percent, and you need a one hundred percent gain just to break even."
+  cast: {host: "pointing, focused expression"}
+  props: [target]
+
+- id: b19
+  scene: stage
+  who: host
+  say: "And lose ninety percent, and you need nine hundred. A ten bagger, just to get back to zero."
+  cast: {host: "one hand up in a warning gesture, alarmed expression"}
+  chart:
+    type: hbar
+    title: Gain needed to break even
+    labels: [Down 10%, Down 25%, Down 50%, Down 75%, Down 90%]
+    values: [11.1, 33.3, 100, 300, 900]
+    unit: '%'
+    highlight: 4
+    note: It is a wall
+
+- id: b20
+  scene: stage
+  who: host
+  say: "That line is not straight. It bends upward, and near the end it goes almost vertical."
+  cast: {host: "gesturing upward, hopeful expression"}
+  props: [chart-up]
+
+- id: b21
+  scene: stage
+  who: host
+  say: "Which is why professionals obsess over drawdown, while everyone else obsesses over returns."
+  cast: {host: "leaning forward, conspiratorial expression"}
+  props: [shield]
+
+- id: b22
+  scene: stage
+  who: host
+  say: "A portfolio that never falls fifty percent never has to go and find a double."
+  cast: {host: "arms crossed, firm expression"}
+  props: [safe]
+
+- id: b23
+  scene: stage
+  who: host
+  say: "Avoiding the hole is worth more than being clever at the bottom of it."
+  cast: {host: "standing neutral, looking at camera, calm expression"}
+  props: [padlock]
+
+# ---------------- APPLICATION 1: the dot-com drawdown ----------------
+- id: b24
+  scene: stage
+  who: host
+  say: "This is not a thought experiment. Ask anyone who owned the Nasdaq in the year two thousand."
+  cast: {host: "leaning forward, conspiratorial expression"}
+  props: [calendar]
+
+- id: b25
+  scene: stage
+  who: host
+  say: "From its peak, that index fell about seventy-eight percent over the next two and a half years."
+  cast: {host: "looking down, disappointed expression"}
+  props: [chart-down]
+
+- id: b26
+  scene: stage
+  who: host
+  say: "And from minus seventy-eight percent, getting back to even requires roughly three hundred and fifty-five percent."
+  cast: {host: "pointing, focused expression"}
+  chart:
+    type: hbar
+    title: Nasdaq, 2000 to 2002
+    labels: [Peak-to-trough fall, Gain needed to recover]
+    values: [78, 355]
+    unit: '%'
+    highlight: 1
+    note: Same event, both sides
+
+- id: b27
+  scene: stage
+  who: host
+  say: "The index did eventually manage it. It took roughly fifteen years."
+  cast: {host: "standing neutral, looking at camera, calm expression"}
+  props: [hourglass]
+
+- id: b28
+  scene: stage
+  who: host
+  say: "Fifteen years of holding, just to be flat. That is volatility drag with a calendar attached."
+  cast: {host: "arms crossed, firm expression"}
+  props: [clock]
+
+# ---------------- APPLICATION 2: leveraged decay ----------------
+- id: b29
+  scene: stage
+  who: host
+  say: "Now watch what happens when somebody adds leverage on top of a choppy market."
+  cast: {host: "one hand up in a warning gesture, alarmed expression"}
+  props: [warning]
+
+- id: b30
+  scene: stage
+  who: host
+  say: "A three times daily fund does not triple your long run return. It triples your daily swing."
+  cast: {host: "standing, one hand raised, explaining, neutral expression"}
+  props: [magnet]
+
+- id: b31
+  scene: stage
+  who: host
+  say: "Say the index rises ten percent on Monday, then falls nine point one percent on Tuesday."
+  cast: {host: "hands apart comparing two things, explaining"}
+  props: [bars-up]
+
+- id: b32
+  scene: stage
+  who: host
+  say: "That round trip puts the index back exactly where it started. Two days, no change at all."
+  cast: {host: "shrugging, skeptical expression"}
+  chart:
+    type: line
+    title: The index itself
+    labels: [Day 0, Day 1, Day 2]
+    values: [100, 110, 100]
+    unit: ''
+    highlight: 2
+    note: Exactly flat
+
+- id: b33
+  scene: stage
+  who: host
+  say: "The three times fund rose thirty percent, and then it fell twenty-seven point three percent."
+  cast: {host: "standing, one hand raised, explaining, neutral expression"}
+  props: [percent]
+
+- id: b34
+  scene: stage
+  who: host
+  say: "It lands at ninety-four point six. Down more than five percent, on an index that did nothing."
+  cast: {host: "looking down, disappointed expression"}
+  chart:
+    type: line
+    title: The three times fund
+    labels: [Day 0, Day 1, Day 2]
+    values: [100, 130, 94.6]
+    unit: ''
+    highlight: 2
+    note: Down 5.4%
+
+- id: b35
+  scene: stage
+  who: host
+  say: "Nobody was wrong about direction here. The index finished flat, and the fund still lost real money."
+  cast: {host: "shrugging, skeptical expression"}
+  props: [question]
+
+- id: b36
+  scene: stage
+  who: host
+  say: "Repeat that pattern for a year of ordinary chop, and the decay compounds into something serious."
+  cast: {host: "pointing, focused expression"}
+  props: [snowball]
+
+- id: b37
+  scene: stage
+  who: host
+  say: "That is why those products carry a warning about holding periods. The math wrote that warning, not the marketing."
+  cast: {host: "leaning forward, conspiratorial expression"}
+  props: [receipt]
+
+# ---------------- RESOLUTION ----------------
+- id: b38
+  scene: stage
+  who: host
+  say: "So what actually helps here? Three things, and not one of them requires predicting anything."
+  cast: {host: "standing, one hand raised, explaining, neutral expression"}
+  props: [lightbulb]
+
+- id: b39
+  scene: stage
+  who: host
+  say: "First, control the size of the hole. Position sizing cuts variance faster than it cuts return."
+  cast: {host: "pointing, focused expression"}
+  props: [scale]
+
+- id: b40
+  scene: stage
+  who: host
+  say: "A smaller position in a violent asset keeps most of the upside, and removes most of the drag."
+  cast: {host: "hands apart comparing two things, explaining"}
+  props: [shield]
+
+- id: b41
+  scene: stage
+  who: host
+  say: "Second, rebalance. Selling what ran and buying what lagged mechanically lowers the variance of the whole portfolio."
+  cast: {host: "standing, one hand raised, explaining, neutral expression"}
+  props: [handshake]
+
+- id: b42
+  scene: stage
+  who: host
+  say: "Third, prefer smooth compounding to exciting compounding. Boring assets keep more of their own average."
+  cast: {host: "standing neutral, looking at camera, calm expression"}
+  props: [piggy-bank]
+
+- id: b43
+  scene: stage
+  who: host
+  say: "None of that is about being right. It is about staying in the game that the arithmetic rewards."
+  cast: {host: "arms crossed, firm expression"}
+  props: [target]
+
+- id: b44
+  scene: stage
+  who: host
+  say: "Volatility drag is not really a warning about crashes. It is a bill that arrives during ordinary chop."
+  cast: {host: "leaning forward, conspiratorial expression"}
+  props: [receipt]
+
+- id: b45
+  scene: stage
+  who: host
+  say: "The market does not owe you the average. It pays the geometric mean, and it always has."
+  cast: {host: "standing neutral, looking at camera, calm expression"}
+  props: [bank]
+
+- id: b46
+  scene: stage
+  who: host
+  say: "If that changed how you think about risk, leave a comment, and save this one for the next drawdown."
+  cast: {host: "standing, warm inviting expression, gesturing out towards the viewer"}
+  props: [comment]

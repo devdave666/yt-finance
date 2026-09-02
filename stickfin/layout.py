@@ -16,17 +16,47 @@ from . import config
 
 Box = tuple[int, int, int, int]          # x, y, w, h  (top-left origin)
 
-# fractions of the canvas
-# Reels/TikTok/Shorts render a fixed 9:16 (1080x1920) canvas, but most phone
-# screens aren't exactly 9:16 -- the player "cover"-scales to fill the real
-# screen and crops the excess, usually off the LEFT/RIGHT edges (a device
-# noticeably taller than 9:16, e.g. 19.5:9, crops ~9% off each side to fill).
-# 3.5% wasn't enough margin to survive that; a real short shipped with a
-# headline letter and a character's arm clipped by exactly this. 11% clears
-# it with room to spare.
-SIDE_MARGIN = 0.11
-BOTTOM_MARGIN = 0.05
-CAPTION_BAND = 0.27                       # top strip reserved for captions
+# Per-format frame geometry, as fractions of the canvas.
+#
+#   side   left/right margin
+#   top    everything above this is reserved (caption band on 9:16)
+#   bottom everything below 1-bottom is reserved (caption band on 16:9)
+#   feet   the baseline characters stand on
+#   band   which edge the burned-in captions live against
+#
+# short (9:16): Reels/TikTok/Shorts render a fixed 1080x1920, but most phone
+#   screens aren't exactly 9:16 -- the player "cover"-scales to fill the real
+#   screen and crops the excess off the LEFT/RIGHT edges (~9% per side on a
+#   19.5:9 device). 3.5% wasn't enough; a real short shipped with a headline
+#   letter and an arm clipped by exactly this. 11% clears it. Captions ride the
+#   top because the platform's own UI (caption, handle, action rail) covers the
+#   bottom third.
+# wide (16:9): a YouTube player letterboxes rather than cover-cropping, so the
+#   aggressive side margin is pure wasted canvas -- 5% is a normal title-safe
+#   inset. Captions belong in a bottom lower-third here (that's where a viewer
+#   expects subtitles on a landscape player), so the reserved band flips to the
+#   bottom and the character baseline lifts to sit clear above it.
+#   The wide bottom band is DERIVED from the real subtitle metrics
+#   (config.subtitle_band_frac) rather than hand-tuned: a worst-case 3-line
+#   caption is 187px tall, and a guessed 0.22 band left it overlapping the
+#   artwork by 27px. Deriving it means the two can't drift apart again.
+_WIDE_BOTTOM = round(config.subtitle_band_frac(config.FORMATS["wide"][1]), 4)
+
+_GEOM = {
+    "short": {"side": 0.11, "top": 0.27, "bottom": 0.05, "feet": 0.95, "band": "top"},
+    "wide":  {"side": 0.05, "top": 0.06, "bottom": _WIDE_BOTTOM,
+              "feet": round(1 - _WIDE_BOTTOM, 4), "band": "bottom"},
+}
+
+
+def geom(fmt: str | None = None) -> dict:
+    return _GEOM.get(fmt or config.DEFAULT_FORMAT, _GEOM["short"])
+
+
+# back-compat aliases (short-form values; prefer geom(fmt))
+SIDE_MARGIN = _GEOM["short"]["side"]
+BOTTOM_MARGIN = _GEOM["short"]["bottom"]
+CAPTION_BAND = _GEOM["short"]["top"]
 FEET = config.CHAR_BASELINE_FRAC
 
 _PRIORITY = {"headline": 4, "chart": 3, "character": 2, "cutout": 1, "prop": 1}
@@ -53,11 +83,12 @@ def _fit(wh: tuple[int, int], region: tuple[float, float, float, float],
     return x, y, w, h
 
 
-def _safe(cw: int, ch: int) -> Box:
-    x0 = round(SIDE_MARGIN * cw)
-    y0 = round(CAPTION_BAND * ch)
-    x1 = round((1 - SIDE_MARGIN) * cw)
-    y1 = round((1 - BOTTOM_MARGIN) * ch)
+def _safe(cw: int, ch: int, fmt: str | None = None) -> Box:
+    g = geom(fmt)
+    x0 = round(g["side"] * cw)
+    y0 = round(g["top"] * ch)
+    x1 = round((1 - g["side"]) * cw)
+    y1 = round((1 - g["bottom"]) * ch)
     return x0, y0, x1 - x0, y1 - y0
 
 
@@ -105,8 +136,67 @@ def _separate(mover: Box, fixed: Box, safe: Box) -> Box:
 # templates
 # --------------------------------------------------------------------------
 
+def _regions_wide(kinds: list[str]) -> list[tuple[float, float, float, float]]:
+    """16:9 long-form templates.
+
+    Landscape wants side-by-side, not the stacked "text on top of a figure"
+    shapes 9:16 uses: there is far more width than height, so the data owns the
+    right two-thirds and the host presents from the left edge. The host's poses
+    are drawn facing RIGHT (see assets.py) which is exactly the direction the
+    content sits, so the compositor's auto-mirror leaves them alone.
+    """
+    g = _GEOM["wide"]
+    top, feet = g["top"], g["feet"]
+    bot = 1 - g["bottom"]
+
+    chars = [i for i, k in enumerate(kinds) if k == "character"]
+    charts = [i for i, k in enumerate(kinds) if k == "chart"]
+    heads = [i for i, k in enumerate(kinds) if k == "headline"]
+    objs = [i for i, k in enumerate(kinds) if k in ("prop", "cutout")]
+    R: list = [None] * len(kinds)
+
+    if heads:
+        # title card: big text left, host reacting from the right edge
+        R[heads[0]] = (0.05, top + 0.03, 0.66, bot - 0.06)
+        if chars:
+            R[chars[0]] = (0.70, 0.20, 0.97, feet)
+        for j, i in enumerate(objs):
+            R[i] = (0.08, 0.60, 0.34, feet - 0.02)
+    elif charts:
+        # the data is the subject; the host is a presenter beside it
+        R[charts[0]] = (0.29, top + 0.01, 0.98, bot)
+        for j, i in enumerate(charts[1:]):
+            R[i] = (0.55, 0.30, 0.98, bot)
+        if len(chars) == 1:
+            R[chars[0]] = (0.02, 0.30, 0.26, feet)
+        elif len(chars) >= 2:
+            R[chars[0]] = (0.01, 0.34, 0.20, feet)
+            R[chars[1]] = (0.20, 0.34, 0.38, feet)
+        for j, i in enumerate(objs):
+            R[i] = (0.03, 0.10, 0.24, 0.34)
+    elif len(chars) >= 2:
+        R[chars[0]] = (0.06, 0.18, 0.36, feet)
+        R[chars[1]] = (0.64, 0.18, 0.94, feet)
+        for j, i in enumerate(objs):
+            R[i] = (0.40, 0.22 + j * 0.20, 0.60, 0.46 + j * 0.20)
+    elif objs and chars:
+        R[chars[0]] = (0.08, 0.18, 0.38, feet)
+        for j, i in enumerate(objs):
+            R[i] = (0.48, 0.18 + j * 0.22, 0.80, 0.52 + j * 0.22)
+    elif chars:
+        R[chars[0]] = (0.37, top + 0.02, 0.63, feet)   # solo, centred
+    else:
+        for j, i in enumerate(objs):
+            R[i] = (0.34, 0.18 + j * 0.22, 0.66, 0.54 + j * 0.22)
+
+    return [r if r else (0.35, 0.25, 0.65, 0.65) for r in R]
+
+
 def _regions(kinds: list[str], fmt: str) -> list[tuple[float, float, float, float]]:
     """A target region per element, same order as `kinds`."""
+    if fmt == "wide":
+        return _regions_wide(kinds)
+
     chars = [i for i, k in enumerate(kinds) if k == "character"]
     charts = [i for i, k in enumerate(kinds) if k == "chart"]
     heads = [i for i, k in enumerate(kinds) if k == "headline"]
@@ -159,7 +249,7 @@ def solve(elements: list[dict], fmt: str) -> list[Box]:
     if not elements:
         return []
     cw, ch = config.canvas(fmt)
-    safe = _safe(cw, ch)
+    safe = _safe(cw, ch, fmt)
     kinds = [e["type"] for e in elements]
     regions = _regions(kinds, fmt)
 
@@ -170,7 +260,7 @@ def solve(elements: list[dict], fmt: str) -> list[Box]:
 
     # de-overlap: keep higher priority fixed, move/shrink the rest
     order = sorted(range(len(boxes)), key=lambda i: -_PRIORITY.get(kinds[i], 0))
-    for _ in range(3):
+    for _ in range(6):
         moved = False
         for a in range(len(order)):
             for b in range(a + 1, len(order)):
@@ -181,3 +271,34 @@ def solve(elements: list[dict], fmt: str) -> list[Box]:
         if not moved:
             break
     return boxes
+
+
+def audit(kinds: list[str], boxes: list[Box], fmt: str,
+          overlap_tol: float = 0.10) -> list[str]:
+    """Prove a solved shot is actually clean: nothing outside the safe area,
+    nothing meaningfully overlapping anything else.
+
+    solve() *tries* to guarantee both, but _separate()'s last resort just
+    shrinks by 0.82 and returns -- which can still leave an overlap when a
+    frame is genuinely too crowded. This is the check that says so out loud
+    instead of shipping it, and it's what QA gates on.
+    """
+    cw, ch = config.canvas(fmt)
+    sx, sy, sw, sh = _safe(cw, ch, fmt)
+    problems: list[str] = []
+
+    for kind, (x, y, w, h) in zip(kinds, boxes):
+        if x < sx - 1 or y < sy - 1 or x + w > sx + sw + 1 or y + h > sy + sh + 1:
+            problems.append(
+                f"{kind} at ({x},{y},{w}x{h}) escapes the safe area "
+                f"({sx},{sy},{sw}x{sh})")
+        if x < 0 or y < 0 or x + w > cw or y + h > ch:
+            problems.append(f"{kind} at ({x},{y},{w}x{h}) is off-canvas ({cw}x{ch})")
+
+    for a in range(len(boxes)):
+        for b in range(a + 1, len(boxes)):
+            ov = _overlap(boxes[a], boxes[b])
+            if ov > overlap_tol:
+                problems.append(
+                    f"{kinds[a]} and {kinds[b]} overlap by {ov:.0%}")
+    return problems

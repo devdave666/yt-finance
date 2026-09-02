@@ -287,9 +287,10 @@ def generate_assets(script, plan: dict, force: bool = False) -> None:
             continue
         resp = _generate(client, [
             f"{STYLE_FLOOR}\n\n{sc['bg']}\n\nFull-bleed background filling a "
-            f"{config.aspect_ratio(script.fmt)} vertical frame. No characters, "
-            "no people, no text or captions. Leave the lower-middle area "
-            "uncluttered for characters to stand in front of."], cfg)
+            f"{config.aspect_ratio(script.fmt)} "
+            f"{'landscape' if script.fmt == 'wide' else 'vertical'} frame. No "
+            "characters, no people, no text or captions. Leave the lower-middle "
+            "area uncluttered for characters to stand in front of."], cfg)
         img = ImageOps.fit(_pil_from(resp), (cw, ch), method=Image.LANCZOS)
         img.save(out)
         print(f"  bg {name}")

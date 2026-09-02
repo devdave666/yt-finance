@@ -29,6 +29,12 @@ _STYLES = {
     "explainer": ("Arial", 96, 1, 6, config.CAP_OUTLINE, 8, 360, -1),
     "skit":      ("Arial", 66, 3, 6, "&H00000000", 8, 320, -1),
     "title":     ("Arial", 58, 3, 8, "&H00FFFFFF", 8, 250, -1),
+    # 16:9 long-form: a normal lower-third subtitle, not a scroll-stopper.
+    # Alignment 2 = bottom-centre, sitting inside layout's reserved bottom band
+    # -- which is computed from exactly these numbers (config.subtitle_band_frac),
+    # so it can never collide with the art above it.
+    "subtitle":  ("Arial", config.SUBTITLE_FONT_PX, 1, 3, config.CAP_OUTLINE, 2,
+                  config.SUBTITLE_MARGIN_V, -1),
 }
 
 
@@ -197,6 +203,13 @@ def build(script, out_path):
         if style == "skit":
             lines.append(f"Dialogue: 0,{_ts(t)},{_ts(t + max(d - 0.04, 0.2))},Cap,,0,0,0,,"
                          f"{{\\fad(90,60)}}{_wrap(beat.say.upper(), 22)}")
+        elif style == "subtitle":
+            # long-form: one calm cue per beat, held for the spoken line and
+            # cleared before the next -- no word-by-word churn to read for six
+            # minutes straight. Mixed case (ALL CAPS is fatiguing at length).
+            lines.append(f"Dialogue: 0,{_ts(t + s0)},{_ts(t + min(s1 + 0.15, d))},"
+                         f"Cap,,0,0,0,,{{\\fad(120,120)}}"
+                         f"{_wrap(beat.say, config.SUBTITLE_WRAP_CHARS)}")
         else:
             # reveal tracks the voice (s0..s1); the last group then holds to the
             # beat boundary minus a hair, so it clears before the next beat's

@@ -61,9 +61,13 @@
     "description": "Two people invest the same amount monthly. One invests for 10 years and stops. The other invests for 30 years straight. The person who invested less, but started earlier, wins. This isn't a trick, it's the math of compounding.\n\n#investing #compounding #personalfinance #retirement #money",
     "hosted_url": "https://raw.githubusercontent.com/devdave666/yt-finance/main/media/2026-08-31-invest-early-not-more.mp4",
     "queued_date": "2026-08-31",
-    "posted": false,
-    "posted_date": null,
-    "post_ids": null
+    "posted": true,
+    "posted_date": "2026-09-02",
+    "post_ids": {
+      "youtube": "6a98579bf4b73e9c3c0fd680",
+      "instagram": "6a98579e23e2f2a10079d817",
+      "tiktok": "6a9857a923e2f2a10079d8ea"
+    }
   },
   {
     "slug": "2026-08-31-berkshire-hathaway-compounding-power",

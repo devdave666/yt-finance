@@ -54,6 +54,7 @@ jobs:
         run: |
           if [ -z "${{ inputs.slug }}" ]; then
             python tools/upload_longform.py --privacy-values
+            python tools/upload_longform.py --youtube-fields
           else
             python tools/upload_longform.py \
               --slug "${{ inputs.slug }}" \

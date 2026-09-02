@@ -67,10 +67,36 @@ def privacy_values(token: str) -> None:
         print([t["name"] for t in types if t.get("kind") == "ENUM"][:80])
 
 
+def youtube_fields(token: str) -> None:
+    """Dump every YouTube-related input type Buffer exposes.
+
+    Buffer rejected a 4:53 landscape video with "must be no longer than 3
+    minutes / must be vertical for YouTube Shorts" -- i.e. it treats this
+    connected channel as Shorts-only. This shows whether there is a post-type
+    field (the way Instagram has type: reel) that selects a regular upload.
+    """
+    body = _gql(token, """query { __schema { types {
+        name kind
+        inputFields { name type { name kind ofType { name kind } } }
+    } } }""")
+    types = (((body.get("data") or {}).get("__schema") or {}).get("types")) or []
+    for t in types:
+        name = t.get("name") or ""
+        if "youtube" not in name.lower() or not t.get("inputFields"):
+            continue
+        print(f"\n{name} ({t['kind']}):")
+        for f in t["inputFields"]:
+            ft = f.get("type") or {}
+            tn = ft.get("name") or (ft.get("ofType") or {}).get("name") or ft.get("kind")
+            print(f"    {f['name']}: {tn}")
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--privacy-values", action="store_true",
                     help="introspect and print accepted privacy enums, then exit")
+    ap.add_argument("--youtube-fields", action="store_true",
+                    help="introspect YouTube post metadata input fields, then exit")
     ap.add_argument("--slug", help="basename of the committed media/<slug>.mp4")
     ap.add_argument("--title")
     ap.add_argument("--description", default="")
@@ -83,6 +109,10 @@ def main() -> int:
 
     if args.privacy_values:
         privacy_values(token)
+        return 0
+
+    if args.youtube_fields:
+        youtube_fields(token)
         return 0
 
     if not (args.slug and args.title):

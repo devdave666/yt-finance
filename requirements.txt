@@ -6,4 +6,6 @@ scipy>=1.10               # connected components: detect duplicate-figure pose g
 Pillow>=10.0
 PyYAML>=6.0
 requests>=2.31            # Buffer publish
+google-api-python-client>=2.100   # YouTube Data API (long-form upload; Buffer is Shorts-only)
+google-auth-oauthlib>=1.2         # one-time YouTube OAuth consent flow
 # ffmpeg + ffprobe must be on PATH (system install, not pip)

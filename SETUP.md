@@ -65,6 +65,50 @@ To push an already-built short to Instagram after the fact, run the **Backfill
 Instagram** workflow with the slug, or `python tools/backfill_instagram.py
 <slug>` locally.
 
+## 3b. YouTube Data API — long-form only (one-time, needs you)
+
+Buffer **cannot** upload long-form. Its YouTube integration on this channel is
+Shorts-only and rejects anything over 3 minutes or non-vertical, and its
+`YoutubePostMetadataInput` has no post-type field to override that (verified by
+schema introspection, 2026-09-02). So 16:9 long-form goes through YouTube's own
+API. Shorts keep using Buffer — don't move them, the API quota won't take it
+(`videos.insert` costs 1600 of 10,000 units/day, i.e. ~6 uploads/day).
+
+YouTube refuses service-account uploads to a human-owned channel, so this needs
+a user OAuth token. Already done for you: the **YouTube Data API v3 is enabled**
+on `project-58f4f689-36b9-406b-bfa`. The rest needs your Google account:
+
+1. Console → **APIs & Services → OAuth consent screen**, User type **External**.
+2. **Set Publishing status to "In production".** This matters: while it is
+   "Testing", Google expires every refresh token after **7 days**, so the
+   workflow would die with `invalid_grant` every week. In production the token
+   lasts until revoked. You will see an "unverified app" warning at consent —
+   expected for a personal app, continue past it.
+3. **Credentials → Create credentials → OAuth client ID → Desktop app**.
+   Download the JSON.
+4. Signed in as the account that owns the "Anti Broke" channel, run once:
+   ```bash
+   pip install google-api-python-client google-auth-oauthlib
+   python tools/youtube_auth.py path/to/client_secret.json
+   ```
+   It opens a browser, you approve, and it prints three values. Nothing is
+   written to disk.
+5. Repo → Settings → Secrets and variables → Actions, add all three:
+   `YOUTUBE_CLIENT_ID`, `YOUTUBE_CLIENT_SECRET`, `YOUTUBE_REFRESH_TOKEN`.
+
+Then upload with the **Upload Long-form** workflow (slug, title, description,
+privacy — defaults to `unlisted`), or locally:
+
+```bash
+python tools/youtube_upload.py build/<slug>/<slug>.mp4 \
+  --title "..." --privacy unlisted
+```
+
+There is a `--synthetic` flag that sets YouTube's altered/synthetic content
+disclosure. It is **off by default and is your call**: the visuals are cartoon
+stick figures (not the realistic synthetic media the policy targets) but the
+narration is an AI voice.
+
 ## 4. First runs
 
 ```bash

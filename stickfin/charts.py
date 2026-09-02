@@ -26,6 +26,13 @@ RED = "#e0362c"         # kept for the "look here" annotation ring only
 PAPER = "#00000000"     # transparent
 
 
+def _wrap_label(text: str, max_chars: int = 8) -> str:
+    """Stack a long bar label onto multiple short lines so neighbours can't
+    collide. Breaks on spaces only -- never mid-word."""
+    import textwrap
+    return "\n".join(textwrap.wrap(str(text), max_chars, break_long_words=False)) or str(text)
+
+
 def _fmt(v: float, unit: str) -> str:
     s = f"{v:,.0f}" if abs(v) >= 100 or float(v).is_integer() else f"{v:,.1f}"
     if unit.startswith("$"):
@@ -68,8 +75,15 @@ def render(spec: dict, out: Path, width_px: int = 1280) -> Path:
         for i in {0, n - 1} | ({hi} if hi is not None else set()):
             dx = -6 if i == n - 1 else (6 if i == 0 else 0)
             ha = "right" if i == n - 1 else ("left" if i == 0 else "center")
+            # Put the label on the side the line ISN'T on. A fixed "always
+            # above" offset drops the text straight onto the line whenever the
+            # point is a local minimum -- which is exactly what happened on a
+            # V-shaped round-trip chart, printing "100" through the stroke.
+            neighbours = [values[j] for j in (i - 1, i + 1) if 0 <= j < n]
+            above = all(values[i] >= v for v in neighbours) if neighbours else True
             ax.annotate(_fmt(values[i], unit), (i, values[i]), textcoords="offset points",
-                        xytext=(dx, 16), ha=ha, fontsize=18, fontweight="bold", color=INK)
+                        xytext=(dx, 18 if above else -30), ha=ha, fontsize=18,
+                        fontweight="bold", color=INK, zorder=5)
         ax.set_yticks([])
     elif kind == "hbar":
         ax.barh(range(n), values, color=colors, height=0.6, zorder=3)
@@ -85,7 +99,11 @@ def render(spec: dict, out: Path, width_px: int = 1280) -> Path:
     else:  # bar
         ax.bar(range(n), values, color=colors, width=0.62, zorder=3)
         ax.set_xticks(range(n))
-        ax.set_xticklabels(labels, fontsize=18)
+        # Vertical bars get one tick label each, side by side, and matplotlib
+        # will happily run them into each other -- "After -50%After +50%" is
+        # what shipped. Wrap anything long onto stacked lines so adjacent
+        # labels can't touch.
+        ax.set_xticklabels([_wrap_label(l) for l in labels], fontsize=18)
         for i, v in enumerate(values):
             ax.text(i, v + vmax * 0.02, _fmt(v, unit), ha="center", va="bottom",
                     fontsize=18, fontweight="bold", color=INK)

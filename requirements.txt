@@ -2,6 +2,7 @@ google-genai>=2.19
 google-cloud-texttospeech>=2.16
 rembg[cpu]>=2.0            # transparent cutouts (pulls onnxruntime; ~180MB model on first run)
 matplotlib>=3.7           # data charts rendered from the script's own numbers
+scipy>=1.10               # connected components: detect duplicate-figure pose generations
 Pillow>=10.0
 PyYAML>=6.0
 requests>=2.31            # Buffer publish

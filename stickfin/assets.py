@@ -230,6 +230,46 @@ def _solidity(pil_img) -> float:
     return float(ink_px[y0:y1, x0:x1].sum() / area)
 
 
+def _figure_count(pil_img) -> int:
+    """How many separate figures a transparent pose cutout actually contains.
+
+    The pose prompt says "EXACTLY ONE figure ... never a duplicate or mirror
+    image" and Nano Banana ignores it often enough to matter -- 2 of 5 poses in
+    one real sample came back as two side-by-side copies, which then composite
+    as an unexplained twin standing next to the host. (QA's own critique has
+    flagged this on shipped Shorts too: "an unexplained duplicate stick figure
+    appears next to the main character".)
+
+    Counts connected components of the alpha matte after a small binary
+    closing, so antialiasing and dot hands don't split one figure into several.
+    Verified on real assets: single figures score 1, duplicates score 2.
+    """
+    import numpy as np
+    from scipy import ndimage
+    a = np.asarray(pil_img.convert("RGBA"))
+    m = a[..., 3] > 90
+    if m.sum() < 200:
+        return 0
+    m = ndimage.binary_closing(m, structure=np.ones((7, 7)))
+    lab, n = ndimage.label(m)
+    if n == 0:
+        return 0
+    sizes = ndimage.sum(m, lab, range(1, n + 1))
+    return int((sizes > 0.12 * sizes.sum()).sum())
+
+
+def _pose_defects(cut) -> tuple[int, float, str]:
+    """(is_bad_figure_count, solidity, human summary) -- lower sorts better."""
+    n = _figure_count(cut)
+    sol = _solidity(cut)
+    notes = []
+    if n != 1:
+        notes.append(f"{n} figures")
+    if sol > 0.13:
+        notes.append(f"filled body (solidity {sol:.2f})")
+    return (0 if n == 1 else 1, sol, ", ".join(notes))
+
+
 def _load_src(src: str):
     from PIL import Image
     if src.startswith(("http://", "https://")):
@@ -348,22 +388,39 @@ def generate_assets(script, plan: dict, force: bool = False) -> None:
             "NO background objects, NO floor, NO other characters, NO text -- "
             "just the figure (plus a held prop only if the pose names one). "
             "The first image is the reference sheet; stay exactly on-model.")
-        img = _pil_or_none(_generate(client, [pose_prompt, sheets[spec["char"]]], cfg))
-        if img is None:
-            print(f"  pose {key}: no image, using reference sheet crop as fallback")
-            img = sheets[spec["char"]]
-        cut = _cutout(img, ink=True)
-        if _solidity(cut) > 0.13:
-            print(f"  pose {key}: body looks filled, retrying once")
-            retry = _pil_or_none(_generate(client, [
-                pose_prompt + "\n\nThe last try filled the body solid black -- "
-                "the body must be ONE THIN LINE.", sheets[spec["char"]]], cfg))
-            if retry is not None:
-                rcut = _cutout(retry, ink=True)
-                if _solidity(rcut) < _solidity(cut):
-                    cut = rcut
-        cut.save(out)
-        print(f"  pose {key}")
+        # Up to 3 tries, keeping the best: a pose can come back with the body
+        # filled solid black OR duplicated into two figures, and both are
+        # visible defects that used to ship. Each retry names the specific
+        # defect that was seen, which the model responds to far better than a
+        # generic re-roll.
+        best_cut = best_score = None
+        for attempt in range(3):
+            nudge = ""
+            if attempt and best_score is not None:
+                if best_score[0]:
+                    nudge = ("\n\nThe last attempt drew TWO figures. Draw EXACTLY "
+                             "ONE single character -- no twin, no duplicate, no "
+                             "mirrored copy, nobody standing beside them.")
+                elif best_score[1] > 0.13:
+                    nudge = ("\n\nThe last attempt filled the body solid black -- "
+                             "the body must be ONE THIN LINE.")
+            img = _pil_or_none(_generate(
+                client, [pose_prompt + nudge, sheets[spec["char"]]], cfg))
+            if img is None:
+                continue
+            cut = _cutout(img, ink=True)
+            score = _pose_defects(cut)
+            if best_score is None or score[:2] < best_score[:2]:
+                best_cut, best_score = cut, score
+            if not score[0] and score[1] <= 0.13:
+                break
+            print(f"  pose {key}: {score[2]}, retrying")
+        if best_cut is None:
+            print(f"  pose {key}: no image, using reference sheet as fallback")
+            best_cut = _cutout(sheets[spec["char"]], ink=True)
+            best_score = _pose_defects(best_cut)
+        best_cut.save(out)
+        print(f"  pose {key}" + (f"  [!! {best_score[2]}]" if best_score[2] else ""))
 
     # ---- props (transparent) ----
     any_sheet = next(iter(sheets.values()), None)

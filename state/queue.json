@@ -75,9 +75,13 @@
     "description": "A $1,000 investment in Berkshire Hathaway in 1965 would be worth roughly $30 million today. The secret isn't a risky strategy, but the mathematical power of compounding over a very long time.\n\n#compounding #investing #personalfinance #berkshirehathaway #warrenbuffett",
     "hosted_url": "https://raw.githubusercontent.com/devdave666/yt-finance/main/media/2026-08-31-berkshire-hathaway-compounding-power.mp4",
     "queued_date": "2026-08-31",
-    "posted": false,
-    "posted_date": null,
-    "post_ids": null
+    "posted": true,
+    "posted_date": "2026-09-02",
+    "post_ids": {
+      "youtube": "6a987b29de9dd9dba2e3772e",
+      "instagram": "6a987b2bac2847ee1e7018d5",
+      "tiktok": "6a987b3633c3e12f3895d3f6"
+    }
   },
   {
     "slug": "2026-08-31-sp500-20-year-record",

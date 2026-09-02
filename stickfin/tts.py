@@ -65,16 +65,23 @@ def _synth_raw(client, text: str, voice: str, out_raw: Path, style: str = "") ->
 
     import time
     from google.api_core import exceptions as gexc
-    for attempt in range(6):
+    # Quota (429) needs a long cool-off; a transient 5xx just needs a moment.
+    # Only 429 used to be retried, so a single "503 Bad Gateway" killed a
+    # 46-beat long-form build six beats in, after real spend. Over dozens of
+    # synth calls per video a transient blip is close to certain.
+    tries = 7
+    for attempt in range(tries):
         try:
             resp = client.synthesize_speech(request=req)
             out_raw.write_bytes(resp.audio_content)
             return
-        except gexc.ResourceExhausted:
-            if attempt == 5:
+        except (gexc.ResourceExhausted, gexc.ServerError, gexc.TooManyRequests) as e:
+            if attempt == tries - 1:
                 raise
-            wait = 15 * (2 ** attempt)
-            print(f"    TTS 429 -- retrying in {wait}s ({attempt + 1}/6)")
+            quota = isinstance(e, (gexc.ResourceExhausted, gexc.TooManyRequests))
+            wait = (15 * (2 ** attempt)) if quota else min(5 * (2 ** attempt), 60)
+            print(f"    TTS {'429' if quota else type(e).__name__} -- retrying in "
+                  f"{wait}s ({attempt + 1}/{tries - 1}): {str(e)[:90]}")
             time.sleep(wait)
 
 
@@ -209,7 +216,15 @@ def synthesize(script, force: bool = False) -> dict:
                 # re-roll the take until its pace lands in band (Gemini-TTS is
                 # stochastic -- a fresh take fixes a rushed/draggy line far
                 # better than time-stretching one)
+                # Keep the running best OFF the final path until the take loop
+                # is done. It used to promote each candidate to `final`
+                # immediately, so a crash mid-re-roll left a take we had
+                # already REJECTED sitting at the final path -- and since
+                # resume skips any beat whose wav exists, a resumed build would
+                # silently ship it. (A real 503 crash left a 0.09 wps take
+                # there.) `final` now only appears once the beat is decided.
                 best_wps = None
+                best = audio_dir / f"{beat.id}.best.wav"
                 for take in range(3):
                     _synth_raw(client, beat.say, script.voice_for(beat), raw,
                                style=style_base + hint)
@@ -217,7 +232,7 @@ def synthesize(script, force: bool = False) -> dict:
                     _norm(raw, cand, gap_s=gap_s)
                     w = _wps(cand, n_words, gap_s)
                     if best_wps is None or abs(w - target_wps) < abs(best_wps - target_wps):
-                        cand.replace(final)
+                        cand.replace(best)
                         best_wps = w
                     else:
                         cand.unlink(missing_ok=True)
@@ -226,6 +241,7 @@ def synthesize(script, force: bool = False) -> dict:
                     if take < 2:
                         print(f"    {beat.id}: take {take + 1} was {w:.2f} wps "
                               f"(want {lo_wps}-{hi_wps}), re-rolling")
+                best.replace(final)
                 w = _polish_pace(final, n_words, target=target_wps, gap_s=gap_s)
                 print(f"    {beat.id}: {w:.2f} wps")
             raw.unlink(missing_ok=True)

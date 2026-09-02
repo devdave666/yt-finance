@@ -1,7 +1,21 @@
 """Publish an already-committed video to YouTube via Buffer at a chosen privacy.
 
+!! BUFFER CANNOT UPLOAD LONG-FORM. Verified 2026-09-02: posting a 4:53
+   landscape video to the connected YouTube channel is rejected with
+   "Video must be no longer than 3 minutes for YouTube Shorts. Video must be
+   vertical (portrait orientation) for YouTube Shorts." Introspecting
+   YoutubePostMetadataInput shows its only fields are categoryId, embeddable,
+   isAiGenerated, license, madeForKids, notifySubscribers, privacy, title --
+   there is NO post-type field (the way Instagram has type: reel), so there is
+   no way to tell Buffer "this is a regular upload, not a Short". Long-form has
+   to go up another way (manual, or the YouTube Data API with its own OAuth).
+
+   This tool still works for Shorts-shaped video, and the --privacy / privacy
+   introspection is what makes a non-public upload safe: the path uses
+   mode=shareNow, which cannot be retracted.
+
 Separate from the Shorts queue/poster path on purpose: this is for one-off
-long-form uploads (and for review copies that must NOT go out public).
+uploads (and for review copies that must NOT go out public).
 
     python tools/upload_longform.py --privacy-values          # what Buffer accepts
     python tools/upload_longform.py --slug <slug> --title T --description D \

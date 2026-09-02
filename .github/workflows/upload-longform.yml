@@ -1,0 +1,63 @@
+name: Upload Long-form
+
+# One-off long-form upload to YouTube via Buffer, at a chosen privacy.
+# Separate from the Shorts queue/poster path. Leave `slug` empty to just
+# introspect which privacy values Buffer actually accepts (no post is made).
+
+on:
+  workflow_dispatch:
+    inputs:
+      slug:
+        description: "media/<slug>.mp4 to upload. Empty = only list accepted privacy values."
+        type: string
+        required: false
+        default: ""
+      title:
+        description: "YouTube title"
+        type: string
+        required: false
+        default: ""
+      description:
+        description: "YouTube description"
+        type: string
+        required: false
+        default: ""
+      privacy:
+        description: "YouTube privacy"
+        type: choice
+        options: [unlisted, private, public]
+        default: unlisted
+
+permissions:
+  contents: read
+
+concurrency:
+  group: repo-state-writer
+  cancel-in-progress: false
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - run: pip install requests pyyaml
+
+      - name: Upload
+        env:
+          BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
+          PYTHONUNBUFFERED: "1"
+        run: |
+          if [ -z "${{ inputs.slug }}" ]; then
+            python tools/upload_longform.py --privacy-values
+          else
+            python tools/upload_longform.py \
+              --slug "${{ inputs.slug }}" \
+              --title "${{ inputs.title }}" \
+              --description "${{ inputs.description }}" \
+              --privacy "${{ inputs.privacy }}"
+          fi

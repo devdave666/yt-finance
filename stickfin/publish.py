@@ -103,7 +103,7 @@ def host_in_repo(video: Path, slug: str, repo_root: Path) -> str:
 
 
 def buffer_post(video_url: str, text: str, channel_id: str, platform: str,
-                *, title: str | None = None) -> str:
+                *, title: str | None = None, privacy: str = "public") -> str:
     """Create a shareNow post on one Buffer channel; return the Buffer post id.
 
     platform is only used for YouTube's extra required fields and for error
@@ -127,7 +127,7 @@ def buffer_post(video_url: str, text: str, channel_id: str, platform: str,
         asset["video"]["metadata"] = {"title": title}
         post_input["metadata"] = {"youtube": {"title": title,
                                               "categoryId": YT_CATEGORY_EDUCATION,
-                                              "privacy": "public"}}
+                                              "privacy": privacy}}
     elif platform == "instagram":
         # a video post to IG is a Reel; Buffer rejects it without an explicit type
         post_input["metadata"] = {"instagram": {"type": "reel",

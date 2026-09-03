@@ -65,6 +65,24 @@ def _flat_bg(color: str, w: int, h: int):
     return Image.fromarray(out)
 
 
+def _red_vignette(w: int, h: int):
+    """Transparent centre grading to a translucent red at the frame edges.
+
+    Washed over any beat tagged `tone: negative` (a fee, a loss, the villain)
+    so the frame itself signals the sting -- visuals matching the audio, the
+    way the reference creators tint a negative point instead of leaving it flat.
+    """
+    import numpy as np
+    from PIL import Image
+    ys, xs = np.mgrid[0:h, 0:w]
+    d = np.hypot((xs - w / 2) / (w / 2), (ys - h / 2) / (h / 2))
+    a = np.clip((d - 0.35) / 0.95, 0.0, 1.0) ** 1.6 * 120.0   # 0 centre -> ~120/255 corner
+    rgba = np.zeros((h, w, 4), dtype=np.uint8)
+    rgba[..., 0], rgba[..., 1], rgba[..., 2] = 176, 33, 24    # brand-dark red
+    rgba[..., 3] = a.astype(np.uint8)
+    return Image.fromarray(rgba, "RGBA")
+
+
 def _src_key(src: str) -> str:
     return hashlib.sha1(src.encode()).hexdigest()[:12]
 
@@ -291,7 +309,7 @@ def generate_assets(script, plan: dict, force: bool = False) -> None:
     from PIL import Image, ImageOps
 
     a = script.build_dir / "assets"
-    for sub in ("bg", "char", "prop", "cutout", "chart", "headline"):
+    for sub in ("bg", "char", "prop", "cutout", "chart", "headline", "fx"):
         (a / sub).mkdir(parents=True, exist_ok=True)
 
     # ---- charts + headlines (both no-API) ----
@@ -320,6 +338,14 @@ def generate_assets(script, plan: dict, force: bool = False) -> None:
             print(f"  headline {bid}  ({text!r})")
 
     cw, ch = config.canvas(script.fmt)
+
+    # ---- fx: red vignette for tone:negative beats (no API) ----
+    if any(getattr(b, "tone", "") == "negative" for b in script.beats):
+        fx = a / "fx" / "red_vignette.png"
+        if not fx.exists() or force:
+            _red_vignette(cw, ch).save(fx)
+            print("  fx red_vignette")
+
     client = _client()
     cfg = _cfg(script.fmt)
 

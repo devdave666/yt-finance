@@ -38,6 +38,13 @@ def mux(script, silent: Path, voiceover: Path, captions: Path | None,
                        "dropout_transition=0[a]")
         amap = "[a]"
 
+    # master limiter: the SFX bus (and a music bed) stack on top of an already
+    # loudness-normalised voice, so the sum can brush 0 dBFS and clip. Cap it
+    # ~1 dB below full scale. level=disabled -> limit only, no make-up gain.
+    a_in = amap if amap.startswith("[") else f"[{amap}]"
+    filters.append(f"{a_in}alimiter=level=disabled:limit=0.891[master]")
+    amap = "[master]"
+
     if captions:
         filters.append(f"[0:v]{_sub_arg(captions)}[v]")
         vmap = "[v]"

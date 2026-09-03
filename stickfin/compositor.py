@@ -94,6 +94,15 @@ def _composite_clip(shot: dict, adir: Path, fmt: str, out: Path) -> None:
         chains.append(f"[{last}][s{idx}]overlay={x}:'{ye}':format=auto[{cur}]")
         last, idx = cur, idx + 1
 
+    # tone:negative -> wash a red edge-vignette over the finished frame
+    tint = adir / "fx" / "red_vignette.png"
+    if shot.get("tone") == "negative" and tint.exists():
+        inputs += ["-loop", "1", "-i", str(tint)]
+        chains.append(f"[{idx}:v]scale={cw}:{ch},setsar=1,format=rgba,"
+                      f"fade=t=in:st=0:d={pop}:alpha=1[rt]")
+        chains.append(f"[{last}][rt]overlay=0:0:format=auto[rtd]")
+        last, idx = "rtd", idx + 1
+
     run_ffmpeg(
         ["-y", *inputs, "-filter_complex", ";".join(chains), "-map", f"[{last}]",
          "-frames:v", nf, "-r", fps, "-c:v", "libx264", "-preset", "medium",

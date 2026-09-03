@@ -77,6 +77,19 @@ def plan(script, narration: dict) -> dict:
     frame_cursor = 0        # exact running position, in frames
     seconds_cursor = 0.0    # exact running position, in seconds (for beat edges)
 
+    # loop callback: reprise the beat-1 hook text on the last real (pre-CTA) beat
+    # so the final frame rhymes with the opening. Short-form only, and only when
+    # that closer isn't already carrying a chart or a second character.
+    first_beat = script.beats[0] if script.beats else None
+    real_ids = [b.id for b in script.beats if not b.id.startswith("cta")]
+    closer_id = real_ids[-1] if real_ids else None
+    loop_headline = None
+    if (config.LOOP_CALLBACK and script.fmt != "wide" and first_beat
+            and first_beat.headline and closer_id and closer_id != first_beat.id):
+        closer = beat_by_id[closer_id]
+        if not closer.chart and len(closer.cast) <= 1 and not closer.is_live:
+            loop_headline = first_beat.id
+
     for entry in narration["beats"]:
         beat = beat_by_id[entry["id"]]
         d = dur_by_id[beat.id]
@@ -97,6 +110,11 @@ def plan(script, narration: dict) -> dict:
                 n_holds -= 1
 
         all_layers = [] if beat.is_live else _layers_for(script, beat, n_holds)
+        if loop_headline and beat.id == closer_id:
+            all_layers = [l for l in all_layers if l["type"] != "prop"]
+            if not any(l["type"] == "headline" for l in all_layers):
+                all_layers.append({"type": "headline", "asset": loop_headline,
+                                   "from_hold": 0})
         for k in range(n_holds):
             # distribute beat_frames across holds with no rounding loss
             f0 = frame_cursor + round(beat_frames * k / n_holds)
@@ -110,6 +128,7 @@ def plan(script, narration: dict) -> dict:
                 "scene": None if beat.is_live else beat.scene,
                 "layers": [dict(l) for l in all_layers if l.get("from_hold", 0) <= k],
                 "emphasis": beat.emphasis if not beat.is_live else False,
+                "tone": "" if beat.is_live else beat.tone,
             }
             if beat.is_live:
                 shot["live"] = beat.live

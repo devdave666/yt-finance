@@ -1,0 +1,392 @@
+title: The One Month the Stock Market Has Lost Money For 100 Years
+slug: longform-september-effect
+format: wide
+caption_style: subtitle
+music: ""
+
+cast:
+  host:
+    anchor: center
+    voice: Orus
+    look: "the 'Anti Broke' host: a minimalist black-marker stick figure with a round OPEN white head, four or five short spiky lines of hair on top, two small dot eyes, two short sharp angled eyebrows, and always a visible mouth that shows the expression (flat, frown, grimace, open shout). The body is ONE single straight vertical black line (spine), with four more single straight black lines for the two arms and two legs, dot hands, short line feet -- plus one small thin necktie shape (a short strip + a little triangle) hanging at the neck. NO torso shape, NO filled body, NO solid black wedge, NO shirt block -- the figure is a head, spiky hair, five thin lines and a skinny tie. It is never a black silhouette."
+
+scenes:
+  stage:
+    color: '#f4efe4'
+
+narrator:
+  voice: Orus
+
+beats:
+
+# ---------------- HOOK: the cursed month ----------------
+- id: b01
+  scene: stage
+  who: host
+  say: "There is one month on the calendar that has lost investors money for almost a hundred years."
+  cast: {host: "standing, arms wide, serious expression"}
+  headline: "STOCKS' ONLY LOSING MONTH"
+  emphasis: true
+
+- id: b02
+  scene: stage
+  who: host
+  say: "Not one bad year. The average across every year since nineteen twenty-eight is negative."
+  cast: {host: "pointing, focused expression"}
+  tone: negative
+  chart:
+    type: bar
+    title: Average S&P 500 return by month, since 1928
+    labels: [Jul, Aug, Sep, Oct, Nov, Dec]
+    values: [1.7, 0.6, -1.1, 0.5, 0.9, 1.4]
+    unit: '%'
+    highlight: 2
+    note: The only red bar
+
+- id: b03
+  scene: stage
+  who: host
+  say: "Every other month, on average, pays you. September, on average, takes about one percent back."
+  cast: {host: "hands apart comparing two things, explaining"}
+  props: [calendar]
+
+- id: b04
+  scene: stage
+  who: host
+  say: "It even has a name that shows up in serious research. The September effect."
+  cast: {host: "standing, one hand raised, explaining, neutral expression"}
+  props: [receipt]
+
+# ---------------- THE EVIDENCE ----------------
+- id: b05
+  scene: stage
+  who: host
+  say: "So how real is it? Start with how often September actually falls."
+  cast: {host: "standing, one hand raised, explaining, neutral expression"}
+  emphasis: true
+  props: [question]
+
+- id: b06
+  scene: stage
+  who: host
+  say: "Since nineteen twenty-eight, the market has dropped in a little more than half of all Septembers."
+  cast: {host: "pointing, focused expression"}
+  chart:
+    type: bar
+    title: Share of months that finished lower, since 1928
+    labels: [September, Every other month]
+    values: [56, 39]
+    unit: '%'
+    highlight: 0
+    note: Down more often
+
+- id: b07
+  scene: stage
+  who: host
+  say: "Every other month drops closer to forty percent of the time. September is the coin that lands tails."
+  cast: {host: "hands apart comparing two things, explaining"}
+  props: [coin]
+
+- id: b08
+  scene: stage
+  who: host
+  say: "And the losses are not just frequent. They are big."
+  cast: {host: "one hand up in a warning gesture, alarmed expression"}
+  props: [chart-down]
+
+- id: b09
+  scene: stage
+  who: host
+  say: "Of the forty worst months in market history, nine of them were Septembers. More than any other month."
+  cast: {host: "looking down, disappointed expression"}
+  tone: negative
+  chart:
+    type: bar
+    title: The 40 worst months ever, by month
+    labels: [Sep, Oct, Mar, May, Aug]
+    values: [9, 7, 5, 4, 3]
+    unit: ''
+    highlight: 0
+    note: September leads
+
+- id: b10
+  scene: stage
+  who: host
+  say: "Nineteen thirty-one. Two thousand two. Two thousand eight. The ugliest stretches love the autumn."
+  cast: {host: "leaning forward, conspiratorial expression"}
+  props: [calendar]
+
+- id: b11
+  scene: stage
+  who: host
+  say: "That is why nervous traders have a saying. Nothing good happens between Labor Day and Halloween."
+  cast: {host: "shrugging, skeptical expression"}
+  props: [clock]
+
+- id: b12
+  scene: stage
+  who: host
+  say: "On the raw numbers, the September effect is not a myth. It is right there in a century of data."
+  cast: {host: "arms crossed, firm expression"}
+  props: [bank]
+
+# ---------------- THE WHY: nobody is sure ----------------
+- id: b13
+  scene: stage
+  who: host
+  say: "Here is the strange part. Almost a hundred years of evidence, and nobody can fully explain why."
+  cast: {host: "standing, one hand raised, explaining, neutral expression"}
+  emphasis: true
+  props: [lightbulb]
+
+- id: b14
+  scene: stage
+  who: host
+  say: "The most common story is about big fund managers coming back from summer break."
+  cast: {host: "hands apart comparing two things, explaining"}
+  props: [handshake]
+
+- id: b15
+  scene: stage
+  who: host
+  say: "They return to their desks, look at the books, and clean house. Sell the winners, dump the losers."
+  cast: {host: "pointing, focused expression"}
+  props: [scale]
+
+- id: b16
+  scene: stage
+  who: host
+  say: "A lot of mutual funds also close their tax year at the end of October."
+  cast: {host: "standing, one hand raised, explaining, neutral expression"}
+  props: [receipt]
+
+- id: b17
+  scene: stage
+  who: host
+  say: "So September and early October become a window for selling losers to book the losses."
+  cast: {host: "hands apart comparing two things, explaining"}
+  props: [arrow-down]
+
+- id: b18
+  scene: stage
+  who: host
+  say: "And there is a mood piece. After a calm summer, investors come back cautious and quick to sell."
+  cast: {host: "leaning forward, conspiratorial expression"}
+  props: [magnet]
+
+- id: b19
+  scene: stage
+  who: host
+  say: "But none of that is proven. Researchers mostly call it a quirk in the data, not a law."
+  cast: {host: "shrugging, skeptical expression"}
+  props: [question]
+
+# ---------------- THE CATCH: it is fading ----------------
+- id: b20
+  scene: stage
+  who: host
+  say: "Now the part the scary headlines leave out. The September effect has been quietly fading."
+  cast: {host: "standing, one hand raised, explaining, neutral expression"}
+  emphasis: true
+  props: [chart-down]
+
+- id: b21
+  scene: stage
+  who: host
+  say: "Over the last twenty-five years, the average September is down only about a third of a percent."
+  cast: {host: "hands apart comparing two things, explaining"}
+  chart:
+    type: bar
+    title: Average September return
+    labels: [Since 1928, Last 25 years]
+    values: [-1.1, -0.4]
+    unit: '%'
+    highlight: 1
+    note: Shrinking
+
+- id: b22
+  scene: stage
+  who: host
+  say: "The typical September in that window is actually slightly positive. The average is dragged down by a few bad ones."
+  cast: {host: "pointing, focused expression"}
+  props: [bars-up]
+
+- id: b23
+  scene: stage
+  who: host
+  say: "Look at the last three. September twenty twenty-three fell about five percent."
+  cast: {host: "looking down, disappointed expression"}
+  props: [arrow-down]
+
+- id: b24
+  scene: stage
+  who: host
+  say: "Then September twenty twenty-four rose about two percent, and twenty twenty-five rose over three."
+  cast: {host: "gesturing upward, hopeful expression"}
+  chart:
+    type: line
+    title: Recent Septembers, S&P 500
+    labels: ['2023', '2024', '2025']
+    values: [-5, 2, 3.5]
+    unit: '%'
+    highlight: 2
+    note: No pattern to trade
+
+- id: b25
+  scene: stage
+  who: host
+  say: "Down five, up two, up three. If that is a signal, it is a very noisy one."
+  cast: {host: "shrugging, skeptical expression"}
+  props: [question]
+
+- id: b26
+  scene: stage
+  who: host
+  say: "The more people learn about an edge like this, the harder it is to actually catch."
+  cast: {host: "hands apart comparing two things, explaining"}
+  props: [magnet]
+
+# ---------------- WHY YOU CANNOT TRADE IT ----------------
+- id: b27
+  scene: stage
+  who: host
+  say: "Say you ignore all that and try to dodge September anyway. Watch what it costs."
+  cast: {host: "one hand up in a warning gesture, alarmed expression"}
+  emphasis: true
+  props: [warning]
+
+- id: b28
+  scene: stage
+  who: host
+  say: "The edge you are chasing is about one percent, and it only shows up on average."
+  cast: {host: "hands apart comparing two things, explaining"}
+  props: [percent]
+
+- id: b29
+  scene: stage
+  who: host
+  say: "First cost. To step out, you sell everything, and selling is never perfectly free."
+  cast: {host: "pointing, focused expression"}
+  props: [coins-stack]
+
+- id: b30
+  scene: stage
+  who: host
+  say: "Second cost, and this one is brutal. In a normal account, selling winners triggers a tax bill."
+  cast: {host: "looking down, disappointed expression"}
+  tone: negative
+  props: [receipt]
+
+- id: b31
+  scene: stage
+  who: host
+  say: "Hold under a year and that gain is taxed as ordinary income. You could hand back years of that one percent."
+  cast: {host: "arms crossed, firm expression"}
+  props: [wallet]
+
+- id: b32
+  scene: stage
+  who: host
+  say: "Third cost. Almost half of all Septembers are up, and some of them run hard."
+  cast: {host: "gesturing upward, hopeful expression"}
+  props: [chart-up]
+
+- id: b33
+  scene: stage
+  who: host
+  say: "Sit out the wrong one and you do not save a percent. You lose several."
+  cast: {host: "shrugging, skeptical expression"}
+  props: [arrow-down]
+
+- id: b34
+  scene: stage
+  who: host
+  say: "Fourth cost. Getting back in on time. October and November are historically two of the strongest months."
+  cast: {host: "hands apart comparing two things, explaining"}
+  props: [calendar]
+
+- id: b35
+  scene: stage
+  who: host
+  say: "Since nineteen sixty-four, November through April returned about six and a half percent on average."
+  cast: {host: "pointing, focused expression"}
+  chart:
+    type: bar
+    title: Average return by half of the year, since 1964
+    labels: [Nov to Apr, May to Oct]
+    values: [6.5, 1.0]
+    unit: '%'
+    highlight: 0
+    note: The real seasonal gap
+
+- id: b36
+  scene: stage
+  who: host
+  say: "The May to October half returned almost nothing. Miss the handoff, and you miss the good half."
+  cast: {host: "hands apart comparing two things, explaining"}
+  props: [hourglass]
+
+- id: b37
+  scene: stage
+  who: host
+  say: "Add it up. A one percent edge, minus fees, minus taxes, minus the up years, minus bad timing."
+  cast: {host: "arms crossed, firm expression"}
+  props: [scale]
+
+# ---------------- WHAT TO ACTUALLY DO ----------------
+- id: b38
+  scene: stage
+  who: host
+  say: "So what does the September effect actually tell a normal investor to do? Basically nothing."
+  cast: {host: "standing, one hand raised, explaining, neutral expression"}
+  emphasis: true
+  props: [padlock]
+
+- id: b39
+  scene: stage
+  who: host
+  say: "If you are still buying every month, a weak September is a mild discount, not a threat."
+  cast: {host: "gesturing upward, hopeful expression"}
+  props: [piggy-bank]
+
+- id: b40
+  scene: stage
+  who: host
+  say: "Your automatic contribution just bought the same shares a little cheaper. That is the whole story."
+  cast: {host: "hands apart comparing two things, explaining"}
+  props: [coin]
+
+- id: b41
+  scene: stage
+  who: host
+  say: "The real seasonal pattern that matters is measured in decades, not months."
+  cast: {host: "pointing, focused expression"}
+  props: [chart-up]
+
+- id: b42
+  scene: stage
+  who: host
+  say: "Time in the market has paid. Guessing which month to skip has a long record of backfiring."
+  cast: {host: "standing neutral, looking at camera, calm expression"}
+  props: [target]
+
+- id: b43
+  scene: stage
+  who: host
+  say: "The September effect is real in the history books. It is just too small and too random to act on."
+  cast: {host: "arms crossed, firm expression"}
+  props: [bank]
+
+- id: b44
+  scene: stage
+  who: host
+  say: "It is less a trading signal and more a test of whether you are an investor or a nervous guesser."
+  cast: {host: "leaning forward, conspiratorial expression"}
+  props: [shield]
+
+- id: b45
+  scene: stage
+  who: host
+  say: "If this changed how you read a scary month, leave a comment, and save it for the next September."
+  cast: {host: "standing, warm inviting expression, gesturing out towards the viewer"}
+  props: [comment]

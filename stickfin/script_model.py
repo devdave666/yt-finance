@@ -59,6 +59,7 @@ class Beat:
     headline: str | None = None  # big hook text on beat 1 (a number / short punch)
     live: dict | None = None     # {"src": ..., "trim": "0:00-0:03"}
     emphasis: bool = False
+    tone: str = ""               # "negative" => red edge-vignette washed over the frame
 
     @property
     def is_live(self) -> bool:
@@ -212,6 +213,7 @@ def load_script(path) -> Script:
             chart=_parse_chart(raw.get("chart"), bid),
             headline=(str(raw["headline"]).strip()[:60] if raw.get("headline") else None),
             emphasis=bool(raw.get("emphasis")),
+            tone=("negative" if str(raw.get("tone") or "").strip().lower() == "negative" else ""),
         ))
 
     if not beats:

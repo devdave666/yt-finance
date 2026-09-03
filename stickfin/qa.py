@@ -60,6 +60,34 @@ def _img_size(path: Path) -> tuple[int, int]:
         return im.size
 
 
+def _syllables(word: str) -> int:
+    w = re.sub(r"[^a-z]", "", word.lower())
+    if not w:
+        return 0
+    n = len(re.findall(r"[aeiouy]+", w))
+    if w.endswith("e") and not w.endswith("le"):
+        n -= 1
+    if w.endswith("le") and len(w) > 2 and w[-3] not in "aeiouy":
+        n += 1
+    return max(1, n)
+
+
+def _reading_grade(text: str) -> tuple[float, int]:
+    """Flesch-Kincaid grade level for the spoken narration, plus the word count.
+
+    Bitton's rule from the podcast: keep a broad-audience Short at roughly a
+    5th-8th grade reading level. This is a heuristic (approximate syllables),
+    so it only ever warns -- it never blocks.
+    """
+    sentences = [s for s in re.split(r"[.!?]+", text) if s.strip()]
+    words = re.findall(r"[A-Za-z']+", text)
+    if not sentences or not words:
+        return 0.0, 0
+    syl = sum(_syllables(w) for w in words)
+    grade = 0.39 * (len(words) / len(sentences)) + 11.8 * (syl / len(words)) - 15.59
+    return round(grade, 1), len(words)
+
+
 def _audio_stats(path: Path) -> tuple[float, float]:
     r = subprocess.run(
         ["ffmpeg", "-hide_banner", "-nostats", "-i", str(path),
@@ -118,6 +146,14 @@ def check(script, run_critique: bool = True) -> QAResult:
             res.warnings.append(f"beat {b['id']} at {w} wps (outside natural range)")
         if b.get("wps") and (b["speech_end_s"] - b["speech_start_s"]) < 0.25:
             res.blockers.append(f"beat {b['id']} has words but no detected speech")
+
+    # ---- reading level: keep the Short broad (Bitton: ~5th-8th grade) ----
+    spoken = " ".join(b.say for b in script.beats if not b.id.startswith("cta"))
+    grade, nwords = _reading_grade(spoken)
+    if nwords >= 25 and grade > 9.0:
+        res.warnings.append(
+            f"narration reads at ~grade {grade} (aim grade 8 or under -- "
+            f"shorter sentences, plainer words)")
 
     # ---- dead frames: a composite beat with nothing on screen but the host ----
     dead = sorted({s["beat_id"] for s in timeline["shots"]
@@ -241,6 +277,11 @@ Check the stills carefully for these DEFECTS:
 - two caption lines on screen at once, or a caption overlapping the art badly
 - a chart whose numbers or labels don't match what's being said
 - the stick figure drawn as a solid black blob instead of clean line art
+
+A deliberate red edge-vignette darkening the corners on SOME beats is intentional
+(it marks a fee / loss / trap) -- do not report it as a defect or a colour problem.
+A very quiet ambient tone/drone under the narration is an intentional bed, not a
+hum or an artefact -- only flag audio if the SPOKEN VOICE itself is unclear.
 
 Return ONLY JSON, no prose:
 {"first_impression":"one honest line",

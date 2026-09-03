@@ -152,11 +152,27 @@ BUFFER_TIKTOK_CHANNEL_ID = (
 # ---- Ken Burns (off by default; the reference style has a static camera) ----
 KENBURNS = os.environ.get("STICKFIN_KENBURNS", "0") == "1"
 
+# ---- Loop callback --------------------------------------------------------
+# Retention hack (Bitton / Jack Neel podcast): the closing beat reprises the
+# beat-1 hook text so the last frame rhymes with the first and the Short loops
+# cleanly. Short-form only. Off => the closer keeps its own villain-object prop.
+LOOP_CALLBACK = os.environ.get("STICKFIN_LOOP_CALLBACK", "1") == "1"
+
 # ---- Charts -----------------------------------------------------------------
 # Draw charts on over ~1s instead of cutting to a finished still. A static
 # chart makes a data beat a slide, which reads as a slideshow to a viewer and
 # to the platforms' own "low-motion content" classifiers.
 CHART_ANIMATE = os.environ.get("STICKFIN_CHART_ANIMATE", "1") == "1"
+
+# ---- Ambient bed --------------------------------------------------------------
+# LONG-FORM only: swap the sfx track's plain brown-noise room tone for a slow
+# evolving tonal drone (stickfin/sfx.py _drone_bed). Synthesised, so nothing to
+# licence and nothing for Content ID to match. Shorts keep the plain room tone
+# -- 25s is too brief to benefit and a pad under a punchy Short reads wrong.
+# "0" disables (falls back to room tone). AMBIENT_BED_DB sets how far under the
+# voice it sits -- quiet enough not to fight the narration, loud enough to feel.
+AMBIENT_BED = os.environ.get("STICKFIN_AMBIENT_BED", "1") == "1"
+AMBIENT_BED_DB = float(os.environ.get("STICKFIN_AMBIENT_BED_DB", "-30"))
 
 # ---- SFX ---------------------------------------------------------------------
 # Quiet synthesised room tone under everything (dB). None = digital silence,

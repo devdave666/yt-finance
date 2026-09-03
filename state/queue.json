@@ -117,9 +117,13 @@
     "description": "Trying to time the market is a losing game. Missing just a handful of the best trading days can cut your long-term returns in half. Here's what the data shows for the S&P 500.\n\n#investing #sp500 #personalfinance #stockmarket #indexfunds",
     "hosted_url": "https://raw.githubusercontent.com/devdave666/yt-finance/main/media/2026-08-31-timing-the-market-loses.mp4",
     "queued_date": "2026-08-31",
-    "posted": false,
-    "posted_date": null,
-    "post_ids": null
+    "posted": true,
+    "posted_date": "2026-09-03",
+    "post_ids": {
+      "youtube": "6a99ccf6595d3d1a82401d75",
+      "instagram": "6a99ccf9e7cce1aa461274de",
+      "tiktok": "6a99cd046fb3aac20a27f71d"
+    }
   },
   {
     "slug": "2026-08-31-netflix-ipo-volatility",

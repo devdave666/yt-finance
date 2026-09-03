@@ -103,9 +103,13 @@
     "description": "That cash you've stashed away isn't as safe as you think. Over time, inflation silently reduces its buying power, meaning your dollars are worth less and less each year. We show you the math.\n\n#inflation #personalfinance #investing #moneytips #cash",
     "hosted_url": "https://raw.githubusercontent.com/devdave666/yt-finance/main/media/2026-08-31-inflation-erases-cash-value.mp4",
     "queued_date": "2026-08-31",
-    "posted": false,
-    "posted_date": null,
-    "post_ids": null
+    "posted": true,
+    "posted_date": "2026-09-03",
+    "post_ids": {
+      "youtube": "6a99a79d137591ae948d29d4",
+      "instagram": "6a99a7a3b7153678acfa4e85",
+      "tiktok": "6a99a7ae42022427f59124dd"
+    }
   },
   {
     "slug": "2026-08-31-timing-the-market-loses",

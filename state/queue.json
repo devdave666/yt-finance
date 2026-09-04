@@ -159,9 +159,13 @@
     "description": "The Rule of 72 is a simple mental shortcut to estimate how long an investment takes to double. At a 9% return, money doubles about every 8 years. Over 32 years, that simple doubling turns an initial $10,000 into a staggering $160,000.\n\n#Ruleof72 #Investing #CompoundInterest #PersonalFinance #HowMoneyWorks",
     "hosted_url": "https://raw.githubusercontent.com/devdave666/yt-finance/main/media/2026-08-31-rule-of-72-compounding.mp4",
     "queued_date": "2026-08-31",
-    "posted": false,
-    "posted_date": null,
-    "post_ids": null
+    "posted": true,
+    "posted_date": "2026-09-04",
+    "post_ids": {
+      "youtube": "6a9b197edca05898bf423420",
+      "instagram": "6a9b1982dca05898bf423472",
+      "tiktok": "6a9b198d249dfb3bd40bb217"
+    }
   },
   {
     "slug": "2026-08-31-gamestop-squeeze-explained",

@@ -145,9 +145,13 @@
     "description": "Most people who try to pick winning stocks fail to beat the market average. A simple, consistent strategy called dollar-cost averaging historically outperforms the vast majority of active traders. Here's the math.\n\n#investing #dollarcosstaveraging #indexfunds #personalfinance #sp500",
     "hosted_url": "https://raw.githubusercontent.com/devdave666/yt-finance/main/media/2026-08-31-dca-beats-stock-picking.mp4",
     "queued_date": "2026-08-31",
-    "posted": false,
-    "posted_date": null,
-    "post_ids": null
+    "posted": true,
+    "posted_date": "2026-09-04",
+    "post_ids": {
+      "youtube": "6a9af69b5dff2d122071cbcb",
+      "instagram": "6a9af69ec513903fea2aff9c",
+      "tiktok": "6a9af6a8c513903fea2b004e"
+    }
   },
   {
     "slug": "2026-08-31-rule-of-72-compounding",

@@ -13,7 +13,8 @@ def _sub_arg(path: Path) -> str:
 
 
 def mux(script, silent: Path, voiceover: Path, captions: Path | None,
-        music: str | None, sfx: Path | None = None) -> Path:
+        music: str | None, sfx: Path | None = None,
+        music_db: float | None = None) -> Path:
     out = script.out_path
     args = ["-i", str(silent), "-i", str(voiceover)]
     filters: list[str] = []
@@ -36,7 +37,11 @@ def mux(script, silent: Path, voiceover: Path, captions: Path | None,
         # bed back up, so it just vanishes (measured: 0.4 dB). A steady low bed
         # -- lo-fi/study-channel style -- reads as atmosphere under talking.
         # A gentle compressor keeps its own swells from poking through.
-        bed_db = float(getattr(config, "AMBIENT_BED_DB", -8.0))
+        # music_db lets the caller override the trim -- the synthesised drone
+        # (sfx.build_bed) is calibrated for config.AMBIENT_BED_DB, but a real
+        # curated track (music.build_bed) is already loudness-normalised to
+        # config.MUSIC_BED_LUFS and wants ~0 extra trim, not the drone's -8.
+        bed_db = float(config.AMBIENT_BED_DB if music_db is None else music_db)
         args += ["-i", str(music)]
         filters.append(
             f"[{idx}:a]volume={bed_db}dB,acompressor=threshold=-18dB:ratio=3:"

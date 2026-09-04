@@ -178,6 +178,23 @@ CHART_ANIMATE = os.environ.get("STICKFIN_CHART_ANIMATE", "1") == "1"
 AMBIENT_BED = os.environ.get("STICKFIN_AMBIENT_BED", "1") == "1"
 AMBIENT_BED_DB = float(os.environ.get("STICKFIN_AMBIENT_BED_DB", "-8"))
 
+# ---- Real music library (assets/music/<mood>/*) ----------------------------
+# A curated local library takes priority over the synthesised drone above --
+# see assets/music/README.md for how Dev fills it in. `stickfin/music.py`
+# scans it at build time; falls back to the drone (or plain room tone, or
+# nothing) automatically when a mood folder is empty. "0" disables even if
+# tracks exist. Long-form crosses to a new track at each section (an
+# `emphasis: true` beat); MUSIC_CROSSFADE_S is the fade length.
+# MUSIC_BED_LUFS is the loudness the assembled bed is normalised to before the
+# mux -- real tracks vary hugely in mastering loudness, so a fixed target
+# (not a fixed dB trim, which is what the drone uses) is what actually keeps
+# ANY picked track a safe distance under the voice. UNTESTED BY EAR: no real
+# tracks are committed yet -- Dev should listen to the first few real renders
+# and adjust this before it's load-bearing.
+USE_REAL_MUSIC = os.environ.get("STICKFIN_USE_REAL_MUSIC", "1") == "1"
+MUSIC_CROSSFADE_S = float(os.environ.get("STICKFIN_MUSIC_CROSSFADE_S", "2.5"))
+MUSIC_BED_LUFS = float(os.environ.get("STICKFIN_MUSIC_BED_LUFS", "-30"))
+
 # ---- SFX ---------------------------------------------------------------------
 # Quiet synthesised room tone under everything (dB). None = digital silence,
 # which is what raw TTS over nothing sounds like.

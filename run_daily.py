@@ -15,7 +15,7 @@ import traceback
 from pathlib import Path
 
 from stickfin import (assemble, assets as assets_mod, captions as captions_mod,
-                      compositor, config, generate as generate_mod,
+                      compositor, generate as generate_mod, music as music_mod,
                       publish as publish_mod, qa as qa_mod, script_model,
                       sfx as sfx_mod, timeline as timeline_mod, tts)
 
@@ -43,11 +43,12 @@ def main() -> int:
     silent = compositor.render_shots(script, tl)
     cap = captions_mod.build(script, script.build_dir / "captions.ass")
     sfx_track = sfx_mod.build_track(script, tl, script.build_dir / "sfx.wav")
-    bed = script.music
-    if not bed and script.fmt == "wide" and config.AMBIENT_BED:
-        bed = str(sfx_mod.build_bed(tl["total_s"], script.build_dir / "bed.wav"))
+    bed, bed_db = script.music, None
+    if not bed:
+        bed, bed_db = music_mod.resolve_bed(script, narration, script.build_dir)
     out = assemble.mux(script, silent, script.build_dir / "voiceover.wav",
-                       cap, bed, sfx=sfx_track)
+                       cap, str(bed) if bed else None, sfx=sfx_track,
+                       music_db=bed_db)
     print(f"       {out}")
 
     print("[qa]")

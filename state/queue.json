@@ -173,9 +173,13 @@
     "description": "In 2021, GameStop stock exploded in one of the most famous short squeezes in history. We break down how it happened, why some got rich, and why most people who chased the hype lost everything.\n\n#investing #stockmarket #gamestop #gme #shortsqueeze",
     "hosted_url": "https://raw.githubusercontent.com/devdave666/yt-finance/main/media/2026-08-31-gamestop-squeeze-explained.mp4",
     "queued_date": "2026-08-31",
-    "posted": false,
-    "posted_date": null,
-    "post_ids": null
+    "posted": true,
+    "posted_date": "2026-09-04",
+    "post_ids": {
+      "youtube": "6a9b4981b6e1228b36b24273",
+      "instagram": "6a9b4984720c7a42cc9e4165",
+      "tiktok": "6a9b498f720c7a42cc9e420b"
+    }
   },
   {
     "slug": "2026-08-31-whole-life-vs-term-insurance-cost",

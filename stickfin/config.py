@@ -169,10 +169,14 @@ CHART_ANIMATE = os.environ.get("STICKFIN_CHART_ANIMATE", "1") == "1"
 # evolving tonal drone (stickfin/sfx.py _drone_bed). Synthesised, so nothing to
 # licence and nothing for Content ID to match. Shorts keep the plain room tone
 # -- 25s is too brief to benefit and a pad under a punchy Short reads wrong.
-# "0" disables (falls back to room tone). AMBIENT_BED_DB sets how far under the
-# voice it sits -- quiet enough not to fight the narration, loud enough to feel.
+# "0" disables. The drone is built by sfx.build_bed (loudnorm'd to ~-18 LUFS)
+# and handed to assemble.mux as the `music` input; AMBIENT_BED_DB is the trim
+# applied there before it is mixed FLAT under the voice (not ducked -- a
+# continuous narration never lets a ducked bed back up). The bed is weighted
+# to 40-300 Hz, so -8 adds ~+5 dB of low warmth to the mix while the 300 Hz+
+# speech-clarity bands stay untouched (measured). Less negative = more bed.
 AMBIENT_BED = os.environ.get("STICKFIN_AMBIENT_BED", "1") == "1"
-AMBIENT_BED_DB = float(os.environ.get("STICKFIN_AMBIENT_BED_DB", "-30"))
+AMBIENT_BED_DB = float(os.environ.get("STICKFIN_AMBIENT_BED_DB", "-8"))
 
 # ---- SFX ---------------------------------------------------------------------
 # Quiet synthesised room tone under everything (dB). None = digital silence,

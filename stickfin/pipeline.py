@@ -16,7 +16,8 @@ import json
 import sys
 
 from . import assemble, assets as assets_mod, captions as captions_mod
-from . import compositor, script_model, sfx as sfx_mod, timeline as timeline_mod, tts
+from . import compositor, config, script_model, sfx as sfx_mod
+from . import timeline as timeline_mod, tts
 
 STAGES = ["audio", "plan", "assets", "render"]
 
@@ -86,9 +87,13 @@ def main(argv=None) -> int:
         if not args.no_sfx:
             sfx_track = sfx_mod.build_track(script, timeline,
                                             script.build_dir / "sfx.wav")
+        bed = args.music or script.music
+        if not bed and not args.no_sfx and script.fmt == "wide" and config.AMBIENT_BED:
+            bed = sfx_mod.build_bed(timeline["total_s"],
+                                    script.build_dir / "bed.wav")
         print("[render] mux ...")
         out = assemble.mux(script, silent, script.build_dir / "voiceover.wav",
-                           cap, args.music or script.music, sfx=sfx_track)
+                           cap, str(bed) if bed else None, sfx=sfx_track)
         print(f"[done] {out}")
 
     return 0

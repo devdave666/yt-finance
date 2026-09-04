@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from . import config
 from .ffmpeg_util import probe_duration, run_ffmpeg
 
 
@@ -30,13 +31,20 @@ def mux(script, silent: Path, voiceover: Path, captions: Path | None,
         idx += 1
 
     if music:
-        args += ["-stream_loop", "-1", "-i", str(music)]
-        filters.append(f"[{idx}:a]volume=-22dB,afade=t=in:st=0:d=1.2[bed]")
-        filters.append(f"{voice_bus}[bed]sidechaincompress=threshold=0.02:"
-                       "ratio=10:attack=5:release=300[duck]")
-        filters.append(f"{voice_bus}[duck]amix=inputs=2:duration=first:"
-                       "dropout_transition=0[a]")
+        # bed (build_bed) is already video-length; no -stream_loop. Mixed FLAT,
+        # not sidechain-ducked: a near-continuous narration never lets a ducked
+        # bed back up, so it just vanishes (measured: 0.4 dB). A steady low bed
+        # -- lo-fi/study-channel style -- reads as atmosphere under talking.
+        # A gentle compressor keeps its own swells from poking through.
+        bed_db = float(getattr(config, "AMBIENT_BED_DB", -8.0))
+        args += ["-i", str(music)]
+        filters.append(
+            f"[{idx}:a]volume={bed_db}dB,acompressor=threshold=-18dB:ratio=3:"
+            f"attack=50:release=400,afade=t=in:st=0:d=3[bed]")
+        filters.append(f"{voice_bus}[bed]amix=inputs=2:normalize=0:duration=first:"
+                       f"dropout_transition=0[a]")
         amap = "[a]"
+        idx += 1
 
     # master limiter: the SFX bus (and a music bed) stack on top of an already
     # loudness-normalised voice, so the sum can brush 0 dBFS and clip. Cap it

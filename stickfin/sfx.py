@@ -10,11 +10,14 @@ assets/sfx/. build_track() lays them along the timeline:
   swell   a short pink-noise riser into a section-opening beat (emphasis: true)
   sub     a felt low thud at the top of a tone: negative beat
 
-For long-form, the bed under those accents is a slow evolving tonal drone
-(_drone_bed) instead of plain room tone -- synthesised, so nothing to licence.
-
 The result is one stereo wav the length of the video, mixed under the VO in
 assemble.mux().
+
+build_bed() is separate: a slow evolving tonal drone for long-form, handed to
+assemble.mux() as the `music` input -- trimmed and mixed flat under the voice
+(a near-continuous read never lets a ducked bed back up). Weighted to 40-300 Hz
+so it adds warmth without touching speech clarity. Synthesised -- nothing to
+licence, nothing for Content ID to match.
 """
 from __future__ import annotations
 
@@ -140,24 +143,16 @@ def build_track(script, timeline: dict, out_wav: Path) -> Path | None:
     total = timeline["total_s"] + 0.3
     # The bed used to be literal digital silence (anullsrc). Raw TTS over dead
     # silence is a tell -- both to a listener and to the platforms' own audio
-    # classifiers -- so it is now a very quiet room tone. Brown noise rolled off
-    # hard at both ends gives warmth with no pitch. Long-form gets more: a slow
-    # evolving tonal drone under the noise, because dozens of back-to-back beats
-    # over nothing but noise is a long time to listen to. Both are synthesised,
-    # so there's nothing to licence and nothing for Content ID to match.
+    # classifiers -- so it is now a very quiet filtered-noise room tone. Brown
+    # noise rolled off hard at both ends gives warmth with no pitch, so it
+    # never fights the voice or implies music (and it is synthesised, so
+    # there is nothing to licence). The evolving tonal drone for long-form is
+    # a SEPARATE file (build_bed) -- it needs to duck under the voice, the
+    # accents in this track must not, so they can't share one pre-mix.
     amb_db = getattr(config, "SFX_AMBIENCE_DB", -26.0)
-    drone = (getattr(config, "AMBIENT_BED", True) and timeline.get("fmt") == "wide")
-    if amb_db is None and not drone:
+    if amb_db is None:
         inputs = ["-f", "lavfi", "-i", f"anullsrc=r={SR}:cl=stereo"]
         parts = [f"[0:a]atrim=0:{total:.3f}[bed]"]
-    elif drone:
-        bed_src = out_wav.parent / "_bed_drone.wav"
-        _drone_bed(total, bed_src)
-        drone_db = float(getattr(config, "AMBIENT_BED_DB", -30.0))
-        inputs = ["-i", str(bed_src)]
-        parts = [f"[0:a]volume={drone_db}dB,afade=t=in:d=2.5,"
-                 f"afade=t=out:st={max(total - 3.0, 0):.3f}:d=3,"
-                 f"aformat=channel_layouts=stereo[bed]"]
     else:
         inputs = ["-f", "lavfi", "-i",
                   f"anoisesrc=d={total:.3f}:c=brown:r={SR}:a=0.7"]
@@ -182,34 +177,47 @@ def build_track(script, timeline: dict, out_wav: Path) -> Path | None:
     return out_wav
 
 
-# A: 110 Hz, E: 164.81 Hz, A: 220 Hz -- an open fifth + octave, no third, so it
-# never implies major or minor. The slightly-detuned partners (110.4, 220.7)
-# beat against their neighbours at well under 1 Hz -- that's the slow movement
-# in the drone; aphaser adds a lazy sweep on top. Normalised near full scale
-# here; build_track() drops it to config.AMBIENT_BED_DB under the voice.
-_BED_TONES = (110.0, 110.4, 164.81, 220.0, 220.7)
+# A1 55 Hz, A2 110 Hz, E3 164.81 Hz, A3 220 Hz -- an open fifth + octaves, no
+# third, so it never implies major or minor. The detuned partners (110.4, 220.7)
+# beat against their neighbours at well under 1 Hz -- that is the slow movement
+# in the drone; aphaser adds a lazy filter sweep on top. Weighted low on purpose
+# so the bed lives under the voice's fundamentals, not in them.
+_BED_TONES = (55.0, 110.0, 110.4, 164.81, 220.0, 220.7)
 
 
-def _drone_bed(total_s: float, out_wav: Path) -> Path:
-    """An evolving ambient drone, `total_s` long, normalised hot (build_track
-    attenuates it). Synthesised -- nothing to licence, nothing to Content-ID."""
-    total = max(float(total_s), 6.0)
+def build_bed(total_s: float, out_wav: Path) -> Path | None:
+    """An evolving ambient drone, `total_s` long, loudness-normalised to about
+    -18 LUFS -- handed to assemble.mux() as the `music` input, which trims it
+    (config.AMBIENT_BED_DB) and mixes it flat under the voice. Weighted to
+    40-300 Hz so it never sits on speech. Synthesised, so nothing to licence
+    and nothing for Content ID to match. Long-form only."""
+    if not getattr(config, "AMBIENT_BED", True):
+        return None
+    total = max(float(total_s) + 0.3, 6.0)
     inputs: list[str] = []
     chord = []
     for i, f in enumerate(_BED_TONES):
-        inputs += ["-f", "lavfi", "-i", f"sine=f={f}:d={total:.3f}:sample_rate={SR}"]
-        chord.append(f"[{i}:a]")
+        # bottom octave carries it; mids kept low so they don't sit on the voice
+        amp = 1.0 if f < 90 else (0.7 if f < 130 else 0.32)
+        inputs += ["-f", "lavfi", "-i",
+                   f"sine=f={f}:d={total:.3f}:sample_rate={SR}"]
+        chord.append((i, amp))
     air_idx = len(_BED_TONES)
     inputs += ["-f", "lavfi", "-i", f"anoisesrc=c=brown:d={total:.3f}:r={SR}:a=0.6"]
+    tilt = "".join(f"[{i}:a]volume={a}[t{i}];" for i, a in chord)
     parts = [
-        f"{''.join(chord)}amix=inputs={len(_BED_TONES)}:normalize=0,"
-        f"volume=1.4,aphaser=type=t:speed=0.12:decay=0.45,"
-        f"highpass=f=55,lowpass=f=760,aformat=channel_layouts=stereo[chord]",
-        f"[{air_idx}:a]highpass=f=40,lowpass=f=280,volume=0.6,"
+        tilt
+        + "".join(f"[t{i}]" for i, _ in chord)
+        + f"amix=inputs={len(chord)}:normalize=0,"
+        f"aphaser=type=t:speed=0.12:decay=0.45,"
+        f"highpass=f=42,lowpass=f=430,aformat=channel_layouts=stereo[chord]",
+        f"[{air_idx}:a]highpass=f=38,lowpass=f=220,volume=0.5,"
         f"aformat=channel_layouts=stereo[air]",
-        f"[chord][air]amix=inputs=2:normalize=0,alimiter=limit=0.7[bed]",
+        f"[chord][air]amix=inputs=2:normalize=0,"
+        f"afade=t=in:d=3.5,afade=t=out:st={max(total - 4.0, 0.1):.3f}:d=4,"
+        f"loudnorm=I=-18:TP=-2:LRA=11,alimiter=limit=0.9[bed]",
     ]
     run_ffmpeg(["-y", *inputs, "-filter_complex", ";".join(parts),
                 "-map", "[bed]", "-ar", str(SR), out_wav],
-               f"ambient drone ({total:.0f}s)")
+               f"ambient bed ({total:.0f}s)")
     return out_wav

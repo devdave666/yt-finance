@@ -201,9 +201,13 @@
     "description": "It's possible to sell winning investments and owe $0 in federal income tax. This is thanks to the 0% long-term capital gains bracket, which applies if your total taxable income is below a certain threshold. It's not a loophole, it's a feature of the tax code.\n\n#investing #taxes #personalfinance #capitalgains",
     "hosted_url": "https://raw.githubusercontent.com/devdave666/yt-finance/main/media/2026-08-31-zero-percent-capital-gains.mp4",
     "queued_date": "2026-08-31",
-    "posted": false,
-    "posted_date": null,
-    "post_ids": null
+    "posted": true,
+    "posted_date": "2026-09-05",
+    "post_ids": {
+      "youtube": "6a9c63cffba008bcd54fd807",
+      "instagram": "6a9c63d10ca93dff23a09c0f",
+      "tiktok": "6a9c63dcf97391de04bc2559"
+    }
   },
   {
     "slug": "2026-08-31-hsa-triple-tax-free-retirement",

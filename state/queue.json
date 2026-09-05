@@ -215,9 +215,13 @@
     "description": "An HSA is the only account with three separate tax advantages. Most people use it for medical bills, but its real power is as a stealth retirement fund.\n\n#hsa #investing #retirement #personalfinance #taxes",
     "hosted_url": "https://raw.githubusercontent.com/devdave666/yt-finance/main/media/2026-08-31-hsa-triple-tax-free-retirement.mp4",
     "queued_date": "2026-08-31",
-    "posted": false,
-    "posted_date": null,
-    "post_ids": null
+    "posted": true,
+    "posted_date": "2026-09-05",
+    "post_ids": {
+      "youtube": "6a9c98c8e6524401a65ea6bb",
+      "instagram": "6a9c98cb85ccb3a22c0b94f9",
+      "tiktok": "6a9c98d6534afc9129e63787"
+    }
   },
   {
     "slug": "2026-08-31-401k-vesting-schedule-trap",

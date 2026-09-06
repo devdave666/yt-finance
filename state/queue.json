@@ -243,9 +243,13 @@
     "description": "That small 1% fee in your 401(k) isn't small at all. Over a lifetime, it can consume over a quarter of your potential returns. Here's how the math actually works.\n\n#401k #investing #retirement #personalfinance #expenseratio",
     "hosted_url": "https://raw.githubusercontent.com/devdave666/yt-finance/main/media/2026-08-31-expense-ratio-fee-drag.mp4",
     "queued_date": "2026-08-31",
-    "posted": false,
-    "posted_date": null,
-    "post_ids": null
+    "posted": true,
+    "posted_date": "2026-09-06",
+    "post_ids": {
+      "youtube": "6a9db61e2066ff47cc42c1fa",
+      "instagram": "6a9db621af83b6dedf993577",
+      "tiktok": "6a9db62b5c2ba4d1541acda4"
+    }
   },
   {
     "slug": "2026-08-31-fdic-insurance-limit-explained",

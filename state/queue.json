@@ -257,9 +257,13 @@
     "description": "Everyone thinks FDIC insurance tops out at $250,000 per bank. That's not the whole story. The fine print allows for millions to be insured at a single institution, if you know the rules.\n\n#fdic #banking #personalfinance #moneytips #savings",
     "hosted_url": "https://raw.githubusercontent.com/devdave666/yt-finance/main/media/2026-08-31-fdic-insurance-limit-explained.mp4",
     "queued_date": "2026-08-31",
-    "posted": false,
-    "posted_date": null,
-    "post_ids": null
+    "posted": true,
+    "posted_date": "2026-09-06",
+    "post_ids": {
+      "youtube": "6a9deb382066ff47cc474f06",
+      "instagram": "6a9deb3b20f5ae4508ad5217",
+      "tiktok": "6a9deb455c2ba4d1541f9a47"
+    }
   },
   {
     "slug": "2026-08-31-per-card-credit-utilization",

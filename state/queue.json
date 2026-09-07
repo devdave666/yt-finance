@@ -299,9 +299,13 @@
     "description": "You sold a stock for a loss, but that doesn't mean you can claim it on your taxes. The wash-sale rule is a common trap for new investors that can wipe out your expected tax deduction.\n\n#investing #taxes #personalfinance #stockmarket #washsale",
     "hosted_url": "https://raw.githubusercontent.com/devdave666/yt-finance/main/media/2026-08-31-wash-sale-rule-explained.mp4",
     "queued_date": "2026-08-31",
-    "posted": false,
-    "posted_date": null,
-    "post_ids": null
+    "posted": true,
+    "posted_date": "2026-09-07",
+    "post_ids": {
+      "youtube": "6a9f4538555f6e1cb772c97f",
+      "instagram": "6a9f453c054b6beb81a82af7",
+      "tiktok": "6a9f45474c4e8f2911757b7a"
+    }
   },
   {
     "slug": "2026-08-31-retirement-crash-timing",

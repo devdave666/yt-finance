@@ -341,9 +341,13 @@
     "description": "Target-date funds seem simple, but they can trigger surprise tax bills in a regular brokerage account. We explain the mechanism that causes capital gains distributions, even when you haven't sold any shares yourself.\n\n#personalfinance #investing #taxes #targetdatefunds #401k",
     "hosted_url": "https://raw.githubusercontent.com/devdave666/yt-finance/main/media/2026-08-31-target-date-fund-tax-trap.mp4",
     "queued_date": "2026-08-31",
-    "posted": false,
-    "posted_date": null,
-    "post_ids": null
+    "posted": true,
+    "posted_date": "2026-09-08",
+    "post_ids": {
+      "youtube": "6aa094f93bd0dd9ef31e25d4",
+      "instagram": "6aa094fd3c5ae934d51d5f24",
+      "tiktok": "6aa095085bcf98109f5d79bc"
+    }
   },
   {
     "slug": "2026-08-31-mmf-vs-hysa-insurance-risk",

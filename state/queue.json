@@ -313,9 +313,13 @@
     "description": "The timing of a market crash can have a devastating impact on your retirement savings. A downturn in your first few years of withdrawal does far more damage than the same crash a decade later. This is sequence-of-returns risk.\n\n#retirement #investing #401k #sequenceofreturns #personalfinance",
     "hosted_url": "https://raw.githubusercontent.com/devdave666/yt-finance/main/media/2026-08-31-retirement-crash-timing.mp4",
     "queued_date": "2026-08-31",
-    "posted": false,
-    "posted_date": null,
-    "post_ids": null
+    "posted": true,
+    "posted_date": "2026-09-08",
+    "post_ids": {
+      "youtube": "6aa0420fc67ae935a4177da3",
+      "instagram": "6aa04212bb9e097f56924020",
+      "tiktok": "6aa0421dbb9e097f5692417d"
+    }
   },
   {
     "slug": "2026-08-31-i-bonds-inflation-shield",

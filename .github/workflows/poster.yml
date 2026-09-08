@@ -11,6 +11,12 @@ on:
     - cron: "0 13 * * *"        # ~9am ET / 6am PT
     - cron: "0 17 * * *"        # ~1pm ET / 10am PT
     - cron: "0 21 * * *"        # ~5pm ET / 2pm PT
+    - cron: "30 3 * * *"        # ~11:30pm ET / 8:30pm PT -- the late-night /
+                                 # "insomniac scroll" window: less fresh content
+                                 # competing for attention overnight, and by the
+                                 # time the daytime audience wakes up the short
+                                 # already has early traction. One entry drains
+                                 # per firing, same as the daytime slots.
   workflow_dispatch: {}
 
 permissions:

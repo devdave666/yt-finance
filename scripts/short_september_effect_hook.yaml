@@ -1,0 +1,77 @@
+title: The Stock Market's Only Losing Month (Kind Of)
+slug: short-september-effect-hook
+format: short
+caption_style: explainer
+
+cast:
+  host:
+    anchor: center
+    voice: Orus
+    look: "the 'Anti Broke' host: a minimalist black-marker stick figure with a round OPEN white head, four or five short spiky lines of hair on top, two small dot eyes, two short sharp angled eyebrows, and always a visible mouth that shows the expression (flat, frown, grimace, open shout). The body is ONE single straight vertical black line (spine), with four more single straight black lines for the two arms and two legs, dot hands, short line feet -- plus one small thin necktie shape (a short strip + a little triangle) hanging at the neck. NO torso shape, NO filled body, NO solid black wedge, NO shirt block -- the figure is a head, spiky hair, five thin lines and a skinny tie. It is never a black silhouette."
+
+scenes:
+  stage:
+    color: '#f4efe4'
+
+narrator:
+  voice: Orus
+
+beats:
+- id: b01
+  scene: stage
+  who: host
+  say: "There is one month on the calendar that has lost investors money for almost a hundred years."
+  cast: {host: "standing, arms wide, serious expression"}
+  headline: "STOCKS' ONLY LOSING MONTH"
+  emphasis: true
+
+- id: b02
+  scene: stage
+  who: host
+  say: "Not one bad year. The average across every year since nineteen twenty-eight is negative."
+  cast: {host: "pointing, focused expression"}
+  tone: negative
+  chart:
+    type: bar
+    title: Average S&P 500 return by month, since 1928
+    labels: [Jul, Aug, Sep, Oct, Nov, Dec]
+    values: [1.7, 0.6, -1.1, 0.5, 0.9, 1.4]
+    unit: '%'
+    highlight: 2
+    note: The only red bar
+
+- id: b03
+  scene: stage
+  who: host
+  say: "Now the part the scary headlines leave out. The September effect has been quietly fading."
+  cast: {host: "standing, one hand raised, explaining, neutral expression"}
+  emphasis: true
+  props: [chart-down]
+
+- id: b04
+  scene: stage
+  who: host
+  say: "Over the last twenty-five years, the average September is down only about a third of a percent."
+  cast: {host: "hands apart comparing two things, explaining"}
+  chart:
+    type: bar
+    title: Average September return
+    labels: [Since 1928, Last 25 years]
+    values: [-1.1, -0.4]
+    unit: '%'
+    highlight: 1
+    note: Shrinking
+
+- id: b05
+  scene: stage
+  who: host
+  say: "The typical September in that window is actually slightly positive. The average is dragged down by a few bad ones."
+  cast: {host: "pointing, focused expression"}
+  props: [bars-up]
+
+- id: b06
+  scene: stage
+  who: host
+  say: "If this changed how you read a scary month, leave a comment, and save it for the next September."
+  cast: {host: "standing, warm inviting expression, gesturing out towards the viewer"}
+  props: [comment]

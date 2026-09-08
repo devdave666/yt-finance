@@ -1,0 +1,55 @@
+title: Lose 50%, Gain 50% Back -- Are You Even?
+slug: short-volatility-drag-hook
+format: short
+caption_style: explainer
+
+cast:
+  host:
+    anchor: center
+    voice: Orus
+    look: "the 'Anti Broke' host: a minimalist black-marker stick figure with a round OPEN white head, four or five short spiky lines of hair on top, two small dot eyes, two short sharp angled eyebrows, and always a visible mouth that shows the expression (flat, frown, grimace, open shout). The body is ONE single straight vertical black line (spine), with four more single straight black lines for the two arms and two legs, dot hands, short line feet -- plus one small thin necktie shape (a short strip + a little triangle) hanging at the neck. NO torso shape, NO filled body, NO solid black wedge, NO shirt block -- the figure is a head, spiky hair, five thin lines and a skinny tie. It is never a black silhouette."
+
+scenes:
+  stage:
+    color: '#f4efe4'
+
+narrator:
+  voice: Orus
+
+beats:
+- id: b01
+  scene: stage
+  who: host
+  say: "Here is a question that sounds trivial. You lose fifty percent, and then you gain fifty percent back."
+  cast: {host: "standing, arms wide, serious expression"}
+  headline: "DOWN 50%. UP 50%."
+  emphasis: true
+
+- id: b02
+  scene: stage
+  who: host
+  say: "Are you back where you started? Almost everyone says yes, because the average of those two moves is zero."
+  cast: {host: "shrugging, skeptical expression"}
+  props: [question]
+
+- id: b03
+  scene: stage
+  who: host
+  say: "You are not back. You are down twenty-five percent, and that money is simply gone."
+  cast: {host: "pointing, focused expression"}
+  tone: negative
+  chart:
+    type: bar
+    title: One hundred dollars, two moves
+    labels: [Start, "After -50%", "After +50%"]
+    values: [100, 50, 75]
+    unit: $
+    highlight: 2
+    note: Not back to even
+
+- id: b04
+  scene: stage
+  who: host
+  say: "If that changed how you think about risk, leave a comment, and save this one for the next drawdown."
+  cast: {host: "standing, warm inviting expression, gesturing out towards the viewer"}
+  props: [comment]

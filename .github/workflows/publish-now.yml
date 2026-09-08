@@ -1,0 +1,54 @@
+name: Publish Now
+
+# One-off: publish an already-committed media/<slug>.mp4 immediately to
+# YouTube + Instagram + TikTok via Buffer, bypassing state/queue.json.
+# The queue is FIFO and can have a real backlog -- this is for "this specific
+# short, live, now" (see tools/publish_now.py for why).
+
+on:
+  workflow_dispatch:
+    inputs:
+      slug:
+        description: "media/<slug>.mp4 to publish"
+        type: string
+        required: true
+      title:
+        description: "Title (YouTube)"
+        type: string
+        required: true
+      description:
+        description: "Description / caption (all platforms)"
+        type: string
+        required: false
+        default: ""
+      skip_instagram:
+        type: boolean
+        default: false
+      skip_tiktok:
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - run: pip install requests
+
+      - name: Publish
+        env:
+          BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
+        run: |
+          python tools/publish_now.py --slug "${{ inputs.slug }}" \
+            --title "${{ inputs.title }}" \
+            --description "${{ inputs.description }}" \
+            ${{ inputs.skip_instagram && '--no-instagram' || '' }} \
+            ${{ inputs.skip_tiktok && '--no-tiktok' || '' }}

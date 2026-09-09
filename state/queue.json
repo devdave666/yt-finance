@@ -383,9 +383,13 @@
     "description": "Most people think retirement money is locked up until age 59.5. But a Roth IRA has a special rule letting you withdraw original contributions\u2014tax and penalty-free\u2014at any time, for any reason.\n\n#rothira #personalfinance #investing #emergencyfund #moneytips",
     "hosted_url": "https://raw.githubusercontent.com/devdave666/yt-finance/main/media/2026-09-01-roth-ira-emergency-fund.mp4",
     "queued_date": "2026-09-01",
-    "posted": false,
-    "posted_date": null,
-    "post_ids": null
+    "posted": true,
+    "posted_date": "2026-09-09",
+    "post_ids": {
+      "youtube": "6aa1b541eaacff9e2a7eae42",
+      "instagram": "6aa1b544928870b3bd93d465",
+      "tiktok": "6aa1b54f928870b3bd93d54a"
+    }
   },
   {
     "slug": "2026-09-01-tax-brackets-marginal-rate",

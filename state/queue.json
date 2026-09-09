@@ -397,9 +397,13 @@
     "description": "Everyone thinks a raise that pushes them into a new tax bracket will make them lose money. It's not true. We explain the difference between your marginal tax bracket and your effective tax rate.\n\n#taxes #taxbracket #personalfinance #money #investing",
     "hosted_url": "https://raw.githubusercontent.com/devdave666/yt-finance/main/media/2026-09-01-tax-brackets-marginal-rate.mp4",
     "queued_date": "2026-09-01",
-    "posted": false,
-    "posted_date": null,
-    "post_ids": null
+    "posted": true,
+    "posted_date": "2026-09-09",
+    "post_ids": {
+      "youtube": "6aa1e3255c4e5f317d09f07a",
+      "instagram": "6aa1e328268c3f17338d52a4",
+      "tiktok": "6aa1e332cdb1cb4e9bd6e5c7"
+    }
   },
   {
     "slug": "2026-09-01-rent-builds-no-credit",

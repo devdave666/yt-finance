@@ -360,5 +360,12 @@
     "slug": "2026-09-01-money-market-vs-hysa-risk",
     "direction": "debate",
     "format": "skit"
+  },
+  {
+    "date": "2026-09-10",
+    "topic": "The Federal Reserve is expected to raise interest rates in September 2026, its first hike since 2023, but the biggest US banks still pay about 0.38 percent on savings while online banks pay over 4 percent, and a rate hike widens that gap because banks raise loan and credit-card APRs immediately but raise deposit rates slowly or not at all (deposit beta) to keep the spread as profit.",
+    "slug": "2026-09-10-fed-hike-savings-gap",
+    "direction": "news-flash",
+    "format": "explainer"
   }
 ]

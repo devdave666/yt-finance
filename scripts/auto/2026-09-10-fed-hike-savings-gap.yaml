@@ -1,0 +1,102 @@
+title: The Fed Rate Hike Your Bank Won't Give You
+slug: 2026-09-10-fed-hike-savings-gap
+format: short
+caption_style: explainer
+cast:
+  host:
+    look: 'the ''Anti Broke'' host: a minimalist black-marker stick figure with a
+      round OPEN white head, four or five short spiky lines of hair on top, two small
+      dot eyes, two short sharp angled eyebrows, and always a visible mouth that shows
+      the expression (flat, frown, grimace, open shout). The body is ONE single straight
+      vertical black line (spine), with four more single straight black lines for
+      the two arms and two legs, dot hands, short line feet -- plus one small thin
+      necktie shape (a short strip + a little triangle) hanging at the neck. NO torso
+      shape, NO filled body, NO solid black wedge, NO shirt block -- the figure is
+      a head, spiky hair, five thin lines and a skinny tie. It is never a black silhouette.'
+    anchor: center
+    voice: Orus
+scenes:
+  stage:
+    color: '#f4efe4'
+beats:
+- id: b01
+  scene: stage
+  who: host
+  say: The Fed is about to raise interest rates again.
+  cast:
+    host: standing, arms wide, looking annoyed at the camera
+  headline: YOUR BANK KEEPS IT.
+  props: []
+- id: b02
+  scene: stage
+  who: host
+  say: Your credit card rate will jump almost overnight.
+  cast:
+    host: pointing, grim expression
+  props:
+  - credit-card
+  tone: negative
+- id: b03
+  scene: stage
+  who: host
+  say: But the rate on your savings? It stays flat.
+  cast:
+    host: hands down, looking unimpressed
+  props:
+  - bars-down
+  tone: negative
+- id: b04
+  scene: stage
+  who: host
+  say: The bank pockets the difference as pure profit.
+  cast:
+    host: rubbing fingers together like 'money', slight smirk
+  props:
+  - cash
+  tone: negative
+- id: b05
+  scene: stage
+  who: host
+  say: Major banks pay you almost nothing for your money.
+  cast:
+    host: pointing at the chart, looking angry
+  chart:
+    type: hbar
+    title: Average Savings APY
+    labels:
+    - Big Bank
+    - Online Bank
+    values:
+    - 0.38
+    - 4.25
+    unit: '%'
+    highlight: 0
+    note: 11x less
+  tone: negative
+  props: []
+- id: b06
+  scene: stage
+  who: host
+  say: This gap between what they pay and what they charge widens.
+  cast:
+    host: hands spread far apart, showing a wide gap
+  props:
+  - scale
+- id: b07
+  scene: stage
+  who: host
+  say: It's your money. They're just renting it cheaply.
+  cast:
+    host: arms crossed, looking directly at the camera, serious
+  props:
+  - bank
+- id: cta007
+  scene: stage
+  who: host
+  say: Which side are you on? Comment below, and save this before you need it.
+  cast:
+    host: standing, warm inviting expression, gesturing out and down towards the viewer
+  props:
+  - bookmark
+narrator:
+  voice: Orus

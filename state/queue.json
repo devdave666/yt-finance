@@ -411,9 +411,13 @@
     "description": "You pay thousands in rent every year, on time. But it does nothing for your credit score unless you take an extra step. Here's why the system ignores your largest payment.\n\n#creditscore #renting #personalfinance #buildcredit #creditreport",
     "hosted_url": "https://raw.githubusercontent.com/devdave666/yt-finance/main/media/2026-09-01-rent-builds-no-credit.mp4",
     "queued_date": "2026-09-01",
-    "posted": false,
-    "posted_date": null,
-    "post_ids": null
+    "posted": true,
+    "posted_date": "2026-09-10",
+    "post_ids": {
+      "youtube": "6aa268742e4217c614845356",
+      "instagram": "6aa268791914d06d1c08b8fc",
+      "tiktok": "6aa268831914d06d1c08b9e2"
+    }
   },
   {
     "slug": "2026-09-01-brokered-cd-risk",

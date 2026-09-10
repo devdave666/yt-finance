@@ -103,11 +103,18 @@ def host_in_repo(video: Path, slug: str, repo_root: Path) -> str:
 
 
 def buffer_post(video_url: str, text: str, channel_id: str, platform: str,
-                *, title: str | None = None, privacy: str = "public") -> str:
+                *, title: str | None = None, privacy: str = "public",
+                thumbnail_offset_ms: int | None = None, dry_run: bool = False) -> str:
     """Create a shareNow post on one Buffer channel; return the Buffer post id.
 
     platform is only used for YouTube's extra required fields and for error
     messages -- Buffer routes by channel_id, not by this string.
+
+    thumbnail_offset_ms picks which frame the platform shows as the video's
+    poster / profile-grid tile. Buffer only honours it for Instagram, TikTok and
+    Pinterest (never YouTube), and rejects an actual cover image, so this ms mark
+    into the clip is the only lever. dry_run prints the GraphQL variables and
+    returns "" instead of posting.
     """
     import requests
 
@@ -133,6 +140,13 @@ def buffer_post(video_url: str, text: str, channel_id: str, platform: str,
         post_input["metadata"] = {"instagram": {"type": "reel",
                                                 "shouldShareToFeed": True}}
 
+    if thumbnail_offset_ms is not None and platform in ("instagram", "tiktok"):
+        asset["video"].setdefault("metadata", {})["thumbnailOffset"] = int(thumbnail_offset_ms)
+
+    if dry_run:
+        print(json.dumps({"input": post_input}, indent=2))
+        return ""
+
     r = requests.post(
         "https://api.buffer.com/graphql",
         headers={"Authorization": f"Bearer {token}", "Content-Type": "application/json"},
@@ -142,6 +156,17 @@ def buffer_post(video_url: str, text: str, channel_id: str, platform: str,
     if result.get("__typename") != "PostActionSuccess":
         raise RuntimeError(f"Buffer publish to {platform} failed: {result.get('message', body)}")
     return result["post"]["id"]
+
+
+def _cover_offset_ms(build_dir: Path) -> int | None:
+    """The beat-1 cover mark timeline.plan recorded, or None."""
+    tl = build_dir / "timeline.json"
+    if not tl.exists():
+        return None
+    try:
+        return json.loads(tl.read_text()).get("cover_offset_ms")
+    except (json.JSONDecodeError, OSError):
+        return None
 
 
 # backwards-compatible alias
@@ -163,6 +188,7 @@ def publish(script, meta: dict, repo_root: Path) -> dict:
 
     title = meta.get("title") or script.title
     desc = meta.get("description") or script.title
+    cover_ms = _cover_offset_ms(script.build_dir)
 
     # YouTube first (the important one); IG + TikTok are best-effort after.
     out["youtube_post_id"] = buffer_post(
@@ -176,7 +202,8 @@ def publish(script, meta: dict, repo_root: Path) -> dict:
             print(f"[publish] no {platform} channel configured -- skipping")
             continue
         try:
-            pid = buffer_post(url, desc, channel, platform)
+            pid = buffer_post(url, desc, channel, platform,
+                              thumbnail_offset_ms=cover_ms)
             out[f"{platform}_post_id"] = pid
             print(f"[publish] {platform} post id: {pid}")
         except Exception as e:  # non-fatal: YouTube already went out
@@ -223,6 +250,7 @@ def enqueue(script, meta: dict, repo_root: Path) -> dict:
         "title": meta.get("title") or script.title,
         "description": meta.get("description") or script.title,
         "hosted_url": url,
+        "thumbnail_offset_ms": _cover_offset_ms(script.build_dir),
         "queued_date": dt.date.today().isoformat(),
         "posted": False,
         "posted_date": None,
@@ -253,13 +281,15 @@ def post_next_queued(repo_root: Path) -> dict | None:
         entry["hosted_url"], entry["description"],
         config.BUFFER_YOUTUBE_CHANNEL_ID, "youtube", title=entry["title"])
 
+    cover_ms = entry.get("thumbnail_offset_ms")
     for platform, channel in (("instagram", config.BUFFER_INSTAGRAM_CHANNEL_ID),
                               ("tiktok", config.BUFFER_TIKTOK_CHANNEL_ID)):
         if not channel:
             continue
         try:
             post_ids[platform] = buffer_post(
-                entry["hosted_url"], entry["description"], channel, platform)
+                entry["hosted_url"], entry["description"], channel, platform,
+                thumbnail_offset_ms=cover_ms)
         except Exception as e:  # non-fatal: YouTube already went out
             print(f"[poster] {platform} post FAILED (non-fatal): {e}")
 

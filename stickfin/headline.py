@@ -18,10 +18,13 @@ WHITE = (250, 250, 250)
 INK = (18, 18, 18)
 
 
+_BUNDLED = Path(__file__).resolve().parent.parent / "assets" / "fonts" / "Anton-Regular.ttf"
+
+
 def _font(size: int):
     from PIL import ImageFont
-    for name in ("impact.ttf", "ariblk.ttf", "arialbd.ttf", "Anton-Regular.ttf",
-                 "DejaVuSans-Bold.ttf"):
+    for name in (str(_BUNDLED), "impact.ttf", "ariblk.ttf", "arialbd.ttf",
+                 "Anton-Regular.ttf", "DejaVuSans-Bold.ttf"):
         try:
             return ImageFont.truetype(name, size)
         except Exception:

@@ -21,9 +21,31 @@ from pathlib import Path
 
 INK = "#181818"
 SLATE = "#9aa3ac"
+BAR_GREY = "#b9b3a6"    # warm grey that reads on the #f4efe4 stage
 ACCENT = "#7CB342"      # brand green, matches the caption highlight
 RED = "#e0362c"         # kept for the "look here" annotation ring only
 PAPER = "#00000000"     # transparent
+
+_FONTS_DIR = Path(__file__).resolve().parent.parent / "assets" / "fonts"
+# gentle hand-drawn wobble on the drawn marks only (not text) -- matches the
+# doodle house style without the mess a global path.sketch makes of 18px glyphs.
+_SKETCH = (1.2, 200, 8)
+_brand_font_loaded = False
+
+
+def _use_brand_font(fm, plt) -> None:
+    """Register the bundled Comic Neue once and make it the default family, so a
+    chart looks the same locally and on CI (which installs no fonts)."""
+    global _brand_font_loaded
+    f = _FONTS_DIR / "ComicNeue-Bold.ttf"
+    if not _brand_font_loaded and f.exists():
+        fm.fontManager.addfont(str(f))
+        _brand_font_loaded = True
+    if f.exists():
+        plt.rcParams["font.family"] = "Comic Neue"
+        # the bundled file is bold-only; without this, normal-weight requests
+        # (tick labels) spam "findfont: Failed to find font weight normal"
+        plt.rcParams["font.weight"] = "bold"
 
 
 def _wrap_label(text: str, max_chars: int = 8) -> str:
@@ -98,17 +120,22 @@ def render(spec: dict, out: Path, width_px: int = 1280, progress: float = 1.0,
     hi = int(hi) if isinstance(hi, (int, float)) else None
     n = len(values)
 
-    # prefer a rounded/hand-ish font if the OS has one, else default
-    fam = next((f for f in ("Comic Sans MS", "Trebuchet MS", "Verdana")
-                if any(f.lower() in x.name.lower() for x in fm.fontManager.ttflist)), None)
-    if fam:
-        plt.rcParams["font.family"] = fam
+    _use_brand_font(fm, plt)
 
     fig, ax = plt.subplots(figsize=(width_px / 200, width_px * 0.62 / 200), dpi=200)
     fig.patch.set_alpha(0)
     ax.set_facecolor("none")
-    colors = [ACCENT if i == hi else SLATE for i in range(n)]
+    colors = [ACCENT if i == hi else BAR_GREY for i in range(n)]
     vmax = max(values + [1])
+
+    def _rough(*artists) -> None:
+        """Nudge the drawn geometry off dead-straight so it reads hand-drawn."""
+        for art in artists:
+            for a in (art if isinstance(art, (list, tuple)) else [art]):
+                try:
+                    a.set_sketch_params(*_SKETCH)
+                except AttributeError:
+                    pass
 
     def _lab_alpha(ep: float) -> float:
         """A value label fades in as its own element finishes drawing."""
@@ -116,11 +143,14 @@ def render(spec: dict, out: Path, width_px: int = 1280, progress: float = 1.0,
 
     if kind == "line":
         xs, ys, reached = _partial_path(values, progress)
-        ax.plot(xs, ys, color=INK, lw=6, solid_capstyle="round", zorder=3)
+        line = ax.plot(xs, ys, color=INK, lw=7, solid_capstyle="round",
+                       solid_joinstyle="round", zorder=3)
+        _rough(line)
         if reached:
-            ax.scatter(range(reached), values[:reached], s=90,
-                       color=[ACCENT if i == hi else INK for i in range(reached)],
-                       zorder=4)
+            dots = ax.scatter(range(reached), values[:reached], s=95,
+                              color=[ACCENT if i == hi else INK for i in range(reached)],
+                              edgecolors=INK, linewidths=1.5, zorder=4)
+            _rough(dots)
         ax.set_xticks(range(n))
         ax.set_xticklabels(labels, fontsize=18)
         for i in {0, n - 1} | ({hi} if hi is not None else set()):
@@ -141,8 +171,8 @@ def render(spec: dict, out: Path, width_px: int = 1280, progress: float = 1.0,
         ax.set_yticks([])
     elif kind == "hbar":
         eps = [_elem_progress(i, n, progress) for i in range(n)]
-        ax.barh(range(n), [v * e for v, e in zip(values, eps)],
-                color=colors, height=0.6, zorder=3)
+        _rough(ax.barh(range(n), [v * e for v, e in zip(values, eps)],
+                       color=colors, height=0.6, zorder=3).patches)
         ax.set_yticks(range(n))
         ax.set_yticklabels(labels, fontsize=18)
         ax.invert_yaxis()
@@ -156,8 +186,8 @@ def render(spec: dict, out: Path, width_px: int = 1280, progress: float = 1.0,
                         fontsize=18, fontweight="bold", color=INK, alpha=a)
     else:  # bar
         eps = [_elem_progress(i, n, progress) for i in range(n)]
-        ax.bar(range(n), [v * e for v, e in zip(values, eps)],
-               color=colors, width=0.62, zorder=3)
+        _rough(ax.bar(range(n), [v * e for v, e in zip(values, eps)],
+                      color=colors, width=0.62, zorder=3).patches)
         ax.set_xticks(range(n))
         # Vertical bars get one tick label each, side by side, and matplotlib
         # will happily run them into each other -- "After -50%After +50%" is
@@ -202,15 +232,17 @@ def render(spec: dict, out: Path, width_px: int = 1280, progress: float = 1.0,
         import matplotlib.patches as mpatches
         if kind == "hbar":
             xy = (values[hi] * 0.5, hi)
-            w, h = max(values[hi] * 0.9, vmax * 0.25), 0.85
+            w, h = max(values[hi] * 0.86, vmax * 0.22), 0.66   # bar height is 0.6
         elif kind == "line":
             xy = (hi, values[hi])
             w, h = 0.55, (max(values) - min(values) or vmax) * 0.30
         else:
-            xy = (hi, values[hi] * 0.55)
-            w, h = 0.78, values[hi] * 0.85
-        ax.add_patch(mpatches.Ellipse(xy, w, h, fill=False, edgecolor=RED,
-                                      lw=5, zorder=6, clip_on=False, alpha=ring_a))
+            xy = (hi, values[hi] * 0.5)
+            w, h = 0.86, values[hi] * 0.72                     # bar width is 0.62
+        ring = mpatches.Ellipse(xy, w, h, fill=False, edgecolor=RED,
+                                lw=5, zorder=6, clip_on=False, alpha=ring_a)
+        _rough(ring)
+        ax.add_patch(ring)
 
     if lims is None and progress >= 1.0:
         # capture the natural framing AND the tight crop box so animation

@@ -68,6 +68,27 @@ def _cut_key(src: str) -> str:
     return hashlib.sha1(src.encode()).hexdigest()[:12]
 
 
+def _cover_offset_ms(script, shots: list[dict], fps: int) -> int | None:
+    """Millisecond mark of the frame to use as the Instagram/TikTok grid cover.
+
+    Buffer can't take a custom cover image -- only `metadata.thumbnailOffset`, a
+    point in the video (IG/TikTok/Pinterest only). The strongest frame we already
+    have is the beat-1 hook headline: big, horizontally centred, sitting in the
+    vertical middle band (layout._regions short/`heads`), so it survives the
+    centre-square crop the profile grid uses. Aim a little past the 0.16s pop-in
+    and before the first cut. None => no beat-1 headline, let the platform pick.
+    """
+    if not shots or not script.beats:
+        return None
+    first_id = script.beats[0].id
+    shot = next((s for s in shots if s["beat_id"] == first_id
+                 and any(l.get("type") == "headline" for l in s["layers"])), None)
+    if shot is None:
+        return None
+    offset_s = shot["start_s"] + max(0.3, min(0.8, shot["dur_s"] * 0.5))
+    return round(offset_s * 1000)
+
+
 def plan(script, narration: dict) -> dict:
     fps = config.FPS
     dur_by_id = {b["id"]: b["duration_s"] for b in narration["beats"]}
@@ -143,6 +164,7 @@ def plan(script, narration: dict) -> dict:
         "total_frames": frame_cursor,
         "total_s": round(frame_cursor / fps, 3),
         "shot_count": len(shots),
+        "cover_offset_ms": _cover_offset_ms(script, shots, fps),
         "shots": shots,
     }
     script.build_dir.mkdir(parents=True, exist_ok=True)

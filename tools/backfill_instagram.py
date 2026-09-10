@@ -7,6 +7,11 @@ that publish.host_in_repo produced, then calls Buffer once.
 
     python tools/backfill_instagram.py <slug> [<slug> ...]
     python tools/backfill_instagram.py --list          # just print the channels
+    python tools/backfill_instagram.py --dry-run <slug>   # print the payload, don't post
+    python tools/backfill_instagram.py --thumb-offset-ms 900 <slug>   # cover frame mark
+
+`thumbnailOffset` (the profile-grid cover frame) is taken from a local
+build/<slug>/timeline.json when present, or from --thumb-offset-ms.
 
 Env:
     BUFFER_API_KEY               required
@@ -160,6 +165,14 @@ def main(argv: list[str]) -> int:
             _report_status(token, pid, pid)
         return 0
 
+    dry_run = "--dry-run" in argv
+    thumb_ms = None
+    if "--thumb-offset-ms" in argv:
+        i = argv.index("--thumb-offset-ms")
+        thumb_ms = int(argv[i + 1])
+        argv = argv[:i] + argv[i + 2:]
+    argv = [a for a in argv if a != "--dry-run"]
+
     channel = os.environ.get("BUFFER_INSTAGRAM_CHANNEL_ID") or publish_mod.config.BUFFER_INSTAGRAM_CHANNEL_ID
     if not channel:
         print("BUFFER_INSTAGRAM_CHANNEL_ID not set. Connected channels:")
@@ -176,8 +189,14 @@ def main(argv: list[str]) -> int:
             print(f"[{slug}] SKIP -- media/{slug}.mp4 not in the working tree")
             rc = 1
             continue
+        # explicit flag wins; otherwise recover the cover mark from a local build
+        cover_ms = thumb_ms if thumb_ms is not None else publish_mod._cover_offset_ms(
+            REPO / "build" / slug)
         try:
-            post_id = publish_mod.buffer_post(url, caption_for(slug), channel, "instagram")
+            post_id = publish_mod.buffer_post(url, caption_for(slug), channel, "instagram",
+                                              thumbnail_offset_ms=cover_ms, dry_run=dry_run)
+            if dry_run:
+                continue
             print(f"[{slug}] Instagram post id: {post_id}")
             _report_status(token, post_id, slug)
         except Exception as e:  # noqa: BLE001

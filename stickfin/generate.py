@@ -90,7 +90,17 @@ the FORMAT/STRUCTURE instruction you're given below is the HOW, and you follow i
 If you're given "what if you'd invested" material, do NOT just reach for "$1,000 in [company]'s IPO is
 worth $X today" again -- that shape has already been used repeatedly. Find the angle in the specific
 topic that's actually interesting: the surprising REASON, the person it happened to, the moment things
-could have gone the other way, the counterintuitive comparison -- not a fill-in-the-blank template."""
+could have gone the other way, the counterintuitive comparison -- not a fill-in-the-blank template.
+
+Never state a prediction, forecast, or a scheduled-but-uncertain future event as a fact. Do NOT open
+"The Fed is about to raise rates", "rates are going up next month", "a recession is coming". Nobody
+knows, and a viewer who does will call it out. If the topic hinges on something that MIGHT happen,
+frame it conditionally the whole way through -- "When the Fed raises rates...", "Every time rates go
+up...", "If that happens..." -- and the video must land its lesson on the timeless MECHANIC, which is
+true whether or not the event ever occurs. If the hook leans on the maybe-event at all, an early beat
+has to say the quiet part out loud ("Nobody knows if they actually will. But the day they do, here's
+what your bank does."). Never imply a recent event that did not happen -- no "again", "another",
+"back to", "still" about a move unless that prior move is real and you are certain of it."""
 
 SCHEMA_DOC = """Return ONLY a JSON object, no prose, with this shape:
 
@@ -181,6 +191,13 @@ SCHEMA_DOC = """Return ONLY a JSON object, no prose, with this shape:
 
 Rules:
 - Accurate. Any figure used must be roughly correct.
+- No predictions as fact. Never say a future or uncertain event WILL happen ("the Fed is about to
+  hike", "rates are going up", "a crash is coming"). Frame it conditionally end to end ("when rates
+  rise...", "if that happens...") and land the lesson on the timeless mechanic. If the hook uses the
+  maybe-event, one early beat must acknowledge the uncertainty out loud. No "again"/"another"/"back to"
+  implying a recent event unless it definitely happened.
+- Use financial terms precisely or not at all. "Net interest margin" is a ratio, not "the difference";
+  the gap between deposit and loan rates is the "interest rate spread". Don't name a term you're using loosely.
 - Plain language: an eighth-grader follows every line first time. Everyday words, short sentences,
   no unexplained jargon -- a "reads at grade 8 or under" check runs before publish.
 - Never tell the viewer to buy anything today, and never promise future returns. No hype phrasing.

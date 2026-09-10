@@ -155,6 +155,31 @@ def check(script, run_critique: bool = True) -> QAResult:
             f"narration reads at ~grade {grade} (aim grade 8 or under -- "
             f"shorter sentences, plainer words)")
 
+    # ---- predictions stated as fact (warn only) ----
+    # A viewer who follows rates WILL call out "the Fed is about to hike" when
+    # it's really a market probability -- happened on the deposit-beta short.
+    # The mechanic should carry the video; the maybe-event stays conditional.
+    _pred = re.compile(
+        r"\b(the fed|federal reserve|central bank)\b[^.!?]{0,45}"
+        r"\b(is about to|are about to|is going to|are going to|will|expected to|set to|poised to)\b"
+        r"|\b(will|going to|about to)\s+\w*\s*(raise|hike|cut|slash|lower|drop)\b[^.!?]{0,15}"
+        r"\b(rates?|interest)\b"
+        r"|\brates?\s+(are|is)\s+(going up|going down|rising|climbing|dropping|about to)\b"
+        r"|\b(a|another)\s+(recession|crash|rate hike|rate cut)\s+is\s+coming\b"
+        r"|\b(raise|raising|hike|hiking|cut|cutting|lower(?:ing)?)\b[^.!?]{0,20}"
+        r"\brates?\b[^.!?]{0,12}\bagain\b",
+        re.I)
+    _hedge = re.compile(r"\b(nobody knows|no one knows|if |whenever|might|may |could |"
+                        r"hypothetical|imagine|suppose|let's say)\b", re.I)
+    pred_hits = [b.id for b in script.beats
+                 if not b.id.startswith("cta") and b.say
+                 and _pred.search(b.say) and not _hedge.search(b.say)]
+    if pred_hits:
+        res.warnings.append(
+            f"beat(s) {', '.join(pred_hits)} state a rate/market forecast as fact -- "
+            f"frame it conditionally ('when rates rise...') and have an early beat "
+            f"say nobody knows if it'll happen")
+
     # ---- dead frames: a composite beat with nothing on screen but the host ----
     dead = sorted({s["beat_id"] for s in timeline["shots"]
                    if s.get("kind") == "composite" and s.get("layers")

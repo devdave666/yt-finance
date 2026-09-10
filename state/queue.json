@@ -425,9 +425,13 @@
     "description": "Everyone thinks CDs are perfectly safe, but that's not always true. Brokered CDs trade on a secondary market, and if you need to sell early when interest rates have gone up, you can lose part of your principal.\n\n#personalfinance #investing #cds #brokeredcd #interestrates",
     "hosted_url": "https://raw.githubusercontent.com/devdave666/yt-finance/main/media/2026-09-01-brokered-cd-risk.mp4",
     "queued_date": "2026-09-01",
-    "posted": false,
-    "posted_date": null,
-    "post_ids": null
+    "posted": true,
+    "posted_date": "2026-09-10",
+    "post_ids": {
+      "youtube": "6aa2e18e1dc6258680c4eaeb",
+      "instagram": "6aa2e1907714cb8860cc9122",
+      "tiktok": "6aa2e19b7714cb8860cc91b6"
+    }
   },
   {
     "slug": "2026-09-01-15-vs-30-year-mortgage-payment",

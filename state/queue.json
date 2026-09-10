@@ -453,9 +453,13 @@
     "description": "Overdraft 'protection' sounds helpful, but it's often an opt-in to an extremely expensive short-term loan. We break down the math on how a typical $35 fee can equal an APR in the thousands.\n\n#overdraft #personalfinance #banking #moneytips #financialliteracy",
     "hosted_url": "https://raw.githubusercontent.com/devdave666/yt-finance/main/media/2026-09-01-overdraft-protection-trap.mp4",
     "queued_date": "2026-09-01",
-    "posted": false,
-    "posted_date": null,
-    "post_ids": null
+    "posted": true,
+    "posted_date": "2026-09-10",
+    "post_ids": {
+      "youtube": "6aa334d985199affc93b3cfa",
+      "instagram": "6aa334dc816445bddc41f645",
+      "tiktok": "6aa334e771ba1c02ccec4d51"
+    }
   },
   {
     "slug": "2026-09-01-bank-overdraft-reordering",

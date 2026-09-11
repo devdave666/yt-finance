@@ -142,6 +142,10 @@ def render_shots(script, timeline: dict) -> Path:
             _composite_clip(shot, adir, script.fmt, clip)
         paths.append(clip)
 
+    if config.VEO_HOOK and paths:
+        from . import veo as veo_mod
+        veo_mod.try_replace_hook(script, timeline, paths[0])
+
     silent = script.build_dir / "_silent.mp4"
     concat_reencode(paths, silent, config.FPS)
     return silent

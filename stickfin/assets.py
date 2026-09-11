@@ -36,8 +36,12 @@ CHAR_FLOOR = (
     "The figure is thin LINE ART: an open round white head (with a few spiky "
     "hair lines) plus five single straight lines for the body (spine, 2 arms, "
     "2 legs), dot hands, and one small skinny necktie at the neck. It has NO "
-    "torso shape and is NEVER a filled black silhouette or a solid body wedge. "
-    "Open white head, one even black line weight. The face is ALWAYS complete: "
+    "torso shape and is NEVER a filled silhouette or solid body wedge of ANY "
+    "colour -- not black, not white, not a shirt-shaped fill. The torso is a "
+    "single bare line, nothing fills in around it. Open white head, one even "
+    "black line weight. EXACTLY five limb-lines total (2 arms, 2 legs) -- "
+    "never a stray extra limb, a partial third arm or leg, or a disconnected "
+    "hand/foot fragment floating near the figure. The face is ALWAYS complete: "
     "two dot eyes, two sharp angled eyebrows, AND a clearly drawn mouth -- a "
     "line, curve or open shape that reads the expression. Never leave the mouth "
     "off. Match the reference sheet exactly for proportions and construction."
@@ -261,6 +265,11 @@ def _figure_count(pil_img) -> int:
     Counts connected components of the alpha matte after a small binary
     closing, so antialiasing and dot hands don't split one figure into several.
     Verified on real assets: single figures score 1, duplicates score 2.
+
+    Threshold is 0.05 of total mass, not 0.12 -- a full duplicate figure is
+    comfortably above either, but a SHIPPED short ("what's this stick thing
+    between the legs") showed a disconnected stray limb/hand fragment that was
+    only a few percent of the total figure and slipped past 0.12 uncounted.
     """
     import numpy as np
     from scipy import ndimage
@@ -273,7 +282,7 @@ def _figure_count(pil_img) -> int:
     if n == 0:
         return 0
     sizes = ndimage.sum(m, lab, range(1, n + 1))
-    return int((sizes > 0.12 * sizes.sum()).sum())
+    return int((sizes > 0.05 * sizes.sum()).sum())
 
 
 def _pose_defects(cut) -> tuple[int, float, str]:
@@ -373,9 +382,12 @@ def generate_assets(script, plan: dict, force: bool = False) -> None:
     LINE_LOCK = (
         "The whole figure is thin LINE ART: an open round head (with spiky "
         "hair) plus five separate thin straight lines (spine, 2 arms, 2 legs), "
-        "dot hands, and a small skinny necktie. NEVER a filled black body, "
-        "NEVER a solid torso wedge, NEVER a silhouette. EXACTLY ONE figure in "
-        "the frame -- never two people, never a duplicate or mirror image."
+        "dot hands, and a small skinny necktie. NEVER a filled body of ANY "
+        "colour (not black, not a white shirt-shaped fill), NEVER a solid "
+        "torso wedge, NEVER a silhouette -- the torso is one bare line. "
+        "EXACTLY ONE figure with EXACTLY five limb-lines in the frame -- never "
+        "two people, never a duplicate or mirror image, never a stray extra "
+        "limb or a disconnected hand/foot fragment floating nearby."
     )
     sheets = {}
     for name, c in plan["characters"].items():

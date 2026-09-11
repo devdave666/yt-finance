@@ -152,6 +152,15 @@ BUFFER_TIKTOK_CHANNEL_ID = (
 # ---- Ken Burns (off by default; the reference style has a static camera) ----
 KENBURNS = os.environ.get("STICKFIN_KENBURNS", "0") == "1"
 
+# ---- Veo hook clip (off by default -- real money, ~$1/clip at Fast) --------
+# Animates ONLY the beat-1 hook shot with Veo 3.1 image-to-video instead of a
+# static composite; every other shot is untouched. Best-effort: stickfin/veo.py
+# falls back to the static composite on any failure, never blocks the build.
+# Only the Veo 3.1 `-001` family is enabled on this GCP project -- veo-2.0/3.0
+# and any `-preview` suffix 404. See memory reference-veo-vertex.md.
+VEO_HOOK = os.environ.get("STICKFIN_VEO_HOOK", "0") == "1"
+VEO_MODEL = os.environ.get("STICKFIN_VEO_MODEL", "veo-3.1-fast-generate-001")
+
 # ---- Loop callback --------------------------------------------------------
 # Retention hack (Bitton / Jack Neel podcast): the closing beat reprises the
 # beat-1 hook text so the last frame rhymes with the first and the Short loops

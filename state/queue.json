@@ -467,9 +467,13 @@
     "description": "Banks can legally change the order of your daily transactions, processing the largest one first. This trick makes it more likely you'll overdraft on smaller purchases that follow, each one costing you a fee.\n\n#personalfinance #overdraft #bankfees #moneytips #finance",
     "hosted_url": "https://raw.githubusercontent.com/devdave666/yt-finance/main/media/2026-09-01-bank-overdraft-reordering.mp4",
     "queued_date": "2026-09-01",
-    "posted": false,
-    "posted_date": null,
-    "post_ids": null
+    "posted": true,
+    "posted_date": "2026-09-11",
+    "post_ids": {
+      "youtube": "6aa3b88885199affc946525d",
+      "instagram": "6aa3b88f71ba1c02ccf7b2ac",
+      "tiktok": "6aa3b899b6d24fd028b18a0c"
+    }
   },
   {
     "slug": "2026-09-01-raise-retire-decade-gap",

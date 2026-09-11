@@ -114,6 +114,15 @@ def _norm(src: Path, dst: Path, extra_af: str = "", gap_s: float | None = None) 
     if extra_af:
         chain.append(extra_af)
     chain.append(f"loudnorm=I={config.TTS_TARGET_LUFS}:TP=-1.5:LRA=11")
+    # Every beat is synthesized independently and later joined by a hard
+    # concat (tts.synthesize) -- with no fade, the splice between two
+    # separately-normalized/atempo'd clips can click or read as choppy/
+    # machine-gun rather than a natural short pause. A 10ms fade-in and 15ms
+    # fade-out (areverse trick: ffmpeg's afade has no "from the true end"
+    # mode without knowing the duration up front) doesn't touch duration or
+    # any downstream timing math -- it runs BEFORE apad appends the gap --
+    # it just rounds off both edges so the join reads as a pause, not a cut.
+    chain.append("afade=t=in:d=0.010,areverse,afade=t=in:d=0.015,areverse")
     chain.append(f"apad=pad_dur={config.BEAT_GAP_S if gap_s is None else gap_s}")
     run_ffmpeg(["-i", src, "-af", ",".join(chain),
                 "-ar", config.TTS_SAMPLE_RATE, "-ac", "1", dst],

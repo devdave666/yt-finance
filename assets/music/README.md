@@ -9,7 +9,28 @@ long-form falls back to a synthesised drone (`sfx.build_bed`); a Short falls
 back to plain room tone. Nothing breaks either way; it just sounds better
 once tracks land.
 
+**Filled 2026-09-11**: 3 tracks per mood, sourced from Mixkit (see below) --
+YouTube Audio Library needs an interactive login'd UI with no API, so Claude
+can't pull from it directly; Mixkit's tracks are plain, curl-able MP3 URLs
+under an equally "no attribution required" licence, found via the JSON-LD
+metadata embedded in Mixkit's own tag pages (`https://assets.mixkit.co/music/
+<id>/<id>.mp3`) rather than the page's JS-rendered download button. Picked by
+Mixkit's own genre tag (Ambient/Chillout/Corporate Music/Film Score/Drone
+Music -- these read as instrumental; Pop/Hip Hop/Reggaeton/Country/R&B were
+skipped as vocal-risk) and spot-checked with an ffmpeg spectrogram
+(`showspectrumpic`) instead of by ear, since Claude can view an image but not
+literally listen. **Worth a real listen before fully trusting the picks** --
+the spectrogram check catches "this is clearly a sung pop track," not "this
+fits the mood."
+
 ## Where to get tracks (safe for a monetized channel)
+
+**Mixkit** (mixkit.co/free-stock-music) -- royalty-free, no attribution, no
+sign-up, direct MP3 download, explicitly fine for YouTube/commercial use
+(not for CDs/DVDs/broadcast, irrelevant here). The only source of the three
+below that's actually automatable (plain HTTP, no login) -- the direct MP3 is
+in the page's embedded JSON-LD (`"url":"https://assets.mixkit.co/music/
+<id>/<id>.mp3"`), not the JS download button curl/WebFetch can't see.
 
 **YouTube Audio Library** (studio.youtube.com → Audio Library) is the
 recommended source — it's YouTube's own library, built for monetized
@@ -69,8 +90,10 @@ anything) is used instead, so nothing is required before this ships — but
 ## One thing to check once real tracks land
 
 The mix level (`config.MUSIC_BED_LUFS`, default -30 LUFS integrated) is set
-from first principles, not from actually listening to a real track under the
-narration — there wasn't a real track to test with yet. Have a listen to the
-first render or two after adding files; if the music is too loud/quiet,
-that's the one number to move (`STICKFIN_MUSIC_BED_LUFS` env var, or just
-tell Claude "music is too loud/quiet" and it'll adjust it).
+from first principles, not from actually listening -- Claude can measure
+levels (`ffmpeg volumedetect`) but can't literally listen. Measured on a real
+build (`mixkit-digital-clouds-175.mp3` under a 24s explainer voiceover): bed
+mean -31.2dB vs VO mean -15.4dB, ~16dB of headroom -- numerically the bed
+sits well clear of the voice, but **have an actual listen to the first render
+or two**; if it's too loud/quiet by ear, that's the one number to move
+(`STICKFIN_MUSIC_BED_LUFS` env var, or tell Claude "music is too loud/quiet").

@@ -495,9 +495,13 @@
     "description": "Companies are charging you the same price for less product, and it's a hidden price hike. We break down the math of how shrinkflation works and what it costs an average family.\n\n#shrinkflation #personalfinance #inflation #moneytips #budgeting",
     "hosted_url": "https://raw.githubusercontent.com/devdave666/yt-finance/main/media/2026-09-01-shrinkflation-hidden-cost.mp4",
     "queued_date": "2026-09-01",
-    "posted": false,
-    "posted_date": null,
-    "post_ids": null
+    "posted": true,
+    "posted_date": "2026-09-11",
+    "post_ids": {
+      "youtube": "6aa4564a67cc30fb0d1fa06e",
+      "instagram": "6aa4564c67cc30fb0d1fa0a5",
+      "tiktok": "6aa4565760d5e465835925f0"
+    }
   },
   {
     "slug": "2026-09-01-minimum-payment-trap",

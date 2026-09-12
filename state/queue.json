@@ -537,9 +537,13 @@
     "description": "Paying only the minimum on a $5,000 credit card balance is a trap designed to keep you in debt for decades. Here's the math that shows how you can end up paying nearly double.\n\n#personalfinance #creditcards #debt #interest #moneytips",
     "hosted_url": "https://raw.githubusercontent.com/devdave666/yt-finance/main/media/2026-09-01-credit-card-minimum-payment-trap.mp4",
     "queued_date": "2026-09-01",
-    "posted": false,
-    "posted_date": null,
-    "post_ids": null
+    "posted": true,
+    "posted_date": "2026-09-12",
+    "post_ids": {
+      "youtube": "6aa57930c637430b6b5ba5f8",
+      "instagram": "6aa5793366679b076f120058",
+      "tiktok": "6aa5793e66679b076f120100"
+    }
   },
   {
     "slug": "2026-09-01-credit-card-grace-period-trap",

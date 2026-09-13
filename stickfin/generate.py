@@ -52,8 +52,11 @@ _FACELESS_HEAD_LONG_HAIR = (
     "NO chin contour, NO ears, NO nose, and NO realistic human face structure "
     "of any kind. The head is one flat, evenly-coloured circle with only "
     "these features drawn directly on its flat surface: long flowing black "
-    "hair framing both sides of the head down past the jaw (never short or "
-    "spiky), two small solid-black dot eyes, two short sharp angled "
+    "hair that FULLY COVERS THE TOP OF THE HEAD (the crown) with NO bald "
+    "patch or gap between the hairline and where the hair frames the sides -- "
+    "the hair grows from the very top, not just draped over the shoulders --  "
+    "and continues down past the jaw framing both sides (never short or "
+    "spiky). Two small solid-black dot eyes, two short sharp angled "
     "eyebrows, and a simple drawn mouth for the expression. It must read as "
     "a faceless, abstract cartoon head -- never a human portrait."
 )

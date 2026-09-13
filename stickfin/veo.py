@@ -32,16 +32,16 @@ NEGATIVE_PROMPT = (
 )
 
 MOTION_PROMPT = (
-    "2D hand-drawn stick-figure animation in a minimalist black-marker doodle "
-    "style, exactly matching the drawing in the image: thin even black ink "
-    "outlines, an open round white head with spiky hair, a skinny necktie, "
-    "five thin lines for the body, on a flat cream paper background. The "
-    "figure is a finance explainer talking straight to camera -- it gestures "
-    "with both arms, leans in, shrugs, reacts with its whole body, mouth "
-    "moving as it speaks. Lively character motion, same single figure the "
-    "whole time, same outfit, same proportions throughout. The camera is "
-    "locked off -- no pan, no zoom, no dolly. Flat 2D, no 3D shading, no "
-    "gradients. No on-screen text, no captions, no second character."
+    "2D flat-vector character animation, exactly matching the drawing in the "
+    "image: bold clean black outlines, an open round head with spiky hair, "
+    "a fully clothed body in its exact outfit and colours, on a flat cream "
+    "background. The figure is a finance explainer talking straight to "
+    "camera -- it gestures with both arms, leans in, shrugs, reacts with its "
+    "whole body, mouth moving as it speaks. Lively character motion, same "
+    "single figure the whole time, same outfit and colours, same proportions "
+    "throughout. The camera is locked off -- no pan, no zoom, no dolly. Flat "
+    "2D illustration, no 3D shading, no gradients. No on-screen text, no "
+    "captions, no second character."
 )
 
 

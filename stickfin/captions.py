@@ -28,7 +28,7 @@ _STYLES = {
     # name -> (Font, Size, BorderStyle, Outline, Outline colour, Align, MarginV, Bold)
     "explainer": ("Arial", 96, 1, 6, config.CAP_OUTLINE, 8, 360, -1),
     "skit":      ("Arial", 66, 3, 6, "&H00000000", 8, 320, -1),
-    "title":     ("Arial", 58, 3, 8, "&H00FFFFFF", 8, 250, -1),
+    "title":     ("Arial", 58, 3, 8, "&H00000000", 8, 250, -1),
     # 16:9 long-form: a normal lower-third subtitle, not a scroll-stopper.
     # Alignment 2 = bottom-centre, sitting inside layout's reserved bottom band
     # -- which is computed from exactly these numbers (config.subtitle_band_frac),

@@ -36,24 +36,34 @@ STAGE_COLOR = "#f4efe4"
 # The channel's recurring characters -- fixed here (not written by the model) so
 # the figure looks identical across every upload. The model still chooses poses
 # and expressions per beat.
+_FACELESS_HEAD = (
+    "a completely FLAT, BLANK round head like a plain cream-white egg or "
+    "balloon -- absolutely NO skin tone, NO shading, NO jawline, NO cheeks, "
+    "NO chin contour, NO ears, NO nose, and NO realistic human face structure "
+    "of any kind. The head is one flat, evenly-coloured circle with only "
+    "these features drawn directly on its flat surface: a few bold spiky "
+    "black hair strands on top, two small solid-black dot eyes, two short "
+    "sharp angled eyebrows, and a simple drawn mouth for the expression. It "
+    "must read as a faceless, abstract cartoon head -- never a human portrait."
+)
 HOST_LOOK = (
-    "the 'Anti Broke' host: a minimalist black-marker stick figure with a round "
-    "OPEN white head, four or five short spiky lines of hair on top, two small "
-    "dot eyes, two short sharp angled eyebrows, and always a visible mouth that "
-    "shows the expression (flat, frown, grimace, open shout). The body is ONE "
-    "single straight vertical black line (spine), with four more single straight "
-    "black lines for the two arms and two legs, dot hands, short line feet -- "
-    "plus one small thin necktie shape (a short strip + a little triangle) "
-    "hanging at the neck. NO torso shape, NO filled body, NO solid black wedge, "
-    "NO shirt block -- the figure is a head, spiky hair, five thin lines and a "
-    "skinny tie. It is never a black silhouette."
+    "the 'Anti Broke' host: a sharp, fully-illustrated flat-vector character, "
+    f"not a stick figure. The head is {_FACELESS_HEAD} A clearly visible mouth "
+    "always shows the expression (flat, frown, grimace, open shout, small "
+    "smile). He wears the channel's signature fit: a fitted charcoal-grey "
+    "bomber jacket over a plain white tee, with a small bold lime-green 'ANTI "
+    "BROKE' wordmark patch on the left chest, dark slim jeans, and clean white "
+    "sneakers with a lime-green accent stripe. Real clothing rendered in flat "
+    "colour fills with bold clean black outlines and light cel-shading for "
+    "form -- never a bare line figure, never a plain silhouette with no "
+    "clothing detail visible."
 )
 SECOND_LOOK = (
-    "a classic minimalist stick figure like the host but drawn slightly shorter, "
-    "same construction: round open white head, ONE straight vertical line for "
-    "the spine, single straight lines for arms and legs, dot hands. No torso "
-    "shape, no fill, no silhouette. A small plain teal collar is the only "
-    "difference from the host."
+    "a second character, same faceless round-headed construction as the "
+    f"host ({_FACELESS_HEAD}) but a distinct 'everyman' outfit with NO "
+    "branding: a plain rust-orange hoodie, ordinary blue jeans, and grey "
+    "sneakers. Same sharp flat-vector illustration style as the host, fully "
+    "clothed, never a bare stick figure."
 )
 
 STATE = Path("state/topic_history.json")

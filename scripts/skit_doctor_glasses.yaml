@@ -7,27 +7,38 @@ title_card: 'POV: "Who calls me stupid now?" 😂'
 
 cast:
   patient:
-    voice: en-US-Neural2-D
+    voice: Orus
     look: >
-      stick figure, thick 8px solid black outline, perfectly round white head,
-      two small black dot eyes, simple black line mouth, plain yellow t-shirt,
-      thin black-outline arms and legs, small mitten hands
+      a sharp, fully-illustrated flat-vector character, not a stick figure.
+      The head is a completely FLAT, BLANK round head like a plain cream-white
+      egg or balloon -- absolutely NO skin tone, NO shading, NO jawline, NO
+      cheeks, NO chin contour, NO ears, NO nose, and NO realistic human face
+      structure of any kind. Only these features sit directly on that flat
+      circle: a few bold spiky black hair strands, two small solid-black dot
+      eyes, two short sharp angled eyebrows, and a clearly drawn mouth that
+      always reads the expression. He wears a plain rust-orange hoodie,
+      ordinary blue jeans, and grey sneakers. Flat colour fills, bold clean
+      black outlines, light cel-shading for form -- never a bare line figure.
     anchor: left
   doctor:
-    voice: en-US-Neural2-A
+    voice: Aoede
     look: >
-      stick figure, thick 8px solid black outline, perfectly round white head,
-      two dot eyes, calm line mouth, white lab coat over a light-blue collar,
-      a small grey stethoscope around the neck
+      a sharp, fully-illustrated flat-vector character, not a stick figure.
+      The head is a completely FLAT, BLANK round head like a plain cream-white
+      egg or balloon -- absolutely NO skin tone, NO shading, NO jawline, NO
+      cheeks, NO chin contour, NO ears, NO nose, and NO realistic human face
+      structure of any kind. Only these features sit directly on that flat
+      circle: a few bold spiky black hair strands, two small solid-black dot
+      eyes, two short sharp angled eyebrows, and a clearly drawn calm mouth.
+      She wears a white lab coat over a light-blue collared shirt, dark navy
+      trousers, plain black flats, and a small grey stethoscope around the
+      neck. Flat colour fills, bold clean black outlines, light cel-shading
+      for form -- never a bare line figure.
     anchor: right
 
 scenes:
   office:
-    bg: >
-      clean flat 2D vector doctor's office interior seen straight on: a wooden
-      desk with a monitor and keyboard, a patient chair, framed certificates on
-      the wall, a bookshelf of binders, muted beige walls and light-wood tones,
-      soft flat shading
+    color: "#f4efe4"
 
 beats:
   - id: b1

@@ -301,10 +301,13 @@ Check the stills carefully for these DEFECTS:
 - any element clipped by the frame edge, or a figure standing off the floor
 - two caption lines on screen at once, or a caption overlapping the art badly
 - a chart whose numbers or labels don't match what's being said
-- the stick figure filled in solid (a black silhouette OR a white shirt/torso
-  shape) instead of clean thin-line-only construction
+- a character rendered as a flat black silhouette with no clothing colour or
+  detail visible (the outfit -- jacket/hoodie, jeans, shoes -- should always
+  read clearly)
 - a stray extra limb, a partial third arm/leg, or a disconnected hand/foot
   fragment floating near the figure that isn't part of a normal pose
+- a character's outfit changing between shots (wrong colours, missing logo
+  patch, different clothing than its reference design)
 
 A deliberate red edge-vignette darkening the corners on SOME beats is intentional
 (it marks a fee / loss / trap) -- do not report it as a defect or a colour problem.

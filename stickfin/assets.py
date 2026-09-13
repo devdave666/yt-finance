@@ -28,23 +28,31 @@ from pathlib import Path
 from . import config, icons
 
 STYLE_FLOOR = (
-    "Hand-drawn / clean-vector explainer aesthetic. Thick consistent solid "
-    "black outlines, flat fills, no gradients, no drop shadows, no photoreal "
-    "rendering. Bold and legible."
+    "Modern flat-vector character-illustration aesthetic (round-head meme-style "
+    "explainer art). Bold clean black outlines, flat colour fills with light, "
+    "minimal cel-shading for form and folds (soft one-tone shadow accents only "
+    "-- no smooth gradients, no glossy highlights, no photoreal rendering). "
+    "Bold and legible."
 )
 CHAR_FLOOR = (
-    "The figure is thin LINE ART: an open round white head (with a few spiky "
-    "hair lines) plus five single straight lines for the body (spine, 2 arms, "
-    "2 legs), dot hands, and one small skinny necktie at the neck. It has NO "
-    "torso shape and is NEVER a filled silhouette or solid body wedge of ANY "
-    "colour -- not black, not white, not a shirt-shaped fill. The torso is a "
-    "single bare line, nothing fills in around it. Open white head, one even "
-    "black line weight. EXACTLY five limb-lines total (2 arms, 2 legs) -- "
-    "never a stray extra limb, a partial third arm or leg, or a disconnected "
-    "hand/foot fragment floating near the figure. The face is ALWAYS complete: "
-    "two dot eyes, two sharp angled eyebrows, AND a clearly drawn mouth -- a "
-    "line, curve or open shape that reads the expression. Never leave the mouth "
-    "off. Match the reference sheet exactly for proportions and construction."
+    "The figure's head is a completely FLAT, BLANK circle (plain cream-white "
+    "or the character's stated head colour) -- absolutely NO skin tone, NO "
+    "shading, NO jawline, NO cheeks, NO chin contour, NO ears, NO nose, and NO "
+    "realistic human face structure. It reads as a faceless, abstract cartoon "
+    "head, never a human portrait. Only these features sit directly on that "
+    "flat circle: a few bold spiky hair strands, two small solid-black dot "
+    "eyes, two short sharp angled eyebrows, and a clearly drawn mouth that "
+    "always reads the expression (flat line, frown, grimace, open shout, "
+    "small smile) -- never leave the mouth off. Below the head is a "
+    "FULLY ILLUSTRATED body: a distinct neck, shoulders and torso wearing real "
+    "clothing (not a bare line, not a silhouette), articulated arms and legs "
+    "with visible sleeves/pant hems, and shoes. Clothing renders in flat colour "
+    "fills with clean bold black outlines and light cel-shading, matching the "
+    "reference sheet exactly for outfit, palette, and proportions. EXACTLY two "
+    "arms and two legs -- never a stray extra limb, a partial third arm or leg, "
+    "or a disconnected hand/foot fragment floating near the figure. Never omit "
+    "the outfit, never revert to a stick-line figure, never a flat silhouette "
+    "with no clothing detail visible."
 )
 # Flat mid-grey keys out cleanly against both black outlines and white fills.
 MATTE_BG = "on a completely flat solid #8a8a8a grey background, no gradient, no shadow, no floor line, no horizon"
@@ -226,12 +234,13 @@ def _cutout(pil_rgb, ink: bool = False):
 
 
 def _solidity(pil_img) -> float:
-    """Filled area as a fraction of the subject's bounding box.
+    """Near-black ink area as a fraction of the subject's bounding box.
 
-    A stick figure drawn as thin lines occupies ~0.10-0.30 of its bbox; a
-    filled black silhouette / solid torso wedge is ~0.40+. Works on both an
-    rembg cutout (uses alpha) and a raw generation on the grey matte (uses
-    'darker than the matte').
+    A normally-clothed figure (black outlines + hair + a few dark garment
+    pieces) occupies well under half its bbox in near-black pixels; a
+    generation that collapsed into a solid black silhouette with no clothing
+    colour visible is ~0.40+. Works on both an rembg cutout (uses alpha) and a
+    raw generation on the grey matte (uses 'darker than the matte').
     """
     import numpy as np
     a = np.asarray(pil_img.convert("RGBA"))
@@ -292,8 +301,8 @@ def _pose_defects(cut) -> tuple[int, float, str]:
     notes = []
     if n != 1:
         notes.append(f"{n} figures")
-    if sol > 0.13:
-        notes.append(f"filled body (solidity {sol:.2f})")
+    if sol > 0.40:
+        notes.append(f"solid black silhouette (solidity {sol:.2f})")
     return (0 if n == 1 else 1, sol, ", ".join(notes))
 
 
@@ -378,16 +387,16 @@ def generate_assets(script, plan: dict, force: bool = False) -> None:
         print(f"  bg {name}")
 
     # ---- character reference sheets ----
-    # A filled black torso here poisons every pose, so retry until it's line art.
+    # A figure that collapses into a solid black blob (no clothing detail
+    # visible) poisons every pose, so retry until real colour/detail shows.
     LINE_LOCK = (
-        "The whole figure is thin LINE ART: an open round head (with spiky "
-        "hair) plus five separate thin straight lines (spine, 2 arms, 2 legs), "
-        "dot hands, and a small skinny necktie. NEVER a filled body of ANY "
-        "colour (not black, not a white shirt-shaped fill), NEVER a solid "
-        "torso wedge, NEVER a silhouette -- the torso is one bare line. "
-        "EXACTLY ONE figure with EXACTLY five limb-lines in the frame -- never "
-        "two people, never a duplicate or mirror image, never a stray extra "
-        "limb or a disconnected hand/foot fragment floating nearby."
+        "The figure matches the reference sheet's exact outfit, colour "
+        "palette, hairstyle, and proportions every time -- same jacket/hoodie, "
+        "same colours, same shoes. EXACTLY ONE whole figure, head-to-shoes, in "
+        "the frame -- never two people, never a duplicate or mirror image, "
+        "never a stray extra limb or a disconnected hand/foot fragment "
+        "floating nearby. NEVER a flat black silhouette with no clothing "
+        "colour or detail visible -- the outfit must read clearly."
     )
     sheets = {}
     for name, c in plan["characters"].items():
@@ -398,10 +407,11 @@ def generate_assets(script, plan: dict, force: bool = False) -> None:
                       f"character full-body, front and 3/4 views, {MATTE_BG}. "
                       f"No other characters, no text.")
             img = _pil_or_none(_generate(client, [prompt], cfg))
-            if img is not None and _solidity(img) > 0.10:
+            if img is not None and _solidity(img) > 0.40:
                 alt = _pil_or_none(_generate(client, [
-                    prompt + "\n\nThe last drawing filled the body solid black. "
-                    "Redraw the body as ONE THIN LINE, not a shape."], cfg))
+                    prompt + "\n\nThe last drawing came back as a solid black "
+                    "silhouette with no clothing colour or detail visible. "
+                    "Redraw it in the character's actual outfit colours."], cfg))
                 if alt is not None and _solidity(alt) < _solidity(img):
                     img = alt
             if img is None:
@@ -446,23 +456,25 @@ def generate_assets(script, plan: dict, force: bool = False) -> None:
                     nudge = ("\n\nThe last attempt drew TWO figures. Draw EXACTLY "
                              "ONE single character -- no twin, no duplicate, no "
                              "mirrored copy, nobody standing beside them.")
-                elif best_score[1] > 0.13:
-                    nudge = ("\n\nThe last attempt filled the body solid black -- "
-                             "the body must be ONE THIN LINE.")
+                elif best_score[1] > 0.40:
+                    nudge = ("\n\nThe last attempt came back as a solid black "
+                             "silhouette with no clothing colour or detail "
+                             "visible -- redraw it in the character's actual "
+                             "outfit colours from the reference sheet.")
             img = _pil_or_none(_generate(
                 client, [pose_prompt + nudge, sheets[spec["char"]]], cfg))
             if img is None:
                 continue
-            cut = _cutout(img, ink=True)
+            cut = _cutout(img, ink=False)
             score = _pose_defects(cut)
             if best_score is None or score[:2] < best_score[:2]:
                 best_cut, best_score = cut, score
-            if not score[0] and score[1] <= 0.13:
+            if not score[0] and score[1] <= 0.40:
                 break
             print(f"  pose {key}: {score[2]}, retrying")
         if best_cut is None:
             print(f"  pose {key}: no image, using reference sheet as fallback")
-            best_cut = _cutout(sheets[spec["char"]], ink=True)
+            best_cut = _cutout(sheets[spec["char"]], ink=False)
             best_score = _pose_defects(best_cut)
         best_cut.save(out)
         print(f"  pose {key}" + (f"  [!! {best_score[2]}]" if best_score[2] else ""))

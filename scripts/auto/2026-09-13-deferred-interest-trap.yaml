@@ -1,0 +1,103 @@
+title: The 'No Interest' Deal That Costs You Hundreds
+slug: 2026-09-13-deferred-interest-trap
+format: short
+caption_style: explainer
+cast:
+  host:
+    look: 'the ''Anti Broke'' host: a minimalist black-marker stick figure with a
+      round OPEN white head, four or five short spiky lines of hair on top, two small
+      dot eyes, two short sharp angled eyebrows, and always a visible mouth that shows
+      the expression (flat, frown, grimace, open shout). The body is ONE single straight
+      vertical black line (spine), with four more single straight black lines for
+      the two arms and two legs, dot hands, short line feet -- plus one small thin
+      necktie shape (a short strip + a little triangle) hanging at the neck. NO torso
+      shape, NO filled body, NO solid black wedge, NO shirt block -- the figure is
+      a head, spiky hair, five thin lines and a skinny tie. It is never a black silhouette.'
+    anchor: center
+    voice: Orus
+scenes:
+  stage:
+    color: '#f4efe4'
+beats:
+- id: b01
+  scene: stage
+  who: host
+  say: Pay one day late, and you owe all the interest from day one.
+  cast:
+    host: standing, arms wide, looking alarmed
+  headline: THE $0 TRAP
+  props: []
+- id: b02
+  scene: stage
+  who: host
+  say: It’s called 'deferred interest,' and it’s a time bomb.
+  cast:
+    host: standing, pointing, serious expression
+  props:
+  - clock
+  tone: negative
+- id: b03
+  scene: stage
+  who: host
+  say: The interest isn't waived, it's just hiding.
+  cast:
+    host: standing, hand over mouth, conspiratorial
+  props:
+  - padlock
+- id: b04
+  scene: stage
+  who: host
+  say: Every month, it adds up in a second, hidden account.
+  cast:
+    host: standing, pointing to a chart, explaining
+  chart:
+    type: line
+    title: Hidden Interest
+    labels:
+    - Start
+    - 6 Mo
+    - 12 Mo
+    values:
+    - 0
+    - 300
+    - 600
+    unit: $
+    highlight: 2
+    note: Accruing
+  props: []
+- id: b05
+  scene: stage
+  who: host
+  say: Miss your payoff date by one day, or by one dollar...
+  cast:
+    host: standing, hands up in a 'stop' gesture, worried
+  props:
+  - warning
+  tone: negative
+- id: b06
+  scene: stage
+  who: host
+  say: '...and that entire hidden balance hits your account instantly.'
+  cast:
+    host: standing, looking shocked, pointing at a prop
+  props:
+  - arrow-down
+  tone: negative
+- id: b07
+  scene: stage
+  who: host
+  say: A true zero-percent APR offer doesn't have this trap.
+  cast:
+    host: standing, arms crossed, looking serious
+  props:
+  - shield
+- id: cta007
+  scene: stage
+  who: host
+  say: Which side are you on? Comment below, and save this before you need it.
+  cast:
+    host: standing, warm inviting expression, gesturing out and down towards the viewer
+  props:
+  - bookmark
+narrator:
+  voice: Orus

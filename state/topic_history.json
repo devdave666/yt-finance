@@ -367,5 +367,12 @@
     "slug": "2026-09-10-fed-hike-savings-gap",
     "direction": "news-flash",
     "format": "explainer"
+  },
+  {
+    "date": "2026-09-13",
+    "topic": "Deferred-interest \"same as cash\" financing -- miss the payoff date by a day and months of interest hit retroactively",
+    "slug": "2026-09-13-deferred-interest-trap",
+    "direction": "countdown",
+    "format": "explainer"
   }
 ]

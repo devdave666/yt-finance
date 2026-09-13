@@ -1,0 +1,108 @@
+title: Your Target-Date Fund Has a Hidden Tax Bill
+slug: 2026-09-13-target-date-fund-tax-trap
+format: short
+caption_style: explainer
+cast:
+  host:
+    look: 'the ''Anti Broke'' host: a sharp, fully-illustrated flat-vector character,
+      not a stick figure. The head is a completely FLAT, BLANK round head like a plain
+      cream-white egg or balloon -- absolutely NO skin tone, NO shading, NO jawline,
+      NO cheeks, NO chin contour, NO ears, NO nose, and NO realistic human face structure
+      of any kind. The head is one flat, evenly-coloured circle with only these features
+      drawn directly on its flat surface: a few bold spiky black hair strands on top,
+      two small solid-black dot eyes, two short sharp angled eyebrows, and a simple
+      drawn mouth for the expression. It must read as a faceless, abstract cartoon
+      head -- never a human portrait. A clearly visible mouth always shows the expression
+      (flat, frown, grimace, open shout, small smile). He wears the channel''s signature
+      fit: a fitted charcoal-grey bomber jacket over a plain white tee, with a small
+      bold lime-green ''ANTI BROKE'' wordmark patch on the left chest, dark slim jeans,
+      and clean white sneakers with a lime-green accent stripe. Real clothing rendered
+      in flat colour fills with bold clean black outlines and light cel-shading for
+      form -- never a bare line figure, never a plain silhouette with no clothing
+      detail visible.'
+    anchor: center
+    voice: Orus
+scenes:
+  stage:
+    color: '#f4efe4'
+beats:
+- id: b01
+  scene: stage
+  who: host
+  say: The most popular retirement fund has a hidden tax trap.
+  cast:
+    host: standing, arms open, questioning look
+  headline: A HIDDEN TAX BILL
+  tone: negative
+  props: []
+- id: b02
+  scene: stage
+  who: host
+  say: It's the target-date fund in your regular brokerage account.
+  cast:
+    host: pointing forward, serious expression
+  props:
+  - warning
+- id: b03
+  scene: stage
+  who: host
+  say: These funds automatically rebalance as you get older.
+  cast:
+    host: standing, pointing, explaining
+  props:
+  - clock
+- id: b04
+  scene: stage
+  who: host
+  say: It sells stocks to shift into safer bonds over time.
+  cast:
+    host: standing, looking at the chart, neutral
+  chart:
+    type: hbar
+    title: Stock Allocation
+    labels:
+    - Younger
+    - Older
+    values:
+    - 90
+    - 55
+    unit: '%'
+    highlight: 1
+    note: Auto-Sells Stocks
+  props: []
+- id: b05
+  scene: stage
+  who: host
+  say: Every time it sells a winner, it creates a tax bill.
+  cast:
+    host: hand held up to stop, looking annoyed
+  props:
+  - receipt
+  tone: negative
+- id: b06
+  scene: stage
+  who: host
+  say: This doesn't happen in a 401(k) or an IRA.
+  cast:
+    host: pointing to prop, looking relieved
+  props:
+  - safe
+- id: b07
+  scene: stage
+  who: host
+  say: In a taxable account, you pay for their convenience.
+  cast:
+    host: standing, hands on hips, unimpressed
+  props:
+  - padlock
+  tone: negative
+- id: cta007
+  scene: stage
+  who: host
+  say: Which side are you on? Comment below, and save this before you need it.
+  cast:
+    host: standing, warm inviting expression, gesturing out and down towards the viewer
+  props:
+  - bookmark
+narrator:
+  voice: Orus

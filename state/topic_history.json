@@ -374,5 +374,12 @@
     "slug": "2026-09-13-deferred-interest-trap",
     "direction": "countdown",
     "format": "explainer"
+  },
+  {
+    "date": "2026-09-13",
+    "topic": "Target-date funds are great inside a 401k and quietly tax-inefficient in a regular brokerage account",
+    "slug": "2026-09-13-target-date-fund-tax-trap",
+    "direction": "reveal",
+    "format": "explainer"
   }
 ]

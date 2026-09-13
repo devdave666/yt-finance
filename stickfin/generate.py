@@ -101,8 +101,18 @@ seconds -- the second-biggest drop-off is the moment right after the hook. Beat 
 twists the knife, or names exactly who this happens to. It is NEVER a smooth transition, a definition,
 or "let me explain".
 
-Keep the language plain -- a sharp eighth-grader should follow every line on the first listen. Short
-sentences, everyday words; if you must use a term of art, define it in the same breath.
+Keep the language plain -- a sharp eighth-grader should follow every line on the first listen. Everyday
+words; if you must use a term of art, define it in the same breath. Plain does NOT mean choppy: write
+the way a person actually TALKS, not ad-copy. A real person doesn't say "No. On the entire amount. From
+day one." -- they say "No -- the entire amount, from day one," in one breath, with normal connecting
+words (and, so, because, but) and contractions (it's, you're, that's). Cut a line into short fragments
+only where a real person would actually pause for effect, not on every single beat. If it reads like a
+movie-trailer voiceover instead of a person mid-conversation, rewrite it.
+
+Skit dialogue is a REAL back-and-forth, not two narrators trading alternating punchlines. Let people
+react the way people actually do -- "wait", "hold on", "so basically", "okay but" -- and let a beat just
+be a reaction that sets up the next one instead of every single line landing a fact. Vary who talks more
+in a given exchange; real conversations aren't perfectly one-line-each.
 
 The bar is HIGH. Every video must be genuinely surprising -- the kind of thing a smart person watches
 and thinks "wait, WHAT". If the idea wouldn't make someone stop scrolling and say that out loud, pick a

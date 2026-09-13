@@ -46,6 +46,17 @@ _FACELESS_HEAD = (
     "sharp angled eyebrows, and a simple drawn mouth for the expression. It "
     "must read as a faceless, abstract cartoon head -- never a human portrait."
 )
+_FACELESS_HEAD_LONG_HAIR = (
+    "a completely FLAT, BLANK round head like a plain cream-white egg or "
+    "balloon -- absolutely NO skin tone, NO shading, NO jawline, NO cheeks, "
+    "NO chin contour, NO ears, NO nose, and NO realistic human face structure "
+    "of any kind. The head is one flat, evenly-coloured circle with only "
+    "these features drawn directly on its flat surface: long flowing black "
+    "hair framing both sides of the head down past the jaw (never short or "
+    "spiky), two small solid-black dot eyes, two short sharp angled "
+    "eyebrows, and a simple drawn mouth for the expression. It must read as "
+    "a faceless, abstract cartoon head -- never a human portrait."
+)
 HOST_LOOK = (
     "the 'Anti Broke' host: a sharp, fully-illustrated flat-vector character, "
     f"not a stick figure. The head is {_FACELESS_HEAD} A clearly visible mouth "
@@ -59,11 +70,16 @@ HOST_LOOK = (
     "clothing detail visible."
 )
 SECOND_LOOK = (
-    "a second character, same faceless round-headed construction as the "
-    f"host ({_FACELESS_HEAD}) but a distinct 'everyman' outfit with NO "
-    "branding: a plain rust-orange hoodie, ordinary blue jeans, and grey "
-    "sneakers. Same sharp flat-vector illustration style as the host, fully "
-    "clothed, never a bare stick figure."
+    "the channel's second character, a woman (she/her) -- same faceless "
+    f"flat-head construction as the host, but the head is {_FACELESS_HEAD_LONG_HAIR} "
+    "A clearly visible mouth always shows the expression. She wears a "
+    "distinct outfit -- never the host's exact jacket colour or cut -- but "
+    "carries the SAME channel branding he does: a cropped rust-orange "
+    "utility jacket with rolled sleeves over a plain cream top, with the "
+    "same small bold lime-green 'ANTI BROKE' wordmark patch on the left "
+    "chest, olive-green straight-leg trousers, and white sneakers. Same "
+    "sharp flat-vector illustration style as the host, fully clothed, never "
+    "a bare stick figure."
 )
 
 STATE = Path("state/topic_history.json")

@@ -54,17 +54,22 @@ def _composite_clip(shot: dict, adir: Path, fmt: str, out: Path) -> None:
         resolved.append((layer, ap, _img_size(ap)))
     placements = layout.solve([{"type": l["type"], "wh": wh} for l, _, wh in resolved], fmt)
 
-    # a character should face what it's talking about. Poses are generated
-    # gesturing to the viewer's right, so mirror any character that ends up to
-    # the RIGHT of the shot's other content (chart / prop / headline).
-    others = [b for (l, _, _), b in zip(resolved, placements) if l["type"] != "character"]
-    focus_cx = (sum(bx + bw / 2 for bx, _, bw, _ in others) / len(others)
-                if others else None)
+    # a character should face what it's talking about -- a chart, a prop, or
+    # (in a two-hander) the OTHER character. Poses are generated gesturing to
+    # the viewer's right, so mirror a character to face LEFT when its focus
+    # (the average position of every OTHER element in the shot) sits to its
+    # left; leave it facing right otherwise. Excluding only the element
+    # itself -- not every character -- means two characters alone in a shot
+    # (no chart/prop) naturally end up facing each other instead of both
+    # defaulting rightward.
+    centers = [bx + bw / 2 for bx, _, bw, _ in placements]
 
     pop = max(config.POP_IN_S, 0.001)
     dur_s = nf / fps
     idx, last, char_seen = 1, "b0", 0
-    for (layer, ap, _wh), (x, y, w, h) in zip(resolved, placements):
+    for i, ((layer, ap, _wh), (x, y, w, h)) in enumerate(zip(resolved, placements)):
+        other_centers = centers[:i] + centers[i + 1:]
+        focus_cx = sum(other_centers) / len(other_centers) if other_centers else None
         # A chart that has a rendered frame sequence beside it draws itself on
         # instead of cutting in finished. tpad clones the final frame for the
         # rest of the shot, so the chart holds once it has finished drawing.

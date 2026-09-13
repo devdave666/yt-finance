@@ -59,3 +59,15 @@ for key, state in poses.items():
     cut.save(OUT / f"pose_{key}.png")
     score = A._pose_defects(cut)
     print(f"saved {OUT / f'pose_{key}.png'}" + (f"  [!! {score[2]}]" if score[2] else ""))
+
+second_sheet_prompt = (
+    f"{A.STYLE_FLOOR}\n{A.CHAR_FLOOR}\n{IDENTITY_LOCK}\n\n"
+    f"CHARACTER: {G.SECOND_LOOK}\n\nDraw a reference sheet: ONE single "
+    f"full-body figure only, three-quarter turned view (facing slightly to "
+    f"its right, matching how every pose will be drawn), {A.MATTE_BG}. "
+    f"EXACTLY ONE figure in the frame -- no second view, no front-view copy "
+    f"standing beside it, no other characters, no text."
+)
+second_sheet_img = A._pil_from(A._generate(client, [second_sheet_prompt], cfg))
+second_sheet_img.save(OUT / "second_sheet.png")
+print(f"saved {OUT / 'second_sheet.png'}  (solidity {A._solidity(second_sheet_img):.2f})")

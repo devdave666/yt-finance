@@ -162,7 +162,7 @@ SCHEMA_DOC = """Return ONLY a JSON object, no prose, with this shape:
         "id": "b01",
         "scene": "<scene name>",
         "who": "<character name>",       // the speaker; for explainer always "host"
-        "say": "ONE short spoken sentence, <= 10 words, punchy",
+        "say": "ONE spoken beat, natural sentence rhythm -- punchy on the hook, can run longer on a beat that's genuinely explaining something, never a paragraph",
         "cast": { "<name>": "pose and facial expression, e.g. 'standing, pointing to the right, neutral'" },
         "props": ["at most ONE prop per beat, chosen ONLY from the PROP VOCAB below (exact name), or omit"],
         "headline": "BEAT 1 ONLY, REQUIRED there: the hook as 2-5 words of huge on-screen text -- a number or a punch (\"$35. EVERY TIME.\", \"YOU'RE LOSING MONEY.\", \"$2.9 TRILLION.\"). Not a full sentence. Omit on every other beat.",
@@ -177,8 +177,14 @@ SCHEMA_DOC = """Return ONLY a JSON object, no prose, with this shape:
           "note": "<= 4 word red callout, or omit"
         }
       }
-      // 6 to 8 beats, targeting 20-28 seconds of narration total. Every character
-      // mentioned in a beat's cast must be in the top-level cast.
+      // As many beats as the story genuinely needs -- end when the explanation and
+      // payoff are actually complete, not on a fixed beat count. Don't pad or repeat
+      // a point to stretch it, and don't cut the mechanism short to rush to the CTA
+      // either. A tight, complete story at 20 seconds is just as valid as one that
+      // needs 60 -- length follows the explanation, not the other way round. The one
+      // real ceiling: Instagram stops treating a video as a Reel past ~90 seconds of
+      // narration, so land it under that. Every character mentioned in a beat's cast
+      // must be in the top-level cast.
       //
       // BEAT 1 is the whole game -- it decides whether anyone watches beat 2.
       //   `say`: the spoken hook, <= 12 words, ONE of:
@@ -193,8 +199,11 @@ SCHEMA_DOC = """Return ONLY a JSON object, no prose, with this shape:
       // BEAT 2 IS THE REHOOK -- not a transition. Re-hook the viewer who nearly swiped: restate the
       //   stakes a sharper way, add the detail that makes it worse or bigger, or name exactly who this
       //   lands on. The hole should feel like it just got deeper, not like the video is settling in.
-      // Middle beats: each one must carry a real number, a concrete image, or a sharp turn -- no filler
-      //   transition lines. Name the villain: the fine print, the default setting, the fee schedule.
+      // Middle beats should flow causally from the one before -- "because of that", "which meant",
+      //   "so next" -- like you're actually telling someone the story, not reciting a list of facts
+      //   at them. Each one still has to earn its place with a real number, a concrete image, or a
+      //   turn -- connected is not the same as padded. Name the villain: the fine print, the default
+      //   setting, the fee schedule.
       // Last beat before the auto-CTA: land the same punch you opened with -- a one-liner that could
       //   loop straight back into beat 1. The pipeline reprises the beat-1 hook text on that frame.
       // Last beat: a memorable one-liner the viewer could repeat -- not a summary, not a call to action.

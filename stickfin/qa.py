@@ -112,8 +112,11 @@ def check(script, run_critique: bool = True) -> QAResult:
 
     # ---- duration ----
     # 16:9 long-form is a different product with a different acceptable length;
-    # the Shorts window would reject every long-form video outright.
-    lo_s, hi_s = (150.0, 1500.0) if script.fmt == "wide" else (12.0, 45.0)
+    # the Shorts window would reject every long-form video outright. The short
+    # window itself is no longer a tight scroll-stopper target -- scripts now
+    # run as long as the story genuinely needs, so this only enforces the real
+    # platform ceiling: Instagram stops treating a video as a Reel past ~90s.
+    lo_s, hi_s = (150.0, 1500.0) if script.fmt == "wide" else (12.0, 90.0)
     total = narration["total_s"]
     if not (lo_s <= total <= hi_s):
         res.blockers.append(

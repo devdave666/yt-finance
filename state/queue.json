@@ -579,9 +579,13 @@
     "description": "The 2021 GameStop short squeeze made headlines about ordinary people getting rich. The reality is that for every winner, there were dozens who bought at the top and lost nearly everything. Here's why the hype is always the trap.\n\n#gamestop #investing #personalfinance #stockmarket #shortsqueeze",
     "hosted_url": "https://raw.githubusercontent.com/devdave666/yt-finance/main/media/2026-09-01-gamestop-squeeze-losses.mp4",
     "queued_date": "2026-09-01",
-    "posted": false,
-    "posted_date": null,
-    "post_ids": null
+    "posted": true,
+    "posted_date": "2026-09-13",
+    "post_ids": {
+      "youtube": "6aa65f0bbcabda92e1a91c08",
+      "instagram": "6aa65f0f7da3ee968d1063d3",
+      "tiktok": "6aa65f1abcabda92e1a922ce"
+    }
   },
   {
     "slug": "2026-09-01-store-card-discount-trap",

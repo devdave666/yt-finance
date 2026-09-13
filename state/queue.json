@@ -607,9 +607,13 @@
     "description": "You got the 401k match, but that doesn't mean it's yours. Vesting schedules mean if you leave your job too soon, your employer can take thousands of dollars of their matching funds right back.\n\n#401k #vesting #personalfinance #investing #retirement",
     "hosted_url": "https://raw.githubusercontent.com/devdave666/yt-finance/main/media/2026-09-01-401k-vesting-schedule.mp4",
     "queued_date": "2026-09-01",
-    "posted": false,
-    "posted_date": null,
-    "post_ids": null
+    "posted": true,
+    "posted_date": "2026-09-13",
+    "post_ids": {
+      "youtube": "6aa6f5861f8cf810a11b4412",
+      "instagram": "6aa6f58a66679b076f325756",
+      "tiktok": "6aa6f5951f8cf810a11b4510"
+    }
   },
   {
     "slug": "2026-09-01-401k-expense-ratio-fee-drag",

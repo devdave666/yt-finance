@@ -621,9 +621,13 @@
     "description": "That tiny 1% expense ratio on your 401k seems harmless. Over your lifetime, it can quietly consume nearly a third of your total returns.\n\n#401k #investing #retirement #personalfinance #fees",
     "hosted_url": "https://raw.githubusercontent.com/devdave666/yt-finance/main/media/2026-09-01-401k-expense-ratio-fee-drag.mp4",
     "queued_date": "2026-09-01",
-    "posted": false,
-    "posted_date": null,
-    "post_ids": null
+    "posted": true,
+    "posted_date": "2026-09-13",
+    "post_ids": {
+      "youtube": "6aa7279657098b2133851fdb",
+      "instagram": "6aa72798eba7bc5677a3b503",
+      "tiktok": "6aa727a357098b21338520dd"
+    }
   },
   {
     "slug": "2026-09-01-missing-best-days-market",

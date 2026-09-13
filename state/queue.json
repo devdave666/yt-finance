@@ -593,9 +593,13 @@
     "description": "That '20% off' store credit card offer isn't a discount. It's the bait stores use to get you to spend money you never intended to.\n\n#personalfinance #creditcards #shopping #moneytips #spendinghabits",
     "hosted_url": "https://raw.githubusercontent.com/devdave666/yt-finance/main/media/2026-09-01-store-card-discount-trap.mp4",
     "queued_date": "2026-09-01",
-    "posted": false,
-    "posted_date": null,
-    "post_ids": null
+    "posted": true,
+    "posted_date": "2026-09-13",
+    "post_ids": {
+      "youtube": "6aa6d59deba7bc56779cbc49",
+      "instagram": "6aa6d59f4cc07ffa4d3ba61f",
+      "tiktok": "6aa6d5aa1f8cf810a1183caa"
+    }
   },
   {
     "slug": "2026-09-01-401k-vesting-schedule",

@@ -122,9 +122,9 @@ SCHEMA_DOC = """Return ONLY a JSON object, no prose, with this shape:
       // skit: exactly TWO characters, one anchor left and one anchor right
     },
     "scenes": {
-      "<name>": { "bg": "flat 2D vector background description, no characters, no text" }
-      // explainer: a single scene named "stage" -- OMIT its bg, the pipeline fills it
-      // skit: 1-2 drawn scenes
+      "<name>": {}
+      // a single scene named "stage" -- OMIT "bg", the pipeline fills every
+      // scene with one flat backdrop colour regardless of format
     },
     "beats": [
       {
@@ -285,15 +285,16 @@ def _inject_identity(script_obj: dict) -> None:
         cast[name]["look"] = HOST_LOOK if i == 0 else SECOND_LOOK
     script_obj.setdefault("narrator", {})["voice"] = CHANNEL_VOICE
 
-    if script_obj.get("caption_style") == "explainer":
-        scenes = script_obj.setdefault("scenes", {})
-        if not scenes:
-            scenes["stage"] = {}
-        for name in scenes:
-            scenes[name] = {"color": STAGE_COLOR}   # one consistent flat backdrop
-        only = next(iter(scenes))
-        for beat in script_obj.get("beats", []):
-            beat["scene"] = only
+    # every format gets one flat backdrop, never a drawn scene -- a busy
+    # background collides with props/charts and makes chart text hard to read
+    scenes = script_obj.setdefault("scenes", {})
+    if not scenes:
+        scenes["stage"] = {}
+    for name in scenes:
+        scenes[name] = {"color": STAGE_COLOR}
+    only = next(iter(scenes))
+    for beat in script_obj.get("beats", []):
+        beat["scene"] = only
 
     # drop any prop the model invented that isn't in the committed icon library
     allowed = set(icons.names())

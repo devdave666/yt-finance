@@ -25,8 +25,11 @@ cfg = A._cfg("short")
 
 sheet_prompt = (
     f"{A.STYLE_FLOOR}\n{A.CHAR_FLOOR}\n{IDENTITY_LOCK}\n\n"
-    f"CHARACTER: {G.HOST_LOOK}\n\nDraw a reference sheet: this character "
-    f"full-body, front and 3/4 views, {A.MATTE_BG}. No other characters, no text."
+    f"CHARACTER: {G.HOST_LOOK}\n\nDraw a reference sheet: ONE single full-body "
+    f"figure only, three-quarter turned view (facing slightly to its right, "
+    f"matching how every pose will be drawn), {A.MATTE_BG}. EXACTLY ONE "
+    f"figure in the frame -- no second view, no front-view copy standing "
+    f"beside it, no other characters, no text."
 )
 sheet_img = A._pil_from(A._generate(client, [sheet_prompt], cfg))
 sheet_img.save(OUT / "host_sheet.png")

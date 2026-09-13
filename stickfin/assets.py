@@ -403,9 +403,13 @@ def generate_assets(script, plan: dict, force: bool = False) -> None:
         out = a / "char" / f"_{name}.png"
         if not out.exists() or force:
             prompt = (f"{STYLE_FLOOR}\n{CHAR_FLOOR}\n{LINE_LOCK}\n\n"
-                      f"CHARACTER: {c['look']}\n\nDraw a reference sheet: this "
-                      f"character full-body, front and 3/4 views, {MATTE_BG}. "
-                      f"No other characters, no text.")
+                      f"CHARACTER: {c['look']}\n\nDraw a reference sheet: ONE "
+                      f"single full-body figure only, three-quarter turned "
+                      f"view (facing slightly to its right, matching how "
+                      f"every pose will be drawn), {MATTE_BG}. EXACTLY ONE "
+                      f"figure in the frame -- no second view, no front-view "
+                      f"copy standing beside it, no other characters, no "
+                      f"text.")
             img = _pil_or_none(_generate(client, [prompt], cfg))
             if img is not None and _solidity(img) > 0.40:
                 alt = _pil_or_none(_generate(client, [

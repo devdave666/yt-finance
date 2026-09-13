@@ -225,8 +225,17 @@ def _regions(kinds: list[str], fmt: str) -> list[tuple[float, float, float, floa
     elif len(chars) == 2:
         R[chars[0]] = (0.02, 0.34, 0.40, FEET)
         R[chars[1]] = (0.58, 0.34, 0.98, FEET)
+        # a prop here used to sit at (0.34-0.66), which overlaps BOTH character
+        # zones (0.02-0.40 and 0.58-0.98) since it was never actually checked
+        # against them. Squeezing it into the gap between the two characters
+        # instead doesn't work either -- the REAL gap after each character is
+        # fitted to its own pose's aspect ratio can be far narrower than the
+        # nominal 0.18 gap (a wide gesture pose eats into it), so the de-overlap
+        # pass just oscillates the prop between overlapping one side then the
+        # other. Put it above both characters' heads instead, where it can't
+        # collide with either regardless of pose width.
         for j, i in enumerate(objs):
-            R[i] = (0.34, 0.30 + j * 0.14, 0.66, 0.46 + j * 0.14)
+            R[i] = (0.30, CAPTION_BAND + 0.01 + j * 0.10, 0.70, 0.335 + j * 0.10)
     elif objs and chars:
         R[chars[0]] = (0.02, 0.34, 0.44, FEET)
         for j, i in enumerate(objs):

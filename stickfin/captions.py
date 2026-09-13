@@ -233,8 +233,29 @@ def build(script, out_path):
     lines = [_header(script.fmt, style)]
 
     if style == "title":
-        lines.append(f"Dialogue: 0,{_ts(0)},{_ts(narration['total_s'])},Cap,,0,0,0,,"
+        # The persistent meme-style hook only covers beat 1 (it competes with
+        # the beat-1 headline graphic for the same real estate already) --
+        # every beat after that gets its own word-by-word reveal caption, same
+        # brand-green highlight treatment as explainer format, so the actual
+        # back-and-forth is captioned instead of sitting under one static line
+        # for the whole video.
+        beats = narration["beats"]
+        b1_dur = beats[0]["duration_s"] if beats else 0.0
+        lines.append(f"Dialogue: 0,{_ts(0)},{_ts(b1_dur)},Cap,,0,0,0,,"
                      f"{{\\fad(150,0)}}{_wrap(script.title_card or script.title, 24)}")
+        t = b1_dur
+        for entry in beats[1:]:
+            d = entry["duration_s"]
+            beat = beat_by_id[entry["id"]]
+            if beat.is_live or not beat.say:
+                t += d
+                continue
+            s0 = float(entry.get("speech_start_s", 0.0) or 0.0)
+            s1 = float(entry.get("speech_end_s", d) or d)
+            if not (0.0 <= s0 < s1 <= d + 0.05):
+                s0, s1 = 0.0, d
+            lines.extend(_reveal(beat.say, t + s0, t + s1, t + d - 0.03))
+            t += d
         out_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
         return out_path
 

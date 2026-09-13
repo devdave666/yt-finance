@@ -1,0 +1,153 @@
+title: How The Rich Write Off A Private Jet In One Year
+slug: private-jet-tax-writeoff
+format: short
+caption_style: title
+title_card: They don't teach you this one ✈️
+cast:
+  Ben:
+    look: 'the channel''s host character: a sharp, fully-illustrated flat-vector character, not a stick figure. The head is a completely FLAT, BLANK round head like a plain cream-white egg or balloon -- absolutely NO skin tone, NO shading, NO jawline, NO cheeks, NO chin contour, NO ears, NO nose, and NO realistic human face structure of any kind. The head is one flat, evenly-coloured circle with only these features drawn directly on its flat surface: a few bold spiky black hair strands on top, two small solid-black dot eyes, two short sharp angled eyebrows, and a simple drawn mouth for the expression. It must read as a faceless, abstract cartoon head -- never a human portrait. A clearly visible mouth always shows the expression (flat, frown, grimace, open shout, small smile). He wears the channel''s signature fit: a fitted charcoal-grey bomber jacket over a plain white tee, with a small bold lime-green circular patch on the left chest containing ONLY a single bold black capital letter ''A''
+      monogram, centred, NO other letters and NO other text of any kind on the patch -- a single vertically-symmetric glyph so the mark still reads correctly even when the whole figure is mirrored to face the other way, dark slim jeans, and clean white sneakers with a lime-green accent stripe. Real clothing rendered in flat colour fills with bold clean black outlines and light cel-shading for form -- never a bare line figure, never a plain silhouette with no clothing detail visible.'
+    anchor: left
+    voice: Orus
+  Anna:
+    look: 'the channel''s second character, a woman (she/her) -- same faceless flat-head construction as the host, but the head is a completely FLAT, BLANK round head like a plain cream-white egg or balloon -- absolutely NO skin tone, NO shading, NO jawline, NO cheeks, NO chin contour, NO ears, NO nose, and NO realistic human face structure of any kind. The head is one flat, evenly-coloured circle with only these features drawn directly on its flat surface: long flowing black hair framing both sides of the head down past the jaw (never short or spiky), two small solid-black dot eyes, two short sharp angled eyebrows, and a simple drawn mouth for the expression. It must read as a faceless, abstract cartoon head -- never a human portrait. A clearly visible mouth always shows the expression. She wears a distinct outfit -- never the host''s exact jacket colour or cut -- but carries the SAME channel branding he does: a small bold lime-green circular patch on the left chest containing ONLY a single
+      bold black capital letter ''A'' monogram, centred, NO other letters and NO other text of any kind on the patch -- a single vertically-symmetric glyph so the mark still reads correctly even when the whole figure is mirrored to face the other way, on a cropped rust-orange utility jacket with rolled sleeves over a plain cream top, olive-green straight-leg trousers, and white sneakers. Same sharp flat-vector illustration style as the host, fully clothed, never a bare stick figure.'
+    anchor: right
+    voice: Aoede
+scenes:
+  stage:
+    color: '#f4efe4'
+beats:
+- id: b01
+  scene: stage
+  who: Ben
+  say: Hold on. They buy a ten million dollar jet...
+  cast:
+    Ben: standing, looking at Anna, confused
+    Anna: standing, arms crossed, neutral
+  headline: $10 MILLION JET.
+  props: []
+- id: b02
+  scene: stage
+  who: Anna
+  say: '...and the tax code lets them write off six million of it. In the first year.'
+  cast:
+    Ben: standing, shocked, mouth open
+    Anna: standing, arms crossed, matter-of-fact
+  tone: negative
+  props: []
+- id: b03
+  scene: stage
+  who: Ben
+  say: Six million dollars? Just... gone from their tax bill?
+  cast:
+    Ben: hands up in disbelief
+    Anna: standing, neutral, slight nod
+  props:
+  - cash
+- id: b04
+  scene: stage
+  who: Anna
+  say: It's called bonus depreciation. For tax purposes, a brand new jet is just business equipment.
+  cast:
+    Ben: listening, skeptical
+    Anna: explaining, one hand up
+  props:
+  - arrow-down
+- id: b05
+  scene: stage
+  who: Ben
+  say: Okay, but what about the pilots? The fuel? The hangar fees? That has to cost a fortune.
+  cast:
+    Ben: thinking, hand to chin
+    Anna: standing, waiting for the question
+  props: []
+- id: b06
+  scene: stage
+  who: Anna
+  say: All deductible. Fuel, maintenance, crew salaries... if it's for the business, it's a write-off.
+  cast:
+    Ben: eyes wide, shocked
+    Anna: shrugging slightly
+  props:
+  - receipt
+  tone: negative
+- id: b07
+  scene: stage
+  who: Ben
+  say: So basically they're getting a free jet.
+  cast:
+    Ben: arms wide, making a point
+    Anna: shaking head 'no'
+  props: []
+- id: b08
+  scene: stage
+  who: Anna
+  say: No. Not free. They still have to spend the ten million. This just lowers their taxable income.
+  cast:
+    Ben: processing, confused
+    Anna: explaining, holding up two fingers
+  props: []
+- id: b09
+  scene: stage
+  who: Anna
+  say: They save millions on their tax bill, not on the price of the plane.
+  cast:
+    Ben: slowly nodding, starting to get it
+    Anna: clarifying, hands apart
+  props:
+  - percent
+- id: b10
+  scene: stage
+  who: Ben
+  say: There has to be another catch.
+  cast:
+    Ben: squinting, suspicious
+    Anna: nodding, 'you're'
+  props: []
+- id: b11
+  scene: stage
+  who: Anna
+  say: The jet has to be used for business more than 50% of the time. Personal flights don't count.
+  cast:
+    Ben: listening intently
+    Anna: one hand up, making a point
+  props:
+  - shield
+- id: b12
+  scene: stage
+  who: Anna
+  say: And if they get caught, the IRS takes the whole deduction back. Audits for this are way up.
+  cast:
+    Ben: wincing
+    Anna: serious expression
+  props:
+  - warning
+  tone: negative
+- id: b13
+  scene: stage
+  who: Ben
+  say: So it's a huge tax break specifically for people who are already rich enough to afford a private jet.
+  cast:
+    Ben: arms crossed, unimpressed
+    Anna: nodding, 'exactly'
+  props: []
+- id: b14
+  scene: stage
+  who: Anna
+  say: That's the part they don't put in the brochure.
+  cast:
+    Ben: shaking his head
+    Anna: arms crossed, looking at camera, wry expression
+  props:
+  - padlock
+- id: cta014
+  scene: stage
+  who: Ben
+  say: Agree or disagree? Say it in the comments, and save this for later.
+  cast:
+    Ben: standing, warm inviting expression, gesturing out and down towards the viewer
+  props:
+  - comment
+narrator:
+  voice: Orus

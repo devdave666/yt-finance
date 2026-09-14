@@ -25,11 +25,15 @@ OUT = Path("assets/icons")
 
 STYLE = (
     "Flat 2-D icon of {desc}, drawn like a simple marker doodle. One bold "
-    "uniform black outline (about 6 px) directly around the shape, filled with "
-    "flat solid colours only ({colours}); no gradient, no shading, no "
-    "highlights, no 3-D, no perspective. NO white or coloured border/halo/"
-    "sticker outline around the icon -- just the black line art. The single "
-    "object centred with generous margin on a pure flat #8a8a8a grey "
+    "uniform black outline (about 6 px) directly around the shape, filled "
+    "COMPLETELY edge-to-edge with flat solid colours only ({colours}) -- "
+    "EVERY part of the shape must be solid colour all the way to its outline, "
+    "NEVER an empty, hollow, or partially-filled area that leaves any part of "
+    "the interior unfilled or showing the background through the icon. No "
+    "gradient, no shading, no highlights, no 3-D, no perspective. Add a "
+    "clean, uniform white sticker-style outline/halo (a consistent ~10 px "
+    "white border) around the entire icon, outside the black line art. The "
+    "single object centred with generous margin on a pure flat #8a8a8a grey "
     "background. Nothing else. No text label, no drop shadow, no ground."
 )
 

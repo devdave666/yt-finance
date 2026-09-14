@@ -1,0 +1,213 @@
+# stickfin / "Anti Broke" channel — reference for AI tools
+
+This file exists so any AI assistant picking up this repo — a fresh Claude
+session, another tool, whatever — has the context that took a full night of
+real trial-and-error to establish, without re-deriving it from scratch or
+repeating fixes already made (or mistakes already caught) once.
+
+## Starting a new chat? Paste this to the new AI first
+
+> I'm continuing work on "Anti Broke" (stickfin), an autonomous personal-finance
+> Shorts channel. Read `llms.txt` at the repo root first, in full — it has the
+> architecture (also see README.md/SETUP.md), everything fixed in the last
+> session, and — most important — the conclusion that session reached about
+> whether the current AI-generated-character-art approach is actually viable.
+> Read the "Is this approach viable?" section especially carefully before
+> assuming we just keep patching the same pipeline. Once you've read it, tell
+> me what you understand the current state to be, then I'll tell you what I
+> want to do today.
+
+## Is this approach viable? Read this before doing anything else
+
+Short answer: the user ended the last session concluding **no, not as-is** —
+"looks like this approach will not work." That session was one long chain of
+finding a real, visible, ship-quality defect, fixing it, and finding the next
+one, across every asset category the pipeline touches:
+
+- Character poses: missing mouths, a bald crown on the long-hair character
+  (3 of 14 poses in one video, 0 in another — inconsistent, not deterministic),
+  duplicate "twin" figures from a reference-sheet bug, a branded logo patch
+  that read backwards when mirrored, rembg (background removal) punching
+  random holes in torsos/necks that let the scene bleed through.
+- Layout: a prop template that placed a prop overlapping BOTH characters in a
+  2-person shot; the first fix attempt made it WORSE (66% overlap -> 84%)
+  because the real gap between two characters varies by pose and can be
+  narrower than assumed.
+- The shared icon library (32 icons, reused across every video): 9 of 32 were
+  found fully or partially hollow (transparent interior) on first inspection.
+  After fixing the prompt and regenerating, **the same specific icons kept
+  coming back broken on subsequent regenerations** — `shield`, `comment`,
+  `bookmark`, `handshake` failed hollow-fill compliance 2-3 rounds in a row
+  regardless of how explicit the "fill completely, never hollow" instruction
+  was made. A manually-applied deterministic fix (flood-fill the enclosed
+  interior with the correct colour, found via alpha-mask topology) was needed
+  in the end — twice, because the first attempt at that manual fix ALSO had a
+  bug (a hole leaking through a 1-2px gap in the outline stroke swallowed a
+  much larger area than intended on `shield`).
+- Captions: skit-format videos were shipping with ZERO on-screen text for the
+  entire back-and-forth dialogue (just one static hook line for the whole
+  video) — a genuine functional gap, not a polish issue, live on real
+  published videos before it was caught.
+
+**The pattern, not just the individual bugs**: every fix category needed
+2-3 iterations before it actually held, and fixing one asset class did not
+predict whether another asset class had the same problem — each one had to be
+independently, exhaustively checked at full resolution (thumbnail-scale
+review reliably missed real defects — e.g. the bald-crown gap was invisible
+at 400px review height, obvious at real viewing size). That's a lot of manual
+QA surface for a channel that's supposed to run unattended.
+
+**What's actually fixed as of this file being written**: everything found
+IS fixed and verified (see changelog below) — the pipeline as it stands
+tonight should not reproduce any of the specific bugs listed above. The open
+question the user wants addressed in a fresh chat is whether to keep
+hardening this same AI-generation approach indefinitely (each new topic/pose
+combination is a chance for a NEW instance of "AI didn't comply with an
+explicit instruction"), or switch to something structurally less exposed to
+this failure mode — e.g. a fixed library of pre-made/hand-designed character
+art reused across all videos instead of generating new pose art per video,
+a proper commercial character-animation tool/asset pack, or something else.
+**Don't assume the answer — that's the discussion to have.** But do bring
+this history so the discussion starts from real evidence, not guessing.
+
+## What this project does (see README.md and SETUP.md for full detail)
+
+Daily GitHub Actions cron: picks a personal-finance topic (`themes.yaml`),
+writes a script (Gemini/Vertex), synthesizes TTS per beat, generates
+character/prop/chart art (Nano Banana / Vertex) + cuts it out (rembg),
+composites static shots with hard cuts (no Ken Burns/tweening), muxes audio +
+captions, publishes to YouTube/Instagram/TikTok via Buffer.
+
+Two formats: `short` (9:16, the daily output) and `wide` (16:9 long-form,
+separate/less-used path). Two script shapes: `explainer` (one host, talks to
+camera) and `skit` (host + a second character, back-and-forth dialogue).
+
+Publishing paths (`.github/workflows/`):
+- `daily.yml` — manual-dispatch, full generate-through-publish, one video.
+- `batch-build.yml` + `poster.yml` — the actual automatic cadence: batch-build
+  N videos ahead into `state/queue.json`, poster.yml drains one per scheduled
+  firing (4x/day), no Vertex call needed on the posting side.
+- `publish-now.yml` — publish an already-committed `media/<slug>.mp4`
+  immediately, bypassing the queue. Used for the hand-authored one-offs this
+  session (see below).
+
+## Session changelog (most recent first — this is what actually got fixed)
+
+All committed to `main`, no open uncommitted work.
+
+- `2e5f5b7`, `62b0700` — **icon library overhaul.** Moved the white
+  sticker-border from an AI prompt instruction (unreliable: clean on solid
+  shapes, ragged on thin-line icons like chart-up/down, inconsistent even on
+  some round ones) to a deterministic code step (dilate the alpha mask by a
+  fixed radius, fill the ring white — `tools/build_icons.py:_add_border`).
+  Fixed hollow fills on 13 of 32 icons total across multiple rounds: bookmark,
+  comment, handshake, house, shield, bars-down, receipt, question, scale,
+  coin, lightbulb, warning, piggy-bank (some self-corrected on regeneration,
+  many needed the manual flood-fill in the end). `tools/build_icons.py` is
+  the one-time-generation tool (`python tools/build_icons.py --force
+  <name>...`) — icons are committed, never regenerated automatically.
+- `5f61bac` — removed 6 stale queue entries from `state/queue.json` that
+  were queued 2026-09-01 (weeks before every fix this session) and would
+  have kept auto-posting old-broken-design videos on the regular 4x/day
+  poster schedule regardless of any code fix.
+- `4ad66d8` — `assets._cutout()`: patch SMALL rembg segmentation holes only
+  (below ~0.6% of the figure's own opaque area, per connected component).
+  A blanket "fill every hole" first attempt was wrong — it would have
+  destroyed legitimate anatomical negative space (the gap under an akimbo
+  arm, inside a circular hand gesture) by filling it with garbage-coloured
+  blobs. Calibrated against confirmed real defects (~1000-1100px) vs
+  confirmed legitimate gaps (6,000-35,000px+).
+- `fa1ea62` — fixed the long-hair second character's hair prompt to
+  explicitly require full crown coverage (was: "long flowing hair framing
+  both sides", which let the model draw a side-swept style with a bald gap
+  on top — invisible at thumbnail review, obvious at real size, confirmed
+  via a live published video's actual Instagram screenshot).
+- `503bef5` — `captions.py`: skit-format videos ("title" caption style) were
+  showing ONE static hook line for the WHOLE video and never captioning the
+  actual dialogue. Fixed: the hook now covers only beat 1, every beat after
+  gets a word-by-word reveal caption highlighted in brand green
+  (`config.CAP_SPOKEN`), same mechanism explainer format already used.
+  `layout.py`: fixed a 2-character-plus-prop template that placed the prop
+  overlapping both characters (first fix attempt made it worse, 66% -> 84%
+  overlap, because the actual per-pose gap between characters isn't the
+  nominal template gap — moved the prop to the open band above both
+  characters' heads instead, where it structurally can't collide).
+- `a995e4d`, `fd4b27e` — rewrote the script-writing prompt (`generate.py`
+  SYSTEM/SCHEMA_DOC) twice, per direct user feedback: (1) dropped the fixed
+  "6-8 beats, 20-28s" target so stories run as long as they need (soft
+  ceiling: ~90s, the real Instagram Reels classification limit) and required
+  causal connectors between beats instead of standalone punchy fragments;
+  (2) fixed a "short sentences" rule that was producing staccato ad-copy
+  cadence ("No. On the entire amount. From day one.") — now explicitly
+  requires natural spoken rhythm with contractions and normal connectors.
+- `0f46b6b`, `3da0f5c`, `b064a96` — character/compositor fixes: reference
+  sheet was drawing TWO views of the same character (front + 3/4), which
+  biased pose generation toward drawing two people instead of one (confirmed
+  live: 3 of ~8 poses in a published video shipped with a visible duplicate
+  "twin"). Fixed to draw one view. Added a proper branded female second
+  character (paired with the existing "Aoede" TTS voice) instead of an
+  unbranded generic one. Fixed the compositor's facing/mirror logic, which
+  only considered charts/props when deciding which way a character faces —
+  a plain two-person dialogue shot left both characters facing the same
+  direction instead of each other. Replaced the host's "ANTI BROKE" text
+  wordmark patch with a single "A" monogram (vertically symmetric) after
+  finding the wordmark read backwards whenever the mirror logic flipped a
+  character — first attempt at just saying "draw only a letter" wasn't
+  enough, the model kept echoing the brand name from elsewhere in the same
+  prompt; removing the literal brand name from the prompt text fixed it.
+- `d95999c` and earlier — the original character redesign: replaced the old
+  bare-line stick figure with a fully-illustrated flat-vector character
+  (the "sharp" look the user asked for after seeing a competitor reel),
+  kept the faceless flat round head (brand identity), gave the host a
+  charcoal bomber jacket + branded patch. This is the redesign that then
+  needed all the follow-up fixes above.
+- `028dec1` — forced every scene to a flat background colour for ALL
+  formats (was: explainer-only; skit could still get an AI-drawn scene,
+  which is what triggered the character-quality conversation that led to
+  the redesign above).
+
+Two hand-authored one-off videos were built and published this session as
+originals (NOT reproductions) after the user brought real competitor scripts
+as "make something like this" requests that turned out to be near-verbatim
+copies of other creators' actual published videos (one ending in another
+account's Instagram handle, one in another's watermark). Declined to
+reproduce those directly; wrote original scripts on the same underlying
+mechanism instead, and declined outright a third request (a Twitch donation-
+manipulation "money idea" script — that one isn't a grey-area tax trick, it's
+a scheme to defraud a streamer's own audience, not something to produce
+regardless of format):
+- `billionaire-watch-tax-trick` — freeport / buy-borrow-die mechanism,
+  corrected a claim the source material got backwards (collectibles are
+  taxed WORSE than stocks, ~28% vs ~20%; the real advantage is deferral +
+  borrowing, not a lower rate).
+- `private-jet-tax-writeoff` — US Section 179 / bonus depreciation on a
+  business aircraft (the US equivalent of an India-specific source video),
+  corrected the "basically a free jet" framing the same way.
+
+Established policy, confirmed explicitly by the user each time it came up:
+**already-published videos are left as-is when a bug is found after the
+fact** (background-colour bug, duplicate-figure bug, bald-crown bug all
+shipped on real posts before being caught) — fixes apply going forward only,
+no takedown/repost, unless the user says otherwise for a specific case.
+
+## Things discussed but NOT implemented
+
+- **Fixed-zone layout idea** (user's proposal): define fixed screen regions
+  per role (e.g. lower-left = male character, lower-right = female, upper =
+  props/charts, all on the same flat background so it reads as one frame),
+  instead of the current dynamic per-shot layout solver. Assessed as a good
+  idea for the skit (2-character) case specifically — would eliminate the
+  layout-collision bug CLASS by construction rather than by collision-
+  avoidance math that can fail on some future pose combination. Would NOT
+  have prevented the rembg-hole or hollow-icon defects (different problem).
+  Not built — conversation moved to the broader "is this approach even
+  right" question before implementation started.
+
+## Credentials / access
+
+See `SETUP.md` for the full list. Quick pointers: GCP project id and Vertex
+setup mirror `core-decor-automation` (see that repo's `llms.txt` for the
+working WIF/service-account pattern if auth needs re-deriving). Buffer
+API key + channel IDs are GitHub Actions secrets only, NOT available in a
+local shell — `tools/publish_now.py` / the `Publish Now` workflow is the
+way to post a specific already-committed video without them locally.

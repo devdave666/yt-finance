@@ -212,6 +212,38 @@ def _cutout(pil_rgb, ink: bool = False):
         _rembg_session = new_session(config.REMBG_MODEL)
     out = remove(pil_rgb, session=_rembg_session, post_process_mask=True)
 
+    # rembg's segmentation can punch a stray hole inside the figure -- a small
+    # interior patch of a real limb/neck/etc. it misjudged as background,
+    # showing as a transparent gap letting the scene bg or checkerboard show
+    # through (found via a real published video, then confirmed on current
+    # assets too). ONLY patch SMALL holes though -- a big enclosed gap is
+    # usually real anatomy (the space under a crossed/akimbo arm, between the
+    # legs, inside a hands-clasped or circular gesture) and filling THAT would
+    # replace legitimate negative space with a garbage-coloured blob, trading
+    # one defect for a worse one. Small holes are the segmentation-glitch
+    # kind: a stray patch fully embedded in what should read as solid
+    # skin/clothing, not a pose-shaped gap. The RGB underneath a real glitch
+    # is still the correct original colour (only alpha was wrong), so filling
+    # it restores the pixel exactly rather than guessing/inpainting anything.
+    import numpy as np
+    from scipy import ndimage
+    arr = np.asarray(out).copy()
+    alpha = arr[..., 3]
+    subject = alpha > 20
+    filled = ndimage.binary_fill_holes(subject)
+    hole_mask = filled & ~subject
+    labels, n = ndimage.label(hole_mask)
+    if n:
+        sizes = ndimage.sum(hole_mask, labels, range(1, n + 1))
+        max_hole_px = max(400, int(0.006 * subject.sum()))   # ~0.6% of the figure's own area
+        small = np.zeros_like(hole_mask)
+        for lbl, size in enumerate(sizes, start=1):
+            if size <= max_hole_px:
+                small |= labels == lbl
+        if small.any():
+            arr[small, 3] = 255
+            out = Image.fromarray(arr)
+
     if ink:
         import numpy as np
         arr = np.asarray(out).copy()

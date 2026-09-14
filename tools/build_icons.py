@@ -30,12 +30,31 @@ STYLE = (
     "EVERY part of the shape must be solid colour all the way to its outline, "
     "NEVER an empty, hollow, or partially-filled area that leaves any part of "
     "the interior unfilled or showing the background through the icon. No "
-    "gradient, no shading, no highlights, no 3-D, no perspective. Add a "
-    "clean, uniform white sticker-style outline/halo (a consistent ~10 px "
-    "white border) around the entire icon, outside the black line art. The "
-    "single object centred with generous margin on a pure flat #8a8a8a grey "
-    "background. Nothing else. No text label, no drop shadow, no ground."
+    "gradient, no shading, no highlights, no 3-D, no perspective. NO white or "
+    "coloured border/halo/sticker outline around the icon -- that gets added "
+    "afterward in code, so drawing one here just makes it uneven. Just the "
+    "black line art and its flat fill. The single object centred with "
+    "generous margin on a pure flat #8a8a8a grey background. Nothing else. "
+    "No text label, no drop shadow, no ground."
 )
+
+# A hand-drawn white "sticker" border is unreliable from the model -- clean on
+# solid round shapes, ragged/uneven on thin-line icons (chart-up/down) and
+# even inconsistent on some round ones (clock: thick on one side, a stray grey
+# shadow crescent on the other). Drawing it deterministically in code instead
+# is strictly better: a fixed-radius dilation of the alpha mask can't come out
+# uneven, gapped, or leak past the icon's real silhouette.
+def _add_border(im, px: int = 10):
+    import numpy as np
+    from scipy import ndimage
+    arr = np.asarray(im.convert("RGBA"))
+    alpha = arr[..., 3]
+    mask = alpha > 20
+    dilated = ndimage.binary_dilation(mask, iterations=px)
+    out = np.zeros_like(arr)
+    out[dilated] = (255, 255, 255, 255)
+    out[mask] = arr[mask]
+    return Image.fromarray(out)
 
 ICONS = {
     "coin": ("a round coin stamped with a dollar sign", "gold / yellow"),
@@ -141,6 +160,7 @@ def main(argv):
             continue
         desc, colours = ICONS[name]
         cut = assets._cutout(_gen(client, cfg, desc, colours))
+        cut = _add_border(cut)
         cut.save(out)
         print(f"  {name}")
 

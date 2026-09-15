@@ -41,7 +41,11 @@ def _layers_for(script, beat, n_holds: int) -> list[dict]:
         anchor = ch.anchor
         if anchor == "center" and has_objects and len(beat.cast) == 1:
             anchor = config.CHAR_ANCHOR_WITH_PROPS
-        layers.append({"type": "character", "asset": f"{cname}__{slug(state)}",
+        # must match assets.plan_assets's pose key exactly (including the
+        # tone suffix) -- this is how the compositor finds the file that
+        # negative-tone pose selection produced.
+        asset_key = f"{cname}__{slug(state)}" + ("__neg" if beat.tone == "negative" else "")
+        layers.append({"type": "character", "asset": asset_key,
                        "anchor": anchor, "scale": ch.scale, "from_hold": 0})
 
     if beat.headline:

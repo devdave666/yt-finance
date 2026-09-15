@@ -61,6 +61,55 @@ FEET = config.CHAR_BASELINE_FRAC
 
 _PRIORITY = {"headline": 4, "chart": 3, "character": 2, "cutout": 1, "prop": 1}
 
+# Fixed split-screen template for a two-character (skit) short: the user's
+# own layout sketch -- one shared ASSET band on top (charts/headlines/props),
+# a narrow DIALOGUE strip per character directly above their head (captions.py
+# positions each speaker's line here instead of a shared top pill), then two
+# mirrored, EQUAL-SIZE character slots at the bottom. Character X-ranges sit
+# fully inside the existing side-margin safe area on their own, so a pose
+# only ever spills toward the centre gap or the other slot, never off-canvas.
+_DUO_ASSET_Y = (0.08, 0.46)
+_DUO_DIALOGUE_Y = (0.47, 0.565)
+# Height chosen so the WIDEST pose in the char library (1207x1600, an
+# arms-flung gesture) still fits its own half-slot width (394px) at the
+# height-first scale below, with a little headroom -- not tuned for the
+# common case, tuned for the worst one, so the two-character overlap
+# fallback in solve() stays a true rare-case safety net instead of firing
+# on ordinary pose pairs (it did, routinely, at a taller band: two
+# only-moderately-wide poses (488px + 406px) already summed past the 842px
+# total safe width and triggered the collision resolver's WORST available
+# move -- a big vertical shove that put one character noticeably higher
+# than the other, defeating the entire point of this template).
+_DUO_CHAR_Y = (0.685, FEET)
+_DUO_LEFT_X = (0.11, 0.475)
+_DUO_RIGHT_X = (0.525, 0.89)
+
+
+def _duo_safe(cw: int, ch: int) -> Box:
+    """Duo mode's own safe rect. The shared _safe() reserves g['top']=0.27 for
+    the old single top caption band -- irrelevant here since dialogue lives in
+    the D1/D2 boxes instead, and clamping the asset band against that leftover
+    reservation was pushing it down into the character/dialogue zones. Side
+    margins (phone cover-crop safety) and the bottom reservation still apply."""
+    g = _GEOM["short"]
+    x0 = round(g["side"] * cw)
+    x1 = round((1 - g["side"]) * cw)
+    y0 = round(0.03 * ch)
+    y1 = round((1 - g["bottom"]) * ch)
+    return x0, y0, x1 - x0, y1 - y0
+
+
+def duo_dialogue_anchor(fmt: str, side: str) -> tuple[int, int]:
+    """Bottom-centre pixel anchor for a speaker's dialogue box (D1 left / D2
+    right), directly above their fixed character slot -- captions.py \\pos()s
+    a speaker's line here so it reads as coming from them, not a shared
+    top-of-screen caption."""
+    cw, ch = config.canvas(fmt)
+    x0, x1 = _DUO_LEFT_X if side == "left" else _DUO_RIGHT_X
+    cx = round((x0 + x1) / 2 * cw)
+    y = round(_DUO_DIALOGUE_Y[1] * ch)
+    return cx, y
+
 
 # --------------------------------------------------------------------------
 # geometry helpers
@@ -222,34 +271,6 @@ def _regions(kinds: list[str], fmt: str) -> list[tuple[float, float, float, floa
             R[chars[1]] = (0.74, 0.58, 0.98, FEET)
         for j, i in enumerate(objs):
             R[i] = (0.70, 0.66 + j * 0.16, 0.98, 0.82 + j * 0.16)
-    elif len(chars) == 2:
-        # Width, not the (0.34, FEET) height band, is what actually binds
-        # for these characters most of the time -- _fit scales by
-        # min(region_w/asset_w, region_h/asset_h), and the redesigned
-        # fully-illustrated figures (see assets.py STYLE_FLOOR) run wide
-        # enough, especially on an open-arm gesture pose, that width almost
-        # always loses that min() against this height band. That means the
-        # actual on-screen figure height ends up set by each pose's own
-        # width-to-height ratio rather than by anything about the scene --
-        # two different gestures in the identical two-hander slot rendered
-        # visibly different heights purely from this. There's no gap to
-        # preserve here for a prop anymore (see below, it now lives in the
-        # band above both heads), so widening these all the way to a small
-        # fixed centre gap directly shrinks how often width binds tighter
-        # than height, without touching the fit/collision math itself.
-        R[chars[0]] = (0.02, 0.34, 0.47, FEET)
-        R[chars[1]] = (0.53, 0.34, 0.98, FEET)
-        # a prop here used to sit at (0.34-0.66), which overlaps BOTH character
-        # zones (0.02-0.40 and 0.58-0.98) since it was never actually checked
-        # against them. Squeezing it into the gap between the two characters
-        # instead doesn't work either -- the REAL gap after each character is
-        # fitted to its own pose's aspect ratio can be far narrower than the
-        # nominal 0.18 gap (a wide gesture pose eats into it), so the de-overlap
-        # pass just oscillates the prop between overlapping one side then the
-        # other. Put it above both characters' heads instead, where it can't
-        # collide with either regardless of pose width.
-        for j, i in enumerate(objs):
-            R[i] = (0.30, CAPTION_BAND + 0.01 + j * 0.10, 0.70, 0.335 + j * 0.10)
     elif objs and chars:
         R[chars[0]] = (0.02, 0.34, 0.44, FEET)
         for j, i in enumerate(objs):
@@ -263,6 +284,42 @@ def _regions(kinds: list[str], fmt: str) -> list[tuple[float, float, float, floa
     return [r if r else (0.2, 0.4, 0.8, 0.7) for r in R]
 
 
+def _solve_duo(elements: list[dict], kinds: list[str], cw: int, ch: int,
+               safe: Box) -> list[Box]:
+    """The fixed two-character template (see _DUO_* above). Characters get a
+    dedicated height-first fit here instead of going through the shared
+    _fit()'s min(width, height) -- that min() is exactly what made two
+    different poses in the identical slot render at different heights (a
+    wide gesture pose loses to width, a narrow one doesn't), which is the
+    whole reason for this template: BOTH slots share the same region height
+    and every pose asset shares the same source pixel height (1600, the
+    char-library's upscale target), so height-first alone gives every pose
+    the same on-screen height regardless of its own width. A pose wide
+    enough to spill past its own slot is left to the shared de-overlap pass
+    in solve(), same safety net every other template already relies on.
+    """
+    chars = [i for i, k in enumerate(kinds) if k == "character"]
+    others = [i for i, k in enumerate(kinds) if k != "character"]
+    boxes: list[Box | None] = [None] * len(elements)
+
+    char_h = (_DUO_CHAR_Y[1] - _DUO_CHAR_Y[0]) * ch
+    for slot, i in zip(("left", "right"), chars):
+        aw, ah = elements[i]["wh"]
+        s = char_h / ah
+        w, h = max(1, round(aw * s)), round(char_h)
+        x0, x1 = _DUO_LEFT_X if slot == "left" else _DUO_RIGHT_X
+        cx = (x0 + x1) / 2 * cw
+        x, y = round(cx - w / 2), round(_DUO_CHAR_Y[1] * ch - h)
+        boxes[i] = _clamp((x, y, w, h), safe)
+
+    for j, i in enumerate(others):
+        region = (0.06, _DUO_ASSET_Y[0], 0.94, _DUO_ASSET_Y[1]) if j == 0 \
+            else (0.30, _DUO_ASSET_Y[0], 0.70, _DUO_ASSET_Y[1])
+        boxes[i] = _clamp(_fit(elements[i]["wh"], region, cw, ch, "center"), safe)
+
+    return boxes
+
+
 # --------------------------------------------------------------------------
 # public
 # --------------------------------------------------------------------------
@@ -272,14 +329,19 @@ def solve(elements: list[dict], fmt: str) -> list[Box]:
     if not elements:
         return []
     cw, ch = config.canvas(fmt)
-    safe = _safe(cw, ch, fmt)
     kinds = [e["type"] for e in elements]
-    regions = _regions(kinds, fmt)
 
-    boxes: list[Box] = []
-    for e, region in zip(elements, regions):
-        anchor = "bottom" if e["type"] == "character" else "center"
-        boxes.append(_clamp(_fit(e["wh"], region, cw, ch, anchor), safe))
+    n_chars = sum(1 for k in kinds if k == "character")
+    duo = fmt != "wide" and n_chars == 2
+    safe = _duo_safe(cw, ch) if duo else _safe(cw, ch, fmt)
+    if duo:
+        boxes: list[Box] = _solve_duo(elements, kinds, cw, ch, safe)
+    else:
+        regions = _regions(kinds, fmt)
+        boxes = []
+        for e, region in zip(elements, regions):
+            anchor = "bottom" if e["type"] == "character" else "center"
+            boxes.append(_clamp(_fit(e["wh"], region, cw, ch, anchor), safe))
 
     # de-overlap: keep higher priority fixed, move/shrink the rest
     order = sorted(range(len(boxes)), key=lambda i: -_PRIORITY.get(kinds[i], 0))
@@ -307,7 +369,8 @@ def audit(kinds: list[str], boxes: list[Box], fmt: str,
     instead of shipping it, and it's what QA gates on.
     """
     cw, ch = config.canvas(fmt)
-    sx, sy, sw, sh = _safe(cw, ch, fmt)
+    duo = fmt != "wide" and sum(1 for k in kinds if k == "character") == 2
+    sx, sy, sw, sh = _duo_safe(cw, ch) if duo else _safe(cw, ch, fmt)
     problems: list[str] = []
 
     for kind, (x, y, w, h) in zip(kinds, boxes):

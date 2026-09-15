@@ -120,8 +120,15 @@ def plan_assets(script) -> dict:
                                {"src": beat.live["src"], "kind": "live"})
             continue
         for cname, state in beat.cast.items():
-            key = f"{cname}__{slug(state)}"
-            poses[key] = {"char": cname, "state": state}
+            # tone rides in the key (not just the spec) when negative -- the
+            # same "character, state" text can appear in both a negative-tone
+            # beat and a neutral one across a script, and the pose picked for
+            # each should be allowed to differ (see _library_pose's tone
+            # bias), so they can't share one cached asset file. timeline.py's
+            # _layers_for builds this exact same key independently; keep the
+            # two in sync if this changes.
+            key = f"{cname}__{slug(state)}" + ("__neg" if beat.tone == "negative" else "")
+            poses[key] = {"char": cname, "state": state, "tone": beat.tone}
         if beat.headline:
             headlines_[beat.id] = beat.headline
         if beat.chart:
@@ -230,9 +237,21 @@ _POSE_TAGS = {
 }
 _STANDING_DEFAULT = "stand-presenting-open-hand"
 _SITTING_DEFAULT = "sit-chin-thinking"
+_STANDING_NEGATIVE_DEFAULT = "arms-crossed-serious"
+_SITTING_NEGATIVE_DEFAULT = "sit-arms-crossed-worried"
+
+# Poses that read as a good/happy reaction -- wrong on-screen when something
+# bad is happening to this character (a beat tagged tone:negative), even if
+# the beat's own pose text would otherwise keyword-match one of these (e.g. a
+# script writer's "standing, still smiling" on a beat about the character
+# losing money). Penalised rather than hard-excluded so an explicit, heavily-
+# keyword-matched request can still win.
+_POSITIVE_TAGS = {"smile", "smiling", "happy", "pleased", "content", "confident",
+                  "proud", "smug", "thumbs", "approval", "positive", "great",
+                  "win", "excited", "enthusiastic", "celebrat"}
 
 
-def _library_pose(voice: str, state: str) -> Path | None:
+def _library_pose(voice: str, state: str, tone: str = "") -> Path | None:
     libchar = _VOICE_TO_LIBCHAR.get(voice)
     if libchar is None:
         return None
@@ -240,13 +259,20 @@ def _library_pose(voice: str, state: str) -> Path | None:
     if not char_dir.is_dir():
         return None
     words = set(re.findall(r"[a-z]+", state.lower()))
+    negative = tone == "negative"
     best_slug, best_score = None, 0
     for slug_, tags in _POSE_TAGS.items():
         score = len(words & tags)
+        if negative:
+            score -= 2 * len(tags & _POSITIVE_TAGS)
         if score > best_score:
             best_slug, best_score = slug_, score
     if best_slug is None:
-        best_slug = _SITTING_DEFAULT if "sit" in words else _STANDING_DEFAULT
+        sitting = "sit" in words
+        if negative:
+            best_slug = _SITTING_NEGATIVE_DEFAULT if sitting else _STANDING_NEGATIVE_DEFAULT
+        else:
+            best_slug = _SITTING_DEFAULT if sitting else _STANDING_DEFAULT
     path = char_dir / f"{best_slug}.png"
     return path if path.exists() else None
 
@@ -527,7 +553,7 @@ def generate_assets(script, plan: dict, force: bool = False) -> None:
             continue
         c = plan["characters"][spec["char"]]
         voice = script.cast[spec["char"]].voice
-        lib_path = _library_pose(voice, spec["state"])
+        lib_path = _library_pose(voice, spec["state"], tone=spec.get("tone", ""))
         if lib_path is not None:
             shutil.copyfile(lib_path, out)
             print(f"  pose {key}  (char library: {lib_path.stem})")

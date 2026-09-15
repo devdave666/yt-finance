@@ -19,7 +19,7 @@ import json
 import re
 import textwrap
 
-from . import config
+from . import config, layout
 
 _GREEN = config.CAP_SPOKEN
 _WHITE = "&H00FFFFFF"
@@ -114,10 +114,16 @@ def _groups(words: list[str]) -> list[tuple[int, int]]:
     return out
 
 
-def _reveal(text: str, start: float, speech_end: float, hold_until: float) -> list[str]:
+def _reveal(text: str, start: float, speech_end: float, hold_until: float,
+           pos: tuple[int, int] | None = None) -> list[str]:
     """Word-by-word reveal between `start` and `speech_end`; the last group then
     holds (still) until `hold_until`. NOTHING is emitted past `hold_until` -- that
     is the next beat's caption start, so there's never two caption lines stacked.
+
+    `pos`, when given, overrides the style's default top-centre placement with
+    a bottom-anchored (\\an2) absolute position -- used to put a skit line in
+    that speaker's own D1/D2 dialogue box (see layout.duo_dialogue_anchor)
+    instead of the shared top band, so it reads as coming from them.
 
     Every word's onset is clamped into one monotonically non-decreasing list
     FIRST, and each event's end is always exactly the NEXT word's (already-
@@ -169,8 +175,9 @@ def _reveal(text: str, start: float, speech_end: float, hold_until: float) -> li
             # fade ONLY on the first frame of a group; within a group the line
             # is solid and only the new word animates (no per-word flicker)
             fade = r"{\fad(70,0)}" if j == lo else ""
+            posv = r"{\an2\pos(%d,%d)}" % pos if pos else ""
             events.append(f"Dialogue: 0,{_ts(e_start)},{_ts(e_end)},"
-                          f"Cap,,0,0,0,,{fade}" + " ".join(shown))
+                          f"Cap,,0,0,0,,{posv}{fade}" + " ".join(shown))
     return events
 
 
@@ -223,6 +230,27 @@ def _subtitle_cues(text: str, start: float, speech_end: float, hold_until: float
     return events
 
 
+def _duo_pos(script, beat) -> tuple[int, int] | None:
+    """This beat's speaker's D1/D2 dialogue-box anchor, or None to fall back
+    to the style's default shared position.
+
+    Only applies when the speaker actually has a fixed left/right slot on
+    screen for THIS beat -- keyed off len(beat.cast)==2 rather than the
+    character's static anchor alone, because layout.solve() only places
+    characters into the mirrored duo template when a shot has exactly two of
+    them; a solo reaction beat (e.g. the closing CTA, cast-1) renders in the
+    old centred template instead, and pinning its caption to a D-box that
+    doesn't exist on screen there would misplace it.
+    """
+    if (script.fmt == "wide" or not beat.who or len(beat.cast) != 2
+            or beat.who not in script.cast):
+        return None
+    anchor = script.cast[beat.who].anchor
+    if anchor not in ("left", "right"):
+        return None
+    return layout.duo_dialogue_anchor(script.fmt, anchor)
+
+
 def build(script, out_path):
     style = script.caption_style
     if style == "none":
@@ -254,7 +282,8 @@ def build(script, out_path):
             s1 = float(entry.get("speech_end_s", d) or d)
             if not (0.0 <= s0 < s1 <= d + 0.05):
                 s0, s1 = 0.0, d
-            lines.extend(_reveal(beat.say, t + s0, t + s1, t + d - 0.03))
+            lines.extend(_reveal(beat.say, t + s0, t + s1, t + d - 0.03,
+                                 pos=_duo_pos(script, beat)))
             t += d
         out_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
         return out_path
@@ -271,8 +300,10 @@ def build(script, out_path):
         if not (0.0 <= s0 < s1 <= d + 0.05):
             s0, s1 = 0.0, d
         if style == "skit":
+            posv = _duo_pos(script, beat)
+            an_pos = r"{\an2\pos(%d,%d)}" % posv if posv else ""
             lines.append(f"Dialogue: 0,{_ts(t)},{_ts(t + max(d - 0.04, 0.2))},Cap,,0,0,0,,"
-                         f"{{\\fad(90,60)}}{_wrap(beat.say.upper(), 22)}")
+                         f"{an_pos}{{\\fad(90,60)}}{_wrap(beat.say.upper(), 22)}")
         elif style == "subtitle":
             # long-form: a calm lower-third line that follows the voice -- the
             # line itself is static, only the spoken word changes colour
@@ -283,7 +314,8 @@ def build(script, out_path):
             # reveal tracks the voice (s0..s1); the last group then holds to the
             # beat boundary minus a hair, so it clears before the next beat's
             # first word fades in (no cross-fade collision)
-            lines.extend(_reveal(beat.say, t + s0, t + s1, t + d - 0.03))
+            lines.extend(_reveal(beat.say, t + s0, t + s1, t + d - 0.03,
+                                 pos=_duo_pos(script, beat)))
         t += d
 
     out_path.write_text("\n".join(lines) + "\n", encoding="utf-8")

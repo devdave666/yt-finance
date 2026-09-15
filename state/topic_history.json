@@ -381,5 +381,12 @@
     "slug": "2026-09-13-target-date-fund-tax-trap",
     "direction": "reveal",
     "format": "explainer"
+  },
+  {
+    "date": "2026-09-15",
+    "topic": "A used car's true cost per mile is usually higher than people assume once depreciation is counted, not just gas and insurance",
+    "slug": "2026-09-15-used-car-true-cost",
+    "direction": "two-paths",
+    "format": "skit"
   }
 ]

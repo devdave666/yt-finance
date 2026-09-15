@@ -196,6 +196,61 @@ def _pil_or_none(response):
         return None
 
 
+# --------------------------------------------------------------------------
+# Fixed character-pose library (assets/char_library) -- pre-cut, pre-upscaled
+# stills for the channel's two recurring characters, keyed off their voice
+# (voice is assigned deterministically in generate.py, unlike the cast name
+# the model picks per script). When a pose exists here it's used verbatim
+# instead of spending a Vertex call on a fresh per-video generation -- see
+# llms.txt for why the per-video approach was struggling (defect rate, cost).
+# --------------------------------------------------------------------------
+CHAR_LIBRARY_DIR = Path("assets/char_library")
+_VOICE_TO_LIBCHAR = {"Orus": "host", "Aoede": "second"}
+
+# keyword tags per library pose, used to match a beat's freeform "pose,
+# expression" text to the closest fixed still. Not exact -- a stylised
+# explainer reads fine off an approximate gesture match.
+_POSE_TAGS = {
+    "sit-hand-knee-smirk": {"sit", "sitting", "seated", "smirk", "curious", "quizzical", "casual", "relaxed"},
+    "sit-arms-crossed-worried": {"sit", "sitting", "seated", "worried", "concerned", "frown", "anxious"},
+    "sit-chin-thinking": {"sit", "sitting", "seated", "thinking", "chin", "pondering", "considering"},
+    "stand-presenting-open-hand": {"presenting", "open", "hand", "gesture", "explaining", "introducing", "showing", "neutral"},
+    "stand-explaining-stern": {"stern", "serious", "explaining", "warning", "firm", "pointing"},
+    "stand-listening-happy": {"listening", "happy", "pleased", "nodding", "agreeing", "content", "smile"},
+    "stand-listening-worried": {"listening", "worried", "concerned", "uneasy", "nervous"},
+    "stand-arms-crossed-confident": {"confident", "arms", "crossed", "assured", "proud", "smug"},
+    "hands-clasped-small-smile": {"clasped", "calm", "polite", "patient", "waiting", "small", "smile"},
+    "thumbs-up-smiling": {"thumbs", "approval", "good", "yes", "positive", "great", "win"},
+    "arms-open-tada-excited": {"excited", "open", "arms", "reveal", "announce", "enthusiastic", "celebrat"},
+    "shrug-uncertain": {"shrug", "uncertain", "unsure", "confused", "dunno", "maybe", "unclear"},
+    "shocked-hands-up": {"shocked", "surprised", "alarmed", "scared", "stunned", "gasp", "shout", "wide"},
+    "chin-thinking-arms-crossed": {"thinking", "skeptical", "chin", "doubtful", "considering"},
+    "point-up-idea": {"idea", "aha", "eureka", "realization", "insight", "epiphany", "point"},
+    "arms-crossed-serious": {"serious", "stern", "annoyed", "unimpressed", "disapproving", "angry", "arms", "crossed"},
+}
+_STANDING_DEFAULT = "stand-presenting-open-hand"
+_SITTING_DEFAULT = "sit-chin-thinking"
+
+
+def _library_pose(voice: str, state: str) -> Path | None:
+    libchar = _VOICE_TO_LIBCHAR.get(voice)
+    if libchar is None:
+        return None
+    char_dir = CHAR_LIBRARY_DIR / libchar
+    if not char_dir.is_dir():
+        return None
+    words = set(re.findall(r"[a-z]+", state.lower()))
+    best_slug, best_score = None, 0
+    for slug_, tags in _POSE_TAGS.items():
+        score = len(words & tags)
+        if score > best_score:
+            best_slug, best_score = slug_, score
+    if best_slug is None:
+        best_slug = _SITTING_DEFAULT if "sit" in words else _STANDING_DEFAULT
+    path = char_dir / f"{best_slug}.png"
+    return path if path.exists() else None
+
+
 _rembg_session = None
 
 
@@ -434,6 +489,13 @@ def generate_assets(script, plan: dict, force: bool = False) -> None:
     )
     sheets = {}
     for name, c in plan["characters"].items():
+        libchar = _VOICE_TO_LIBCHAR.get(script.cast[name].voice)
+        if libchar is not None and (CHAR_LIBRARY_DIR / libchar).is_dir():
+            # every pose for this character will come from the fixed library
+            # (see the poses loop below) -- the reference sheet is only ever
+            # used as an identity-lock input to a live generation call, so
+            # skip spending one on a sheet nothing will reference.
+            continue
         out = a / "char" / f"_{name}.png"
         if not out.exists() or force:
             prompt = (f"{STYLE_FLOOR}\n{CHAR_FLOOR}\n{LINE_LOCK}\n\n"
@@ -464,6 +526,12 @@ def generate_assets(script, plan: dict, force: bool = False) -> None:
         if out.exists() and not force:
             continue
         c = plan["characters"][spec["char"]]
+        voice = script.cast[spec["char"]].voice
+        lib_path = _library_pose(voice, spec["state"])
+        if lib_path is not None:
+            shutil.copyfile(lib_path, out)
+            print(f"  pose {key}  (char library: {lib_path.stem})")
+            continue
         pose_prompt = (
             f"{STYLE_FLOOR}\n{CHAR_FLOOR}\n{LINE_LOCK}\n\nCHARACTER: {c['look']}\n"
             f"POSE / EXPRESSION: {spec['state']}\n"

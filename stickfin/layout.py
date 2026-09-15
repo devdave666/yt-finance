@@ -223,8 +223,22 @@ def _regions(kinds: list[str], fmt: str) -> list[tuple[float, float, float, floa
         for j, i in enumerate(objs):
             R[i] = (0.70, 0.66 + j * 0.16, 0.98, 0.82 + j * 0.16)
     elif len(chars) == 2:
-        R[chars[0]] = (0.02, 0.34, 0.40, FEET)
-        R[chars[1]] = (0.58, 0.34, 0.98, FEET)
+        # Width, not the (0.34, FEET) height band, is what actually binds
+        # for these characters most of the time -- _fit scales by
+        # min(region_w/asset_w, region_h/asset_h), and the redesigned
+        # fully-illustrated figures (see assets.py STYLE_FLOOR) run wide
+        # enough, especially on an open-arm gesture pose, that width almost
+        # always loses that min() against this height band. That means the
+        # actual on-screen figure height ends up set by each pose's own
+        # width-to-height ratio rather than by anything about the scene --
+        # two different gestures in the identical two-hander slot rendered
+        # visibly different heights purely from this. There's no gap to
+        # preserve here for a prop anymore (see below, it now lives in the
+        # band above both heads), so widening these all the way to a small
+        # fixed centre gap directly shrinks how often width binds tighter
+        # than height, without touching the fit/collision math itself.
+        R[chars[0]] = (0.02, 0.34, 0.47, FEET)
+        R[chars[1]] = (0.53, 0.34, 0.98, FEET)
         # a prop here used to sit at (0.34-0.66), which overlaps BOTH character
         # zones (0.02-0.40 and 0.58-0.98) since it was never actually checked
         # against them. Squeezing it into the gap between the two characters

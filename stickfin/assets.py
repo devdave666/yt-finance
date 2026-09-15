@@ -128,7 +128,8 @@ def plan_assets(script) -> dict:
             # _layers_for builds this exact same key independently; keep the
             # two in sync if this changes.
             key = f"{cname}__{slug(state)}" + ("__neg" if beat.tone == "negative" else "")
-            poses[key] = {"char": cname, "state": state, "tone": beat.tone}
+            poses[key] = {"char": cname, "state": state, "tone": beat.tone,
+                         "has_visual": bool(beat.props or beat.chart)}
         if beat.headline:
             headlines_[beat.id] = beat.headline
         if beat.chart:
@@ -276,6 +277,19 @@ _POSITIVE_TAGS = {"smile", "smiling", "happy", "pleased", "content", "confident"
                   "proud", "smug", "thumbs", "approval", "positive", "great",
                   "win", "excited", "enthusiastic", "celebrat"}
 
+# Any prop/chart this beat shows always renders in the shared ASSET band
+# ABOVE both characters' heads (see layout._DUO_ASSET_Y) -- never beside
+# them. A pose whose drawn gesture extends sideways at chest height (an
+# open hand held out to the side) reads, in that geometry, as pointing at
+# whichever OTHER character is standing next to them, not at the prop/chart
+# overhead -- confirmed live via Gemini QA critique (b06/b07 on a real
+# video: "gesturing towards the male character" while talking about the
+# calendar/snowball prop above her). point-up-idea is the one pose in the
+# library whose gesture actually goes up. Applied as a scoring nudge, not a
+# hard rule, so an explicit keyword match can still win when it should.
+_SIDEWAYS_GESTURE_POSES = {"stand-presenting-open-hand", "stand-explaining-stern"}
+_UPWARD_GESTURE_POSES = {"point-up-idea"}
+
 
 def _word_forms(w: str) -> set[str]:
     """Cheap stemming for the handful of suffix patterns that actually show
@@ -295,7 +309,8 @@ def _word_forms(w: str) -> set[str]:
     return forms
 
 
-def _library_pose(voice: str, state: str, tone: str = "") -> Path | None:
+def _library_pose(voice: str, state: str, tone: str = "",
+                  has_visual: bool = False) -> Path | None:
     libchar = _VOICE_TO_LIBCHAR.get(voice)
     if libchar is None:
         return None
@@ -303,10 +318,18 @@ def _library_pose(voice: str, state: str, tone: str = "") -> Path | None:
     if not char_dir.is_dir():
         return None
     raw_words = set(re.findall(r"[a-z]+", state.lower()))
-    words: set[str] = set()
-    for w in raw_words:
-        words |= _word_forms(w)
     negative = tone == "negative"
+
+    def _match_count(tags: set[str]) -> int:
+        # Count per matched SOURCE word, not per matched tag element. Several
+        # tag sets list both a word and its "-ing" form (e.g. "show" AND
+        # "showing", added before _word_forms existed); expanding "showing"
+        # to {"showing","show","showe"} and intersecting against a tag set
+        # containing both "show" and "showing" double-counts one real match
+        # as two, which was enough to let a wrong-direction gesture pose
+        # outscore the correct one. Counting one hit per source word is
+        # correct regardless of how many redundant forms exist on either side.
+        return sum(1 for w in raw_words if _word_forms(w) & tags)
 
     # The negative-reaction poses are always candidates, not just on an
     # explicit tone:negative beat -- the beat's own pose TEXT ("looking
@@ -318,7 +341,7 @@ def _library_pose(voice: str, state: str, tone: str = "") -> Path | None:
     # already removed above -- fix the word, not the gate.
     best_slug, best_score = None, 0.0
     for slug_, tags in _ALL_POSE_TAGS.items():
-        score = float(len(words & tags))
+        score = float(_match_count(tags))
         if negative:
             score -= 2 * len(tags & _POSITIVE_TAGS)
             # Tie-break toward the downbeat pose on a negative beat -- a raw
@@ -334,6 +357,20 @@ def _library_pose(voice: str, state: str, tone: str = "") -> Path | None:
         if score > best_score:
             best_slug, best_score = slug_, score
 
+    if has_visual and best_slug in _SIDEWAYS_GESTURE_POSES:
+        # Substitution, not a scoring bonus -- an earlier version added an
+        # unconditional score bump for point-up-idea whenever has_visual was
+        # true, which fixed the sideways-gesture case but then ALSO won
+        # against completely unrelated poses with zero keyword relation to
+        # "pointing" at all (a real regression: "winces, looks away" landed
+        # on point-up-idea because 0.75 beats every other pose's raw 0).
+        # point-up-idea shares no real vocabulary with "presenting/
+        # explaining" text, so it can only ever be reached by direct
+        # substitution here, not by competing in the score loop -- only kick
+        # in when a SIDEWAYS pose was actually about to win, leave every
+        # other winner (including a deliberate "no match" of 0) alone.
+        best_slug = "point-up-idea"
+
     if best_slug is None:
         # No keyword hit at all -- every unmatched beat used to collapse
         # onto the exact same single default pose (confirmed on a real
@@ -341,11 +378,13 @@ def _library_pose(voice: str, state: str, tone: str = "") -> Path | None:
         # still). Rotate deterministically over a small pool instead, keyed
         # off the state text itself so it's still reproducible build to
         # build, so consecutive shots that both miss don't look identical.
-        sitting = "sit" in words
+        sitting = "sit" in raw_words
         if negative:
             pool_ = _SITTING_NEGATIVE_DEFAULTS if sitting else _STANDING_NEGATIVE_DEFAULTS
         else:
             pool_ = _SITTING_DEFAULTS if sitting else _STANDING_DEFAULTS
+        if has_visual:
+            pool_ = tuple(p for p in pool_ if p not in _SIDEWAYS_GESTURE_POSES) or pool_
         idx = int(hashlib.md5(state.encode()).hexdigest(), 16) % len(pool_)
         best_slug = pool_[idx]
     path = char_dir / f"{best_slug}.png"
@@ -628,7 +667,8 @@ def generate_assets(script, plan: dict, force: bool = False) -> None:
             continue
         c = plan["characters"][spec["char"]]
         voice = script.cast[spec["char"]].voice
-        lib_path = _library_pose(voice, spec["state"], tone=spec.get("tone", ""))
+        lib_path = _library_pose(voice, spec["state"], tone=spec.get("tone", ""),
+                                 has_visual=spec.get("has_visual", False))
         if lib_path is not None:
             shutil.copyfile(lib_path, out)
             print(f"  pose {key}  (char library: {lib_path.stem})")

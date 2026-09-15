@@ -234,10 +234,23 @@ _POSE_TAGS = {
     "chin-thinking-arms-crossed": {"thinking", "skeptical", "chin", "doubtful", "considering"},
     "point-up-idea": {"idea", "aha", "eureka", "realization", "insight", "epiphany", "point"},
     "arms-crossed-serious": {"serious", "stern", "annoyed", "unimpressed", "disapproving", "angry", "arms", "crossed"},
+    # negative-reaction set (tools/cut_stickers.py sheets *__sheet_negative.png)
+    "slumped-defeated": {"defeated", "resigned", "slumped", "sad", "dejected", "down", "hopeless"},
+    "hands-covering-face": {"overwhelmed", "frustrated", "facepalm", "covering", "face", "cant-believe"},
+    "forehead-disappointed-sigh": {"disappointed", "sigh", "exhausted", "forehead", "tired", "resigned"},
+    "neck-rub-embarrassed": {"embarrassed", "sheepish", "awkward", "cringe", "regret"},
+    "hands-in-hair-frustrated": {"frustrated", "stressed", "groan", "stress", "panicked", "panic"},
+    "hunched-exasperated": {"exasperated", "drained", "hunched", "tired", "worn"},
+    "arms-crossed-sulking": {"sulking", "annoyed", "arms", "crossed", "pouting", "bitter"},
+    "standing-sad-dejected": {"sad", "dejected", "downcast", "quiet", "defeated", "hurt", "disappointed"},
 }
 _STANDING_DEFAULT = "stand-presenting-open-hand"
 _SITTING_DEFAULT = "sit-chin-thinking"
-_STANDING_NEGATIVE_DEFAULT = "arms-crossed-serious"
+# A genuinely sad/defeated still reads as "something bad happened to this
+# character" far more clearly than arms-crossed-serious (which reads as
+# annoyed/stern, not hurt) -- use it as the floor for any negative-tone beat
+# that didn't keyword-match a more specific negative pose above.
+_STANDING_NEGATIVE_DEFAULT = "standing-sad-dejected"
 _SITTING_NEGATIVE_DEFAULT = "sit-arms-crossed-worried"
 
 # Poses that read as a good/happy reaction -- wrong on-screen when something

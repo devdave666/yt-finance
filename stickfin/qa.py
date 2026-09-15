@@ -247,7 +247,7 @@ def check(script, run_critique: bool = True) -> QAResult:
     min_overall = float(os.environ.get("STICKFIN_QA_MIN_OVERALL", "5"))
     if run_critique and video.exists():
         try:
-            res.critique = _critique(video, timeline,
+            res.critique = _critique(video, timeline, script=script,
                                      captions_verified=not cap_extra)
             (bd / "qa_critique.json").write_text(json.dumps(res.critique, indent=2))
             sc = res.critique.get("scores", {})
@@ -263,6 +263,9 @@ def check(script, run_critique: bool = True) -> QAResult:
                     f"Gemini overall {sc['overall']}/10 (need >= {min_overall:g}) -- {probs}")
             for vf in res.critique.get("visual_defects", [])[:5]:
                 res.warnings.append(f"visual: {vf}")
+            for pr in res.critique.get("pose_resonance", []):
+                if not str(pr).lower().rstrip(".").endswith("fits"):
+                    res.warnings.append(f"pose: {pr}")
         except Exception as e:  # noqa: BLE001
             res.warnings.append(f"critique skipped: {str(e)[:120]}")
 
@@ -317,10 +320,28 @@ A deliberate red edge-vignette darkening the corners on SOME beats is intentiona
 A very quiet ambient tone/drone under the narration is an intentional bed, not a
 hum or an artefact -- only flag audio if the SPOKEN VOICE itself is unclear.
 
+Also judge POSE RESONANCE: each still is labelled with the exact line being
+spoken at that moment (see the manifest below). For EVERY still, compare the
+character's pose/expression INTENSITY to what that specific line actually
+says -- not to the topic in general. Call out:
+- OVER-exaggerated: a huge reaction (shocked/panicked/despairing/ecstatic)
+  on a line that's just a plain statement, a mild aside, or routine
+  narration -- nothing in the line justifies that big a reaction.
+- UNDER-reacting: a flat/neutral pose on a line that's clearly a strong
+  beat -- a shock number, a punchline, a moment the character just lost or
+  won something big.
+A pose that matches the line's actual weight is fine even if the line itself
+is dramatic (a big number DOES warrant a big reaction) -- only flag a
+mismatch between the pose's intensity and the line's actual intensity, not
+drama in general. One line per still, always naming the beat id; say "fits"
+for anything that's actually fine so the good cases are visible too, not
+just the bad ones.
+
 Return ONLY JSON, no prose:
 {"first_impression":"one honest line",
  "scores":{"hook":0-10,"pacing":0-10,"captions":0-10,"clarity_of_audio":0-10,"visuals":0-10,"overall":0-10},
  "visual_defects":["each concrete defect you actually see in the stills, with the beat number; [] if none"],
+ "pose_resonance":["one line per still: '<beat id>: fits' OR '<beat id>: OVER-exaggerated -- <why>' OR '<beat id>: under-reacting -- <why>'"],
  "top_problems":["at most 3, concrete, most important first"]}"""
 
 
@@ -370,7 +391,7 @@ def _keyframes(video: Path, timeline: dict, out_dir: Path) -> list[Path]:
     return frames
 
 
-def _critique(video: Path, timeline: dict | None = None,
+def _critique(video: Path, timeline: dict | None = None, script=None,
               captions_verified: bool = False) -> dict:
     from google import genai
     from google.genai import types
@@ -394,7 +415,17 @@ def _critique(video: Path, timeline: dict | None = None,
         proxy.unlink(missing_ok=True)
 
     frames = _keyframes(video, timeline, kf_dir) if timeline else []
+    # Ground pose-resonance judgement in the ACTUAL line, not Gemini's guess
+    # from small burned-in caption text -- a word-reveal caption only shows
+    # 2-3 words at the still's exact instant, not the whole line, so without
+    # this it's judging the pose against a fragment instead of the beat.
+    beat_by_id = {b.id: b for b in script.beats} if script else {}
+    manifest_lines = []
     for fp in frames:
+        bid = fp.stem[len("kf_"):]
+        beat = beat_by_id.get(bid)
+        if beat and beat.say:
+            manifest_lines.append(f"{bid}: \"{beat.say}\"")
         parts.append(types.Part.from_bytes(data=fp.read_bytes(), mime_type="image/jpeg"))
         fp.unlink(missing_ok=True)
     try:
@@ -415,8 +446,11 @@ def _critique(video: Path, timeline: dict | None = None,
                     "text, you are misreading it; ignore it.")
     fmt = (timeline or {}).get("fmt", "short")
     prompt = _CRIT_PROMPT.replace("@INTRO@", _CRIT_INTRO.get(fmt, _CRIT_INTRO["short"]))
-    parts.append(f"{prompt}{verified}\n\n(The {len(frames)} stills are sampled "
-                 f"evenly across the video, in playback order.)")
+    manifest = ("\n\nEXACT LINE SPOKEN AT EACH STILL (ground truth -- use this, "
+                "not your own reading of the small burned-in caption, to judge "
+                "pose resonance):\n" + "\n".join(manifest_lines)) if manifest_lines else ""
+    parts.append(f"{prompt}{verified}{manifest}\n\n(The {len(frames)} stills are "
+                 f"sampled evenly across the video, in playback order.)")
 
     client = genai.Client(vertexai=True, project=config.GCP_PROJECT,
                           location="us-central1")

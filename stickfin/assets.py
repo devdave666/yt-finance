@@ -221,37 +221,50 @@ _POSE_TAGS = {
     "sit-hand-knee-smirk": {"sit", "sitting", "seated", "smirk", "curious", "quizzical", "casual", "relaxed"},
     "sit-arms-crossed-worried": {"sit", "sitting", "seated", "worried", "concerned", "frown", "anxious"},
     "sit-chin-thinking": {"sit", "sitting", "seated", "thinking", "chin", "pondering", "considering"},
-    "stand-presenting-open-hand": {"presenting", "open", "hand", "gesture", "explaining", "introducing", "showing", "neutral"},
-    "stand-explaining-stern": {"stern", "serious", "explaining", "warning", "firm", "pointing"},
-    "stand-listening-happy": {"listening", "happy", "pleased", "nodding", "agreeing", "content", "smile"},
-    "stand-listening-worried": {"listening", "worried", "concerned", "uneasy", "nervous"},
-    "stand-arms-crossed-confident": {"confident", "arms", "crossed", "assured", "proud", "smug"},
-    "hands-clasped-small-smile": {"clasped", "calm", "polite", "patient", "waiting", "small", "smile"},
-    "thumbs-up-smiling": {"thumbs", "approval", "good", "yes", "positive", "great", "win"},
-    "arms-open-tada-excited": {"excited", "open", "arms", "reveal", "announce", "enthusiastic", "celebrat"},
-    "shrug-uncertain": {"shrug", "uncertain", "unsure", "confused", "dunno", "maybe", "unclear"},
-    "shocked-hands-up": {"shocked", "surprised", "alarmed", "scared", "stunned", "gasp", "shout", "wide"},
-    "chin-thinking-arms-crossed": {"thinking", "skeptical", "chin", "doubtful", "considering"},
-    "point-up-idea": {"idea", "aha", "eureka", "realization", "insight", "epiphany", "point"},
-    "arms-crossed-serious": {"serious", "stern", "annoyed", "unimpressed", "disapproving", "angry", "arms", "crossed"},
-    # negative-reaction set (tools/cut_stickers.py sheets *__sheet_negative.png)
-    "slumped-defeated": {"defeated", "resigned", "slumped", "sad", "dejected", "down", "hopeless"},
-    "hands-covering-face": {"overwhelmed", "frustrated", "facepalm", "covering", "face", "cant-believe"},
-    "forehead-disappointed-sigh": {"disappointed", "sigh", "exhausted", "forehead", "tired", "resigned"},
-    "neck-rub-embarrassed": {"embarrassed", "sheepish", "awkward", "cringe", "regret"},
-    "hands-in-hair-frustrated": {"frustrated", "stressed", "groan", "stress", "panicked", "panic"},
-    "hunched-exasperated": {"exasperated", "drained", "hunched", "tired", "worn"},
-    "arms-crossed-sulking": {"sulking", "annoyed", "arms", "crossed", "pouting", "bitter"},
-    "standing-sad-dejected": {"sad", "dejected", "downcast", "quiet", "defeated", "hurt", "disappointed"},
+    "stand-presenting-open-hand": {"presenting", "present", "open", "hand", "gesture", "introducing", "introduce", "showing", "show", "neutral"},
+    "stand-explaining-stern": {"stern", "serious", "explaining", "explain", "warning", "warn", "firm", "pointing", "point"},
+    "stand-listening-happy": {"listening", "listen", "happy", "pleased", "nodding", "nod", "agreeing", "agree", "content", "smile", "watching", "watch", "observing", "observe"},
+    "stand-listening-worried": {"listening", "listen", "worried", "concerned", "uneasy", "nervous", "watching", "watch"},
+    "stand-arms-crossed-confident": {"confident", "arms", "crossed", "cross", "assured", "proud", "smug"},
+    "hands-clasped-small-smile": {"clasped", "clasp", "calm", "polite", "patient", "waiting", "wait", "small", "smile", "camera"},
+    "thumbs-up-smiling": {"thumbs", "approval", "approve", "good", "yes", "positive", "great", "win"},
+    "arms-open-tada-excited": {"excited", "excite", "open", "arms", "reveal", "announce", "enthusiastic", "celebrat", "warm", "inviting", "invite", "welcoming", "welcome"},
+    "shrug-uncertain": {"shrug", "uncertain", "unsure", "confused", "confuse", "dunno", "maybe", "unclear"},
+    "shocked-hands-up": {"shocked", "shock", "surprised", "surprise", "alarmed", "alarm", "scared", "scare", "stunned", "stun", "gasp", "shout", "wide", "realizing", "realize", "realization"},
+    "chin-thinking-arms-crossed": {"thinking", "think", "skeptical", "chin", "doubtful", "doubt", "considering", "consider"},
+    "point-up-idea": {"idea", "aha", "eureka", "realization", "realize", "realizing", "insight", "epiphany", "point"},
+    "arms-crossed-serious": {"serious", "stern", "annoyed", "annoy", "unimpressed", "disapproving", "disapprove", "angry", "arms", "crossed", "cross"},
 }
-_STANDING_DEFAULT = "stand-presenting-open-hand"
-_SITTING_DEFAULT = "sit-chin-thinking"
+# The negative-reaction set (tools/cut_stickers.py sheets *__sheet_negative.png)
+# is kept OUT of the main pool above and only considered when this beat is
+# actually tone:negative (see the `negative` gate in _library_pose). These
+# words are common enough in ordinary pose text (a script's "gesturing DOWN
+# towards the viewer" on the warm closing CTA line, say) that letting them
+# compete unconditionally produces real false positives -- confirmed live:
+# that exact CTA line matched "down" and put a sad/defeated pose on the
+# channel's warm sign-off. Gating by tone removes the whole failure class
+# instead of chasing individual ambiguous words.
+_NEGATIVE_POSE_TAGS = {
+    "slumped-defeated": {"defeated", "defeat", "resigned", "resign", "slumped", "slump", "sad", "dejected", "hopeless"},
+    "hands-covering-face": {"overwhelmed", "overwhelm", "frustrated", "facepalm", "covering", "cover", "face", "disbelief"},
+    "forehead-disappointed-sigh": {"disappointed", "disappoint", "sigh", "exhausted", "exhaust", "forehead", "tired", "resigned"},
+    "neck-rub-embarrassed": {"embarrassed", "embarrass", "sheepish", "awkward", "cringe", "regret"},
+    "hands-in-hair-frustrated": {"frustrated", "frustrate", "stressed", "stress", "groan", "panicked", "panic"},
+    "hunched-exasperated": {"exasperated", "exasperate", "drained", "drain", "hunched", "hunch", "worn"},
+    "arms-crossed-sulking": {"sulking", "sulk", "annoyed", "annoy", "arms", "crossed", "cross", "pouting", "pout", "bitter"},
+    "standing-sad-dejected": {"sad", "dejected", "downcast", "quiet", "defeated", "defeat", "hurt", "disappointed", "disappoint"},
+}
+_ALL_POSE_TAGS = {**_POSE_TAGS, **_NEGATIVE_POSE_TAGS}
+_STANDING_DEFAULTS = ("stand-presenting-open-hand", "stand-listening-happy",
+                      "hands-clasped-small-smile", "point-up-idea")
+_SITTING_DEFAULTS = ("sit-chin-thinking", "sit-hand-knee-smirk")
 # A genuinely sad/defeated still reads as "something bad happened to this
 # character" far more clearly than arms-crossed-serious (which reads as
-# annoyed/stern, not hurt) -- use it as the floor for any negative-tone beat
+# annoyed/stern, not hurt) -- these are the floor for any negative-tone beat
 # that didn't keyword-match a more specific negative pose above.
-_STANDING_NEGATIVE_DEFAULT = "standing-sad-dejected"
-_SITTING_NEGATIVE_DEFAULT = "sit-arms-crossed-worried"
+_STANDING_NEGATIVE_DEFAULTS = ("standing-sad-dejected", "slumped-defeated",
+                               "hunched-exasperated", "forehead-disappointed-sigh")
+_SITTING_NEGATIVE_DEFAULTS = ("sit-arms-crossed-worried",)
 
 # Poses that read as a good/happy reaction -- wrong on-screen when something
 # bad is happening to this character (a beat tagged tone:negative), even if
@@ -264,6 +277,24 @@ _POSITIVE_TAGS = {"smile", "smiling", "happy", "pleased", "content", "confident"
                   "win", "excited", "enthusiastic", "celebrat"}
 
 
+def _word_forms(w: str) -> set[str]:
+    """Cheap stemming for the handful of suffix patterns that actually show
+    up in generated pose text (gerunds, plurals) -- not a real stemmer, just
+    enough to stop 'gesturing' failing to match a tag written as 'gesture',
+    or 'realizing' failing to match 'realize'/'realization'. Exact-string
+    tag matching without this missed a lot of real hits."""
+    forms = {w}
+    if w.endswith("ing") and len(w) > 5:
+        stem = w[:-3]
+        forms.add(stem)
+        forms.add(stem + "e")
+    if w.endswith("es") and len(w) > 5:
+        forms.add(w[:-2])
+    elif w.endswith("s") and len(w) > 4 and not w.endswith("ss"):
+        forms.add(w[:-1])
+    return forms
+
+
 def _library_pose(voice: str, state: str, tone: str = "") -> Path | None:
     libchar = _VOICE_TO_LIBCHAR.get(voice)
     if libchar is None:
@@ -271,21 +302,52 @@ def _library_pose(voice: str, state: str, tone: str = "") -> Path | None:
     char_dir = CHAR_LIBRARY_DIR / libchar
     if not char_dir.is_dir():
         return None
-    words = set(re.findall(r"[a-z]+", state.lower()))
+    raw_words = set(re.findall(r"[a-z]+", state.lower()))
+    words: set[str] = set()
+    for w in raw_words:
+        words |= _word_forms(w)
     negative = tone == "negative"
-    best_slug, best_score = None, 0
-    for slug_, tags in _POSE_TAGS.items():
-        score = len(words & tags)
+
+    # The negative-reaction poses are always candidates, not just on an
+    # explicit tone:negative beat -- the beat's own pose TEXT ("looking
+    # down, defeated") is finer-grained signal than that one binary flag,
+    # and blocking it on the flag lost real matches (a non-tagged but
+    # textually defeated beat fell through to a smiling default). What
+    # actually caused the earlier false positive (the warm CTA line matching
+    # slumped-defeated via the word "down") was one overly-ambiguous tag,
+    # already removed above -- fix the word, not the gate.
+    best_slug, best_score = None, 0.0
+    for slug_, tags in _ALL_POSE_TAGS.items():
+        score = float(len(words & tags))
         if negative:
             score -= 2 * len(tags & _POSITIVE_TAGS)
+            # Tie-break toward the downbeat pose on a negative beat -- a raw
+            # keyword tie (e.g. "unimpressed" hits arms-crossed-serious,
+            # "neutral" hits stand-presenting-open-hand, both score 1) used
+            # to go to whichever pose happened to be defined earlier in the
+            # dict, which put a neutral/open pose on a beat the script
+            # explicitly flagged as something bad happening. A small nudge
+            # toward the downbeat set only ever matters on an actual tie, so
+            # it can't override a genuinely stronger neutral/positive match.
+            if score > 0 and (slug_ == "arms-crossed-serious" or slug_ in _NEGATIVE_POSE_TAGS):
+                score += 0.5
         if score > best_score:
             best_slug, best_score = slug_, score
+
     if best_slug is None:
+        # No keyword hit at all -- every unmatched beat used to collapse
+        # onto the exact same single default pose (confirmed on a real
+        # build: 8 of 27 poses in one video, ~30%, were literally the same
+        # still). Rotate deterministically over a small pool instead, keyed
+        # off the state text itself so it's still reproducible build to
+        # build, so consecutive shots that both miss don't look identical.
         sitting = "sit" in words
         if negative:
-            best_slug = _SITTING_NEGATIVE_DEFAULT if sitting else _STANDING_NEGATIVE_DEFAULT
+            pool_ = _SITTING_NEGATIVE_DEFAULTS if sitting else _STANDING_NEGATIVE_DEFAULTS
         else:
-            best_slug = _SITTING_DEFAULT if sitting else _STANDING_DEFAULT
+            pool_ = _SITTING_DEFAULTS if sitting else _STANDING_DEFAULTS
+        idx = int(hashlib.md5(state.encode()).hexdigest(), 16) % len(pool_)
+        best_slug = pool_[idx]
     path = char_dir / f"{best_slug}.png"
     return path if path.exists() else None
 

@@ -69,7 +69,13 @@ PROP_SCALE = 0.20
 PROP_MAX_W_FRAC = 0.34       # never wider than this fraction of the canvas
 
 # ---- Motion --------------------------------------------------------------
-IDLE_BOB_PX = float(os.environ.get("STICKFIN_IDLE_BOB_PX", "6"))
+# Idle sine-wave sway while a character holds a pose -- turned off (0) on
+# user feedback: characters should stay steady/still, not bounce during a
+# held shot. What actually reads as "alive" now is pose variety across cuts
+# (see assets._library_pose's default rotation + tone-aware selection)
+# instead of continuous motion the channel's own hard-cut style never had
+# elsewhere.
+IDLE_BOB_PX = float(os.environ.get("STICKFIN_IDLE_BOB_PX", "0"))
 IDLE_BOB_HZ = 0.5
 POP_IN_S = 0.16             # new layers fade/scale in over this on each cut
 

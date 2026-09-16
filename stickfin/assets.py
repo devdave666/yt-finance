@@ -761,7 +761,22 @@ def generate_assets(script, plan: dict, force: bool = False) -> None:
         print(f"  pose {key}" + (f"  [!! {best_score[2]}]" if best_score[2] else ""))
 
     # ---- props (transparent) ----
+    # A style reference keeps a freshly-generated prop visually on-model with
+    # the rest of the frame -- without one, Nano Banana leans on the text
+    # description alone and drifts toward a more realistic/rendered look (the
+    # documented reason props moved to a fixed icon library in the first
+    # place; see icons.py's docstring). `sheets` only holds characters that
+    # DIDN'T use the fixed pose library (usually empty, since both channel
+    # characters do), so fall back to any single still already sitting in
+    # the pose library as the style anchor.
     any_sheet = next(iter(sheets.values()), None)
+    if any_sheet is None:
+        for lib_sub in ("host", "second"):
+            found = next((CHAR_LIBRARY_DIR / lib_sub).glob("*.png"), None) \
+                if (CHAR_LIBRARY_DIR / lib_sub).is_dir() else None
+            if found is not None:
+                any_sheet = Image.open(found)
+                break
     for key, spec in plan["props"].items():
         out = a / "prop" / f"{key}.png"
         if out.exists() and not force:
@@ -771,17 +786,37 @@ def generate_assets(script, plan: dict, force: bool = False) -> None:
             shutil.copyfile(lib, out)
             print(f"  prop {key}  (icon library)")
             continue
-        contents = [
-            f"{STYLE_FLOOR}\n\nDraw a single {spec['name']} as a flat 2-D doodle "
-            "in the EXACT same drawing style as the reference image: the same "
-            "thick even black ink outline and weight, at most one or two flat "
-            "solid fill colours, NO 3-D, NO shading, NO gloss or highlights, NO "
-            f"realism. One object only, centred, {MATTE_BG}. No text, no hands, "
-            "no character, no ground."]
-        if any_sheet is not None:
-            contents.append(any_sheet)
-        _cutout(_pil_from(_generate(client, contents, cfg)), ink=True).save(out)
-        print(f"  prop {key}")
+        prompt = (
+            f"{spec['name']}. In the exact flat-vector illustration style of the "
+            f"reference image -- bold black outlines, flat colour fills, no 3-D, "
+            f"no photorealism. {MATTE_BG}. No text or lettering, no people.")
+        best_cut, best_sol = None, None
+        for attempt in range(2):
+            nudge = ("\n\nThe last attempt came back too realistic/photo-like "
+                     "-- redraw it as a flat illustrated doodle in the exact "
+                     "reference style, not a photo or 3-D render.") if attempt else ""
+            contents = [prompt + nudge]
+            if any_sheet is not None:
+                contents.append(any_sheet)
+            img = _pil_or_none(_generate(client, contents, cfg))
+            if img is None:
+                continue
+            # ink=False, same as character poses -- ink=True force-crushes
+            # any fill below luminance 190 to solid black, which is fine for
+            # the hand-picked icon set it was built for but destroys real
+            # colour on a freshly-generated prop (confirmed: a "shiny gold
+            # coin stack" and pepperoni/cheese fills both came back as
+            # unreadable solid-black blobs under it).
+            cut = _cutout(img, ink=False)
+            sol = _solidity(cut)
+            if best_sol is None or sol < best_sol:
+                best_cut, best_sol = cut, sol
+            if sol <= 0.45:
+                break
+        if best_cut is None:
+            raise RuntimeError(f"prop {key}: no image returned")
+        best_cut.save(out)
+        print(f"  prop {key}" + (f"  [!! solidity {best_sol:.2f}]" if best_sol > 0.45 else ""))
 
     # ---- cutouts (ingested, transparent) ----
     for key, spec in plan["cutouts"].items():

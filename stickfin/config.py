@@ -10,12 +10,13 @@ import os
 
 GCP_PROJECT = os.environ.get("GCP_PROJECT", "project-58f4f689-36b9-406b-bfa")
 
-# gemini-2.5-flash-image ("Nano Banana"): confirmed working for this project in
-# us-central1 (core-decor verified 2026-08-22). No "-preview" suffix. Neither
-# 2.5 nor 3.1 outputs real alpha -- we cut assets out with rembg instead.
-# gemini-3.1-flash-image exists too but ONLY at location="global".
-IMAGE_MODEL = os.environ.get("STICKFIN_IMAGE_MODEL", "gemini-2.5-flash-image")
-IMAGE_LOCATION = os.environ.get("STICKFIN_IMAGE_LOCATION", "us-central1")
+# gemini-3.1-flash-image ("Nano Banana"): newer than 2.5, confirmed working for
+# this project (verified 2026-09-15) but ONLY at location="global" -- it 404s
+# at us-central1. Neither 2.5 nor 3.1 outputs real alpha -- we cut assets out
+# with rembg instead. 2.5-flash-image (us-central1) is the confirmed fallback
+# if 3.1 ever regresses.
+IMAGE_MODEL = os.environ.get("STICKFIN_IMAGE_MODEL", "gemini-3.1-flash-image")
+IMAGE_LOCATION = os.environ.get("STICKFIN_IMAGE_LOCATION", "global")
 
 # Background-removal model for turning generated art into transparent cutouts.
 # "isnet-general-use" is the best general matte; "u2netp" is faster/lighter.

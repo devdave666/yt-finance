@@ -46,9 +46,22 @@ jobs:
       - name: Publish
         env:
           BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
+          SLUG: ${{ inputs.slug }}
+          TITLE: ${{ inputs.title }}
+          DESCRIPTION: ${{ inputs.description }}
+          SKIP_INSTAGRAM: ${{ inputs.skip_instagram }}
+          SKIP_TIKTOK: ${{ inputs.skip_tiktok }}
+        # Inputs go through env vars, not direct ${{ }} interpolation into this
+        # script -- GitHub substitutes ${{ inputs.description }} as raw text
+        # BEFORE bash ever runs, so a title/description containing $ (every
+        # dollar figure this channel writes about) or a literal " gets
+        # re-parsed as shell syntax by the runner's shell. Confirmed: it
+        # silently ate every dollar amount in early publishes, then hard
+        # crashed the first time a description also contained an embedded
+        # quote. "$TITLE"/"$DESCRIPTION" below are normal bash variable
+        # expansions -- their contents are never re-interpreted as script.
         run: |
-          python tools/publish_now.py --slug "${{ inputs.slug }}" \
-            --title "${{ inputs.title }}" \
-            --description "${{ inputs.description }}" \
-            ${{ inputs.skip_instagram && '--no-instagram' || '' }} \
-            ${{ inputs.skip_tiktok && '--no-tiktok' || '' }}
+          args=(--slug "$SLUG" --title "$TITLE" --description "$DESCRIPTION")
+          if [ "$SKIP_INSTAGRAM" = "true" ]; then args+=(--no-instagram); fi
+          if [ "$SKIP_TIKTOK" = "true" ]; then args+=(--no-tiktok); fi
+          python tools/publish_now.py "${args[@]}"

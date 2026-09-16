@@ -787,9 +787,11 @@ def generate_assets(script, plan: dict, force: bool = False) -> None:
             print(f"  prop {key}  (icon library)")
             continue
         prompt = (
-            f"{spec['name']}. In the exact flat-vector illustration style of the "
-            f"reference image -- bold black outlines, flat colour fills, no 3-D, "
-            f"no photorealism. {MATTE_BG}. No text or lettering, no people.")
+            f"A rich little illustrated picture of: {spec['name']}. Not a bare "
+            f"minimal icon -- real detail and composition. In the exact flat-vector "
+            f"illustration style of the reference image -- bold black outlines, "
+            f"flat colour fills, no 3-D, no photorealism. {MATTE_BG}. No text or "
+            f"lettering, no people.")
         best_cut, best_sol = None, None
         for attempt in range(2):
             nudge = ("\n\nThe last attempt came back too realistic/photo-like "

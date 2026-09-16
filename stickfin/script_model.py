@@ -78,6 +78,7 @@ class Script:
     cast: dict[str, Character]
     scenes: dict[str, Scene]
     beats: list[Beat]
+    photoreal_props: bool = False
 
     @property
     def build_dir(self) -> Path:
@@ -230,4 +231,5 @@ def load_script(path) -> Script:
         cast=cast,
         scenes=scenes,
         beats=beats,
+        photoreal_props=bool(data.get("photoreal_props", False)),
     )

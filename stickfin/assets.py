@@ -777,28 +777,53 @@ def generate_assets(script, plan: dict, force: bool = False) -> None:
             if found is not None:
                 any_sheet = Image.open(found)
                 break
+    photoreal = getattr(script, "photoreal_props", False)
     for key, spec in plan["props"].items():
         out = a / "prop" / f"{key}.png"
         if out.exists() and not force:
             continue
-        lib = icons.path(key)
+        # The icon library and the style-reference sheet are both flat-vector
+        # doodle art -- neither belongs in photoreal mode (the icon library
+        # would silently override the user's request for a real photo, and a
+        # cartoon reference image fights a "photorealistic photo" prompt
+        # instead of helping it).
+        lib = None if photoreal else icons.path(key)
         if lib is not None:
             shutil.copyfile(lib, out)
             print(f"  prop {key}  (icon library)")
             continue
-        prompt = (
-            f"A rich little illustrated picture of: {spec['name']}. Not a bare "
-            f"minimal icon -- real detail and composition. In the exact flat-vector "
-            f"illustration style of the reference image -- bold black outlines, "
-            f"flat colour fills, no 3-D, no photorealism. {MATTE_BG}. No text or "
-            f"lettering, no people.")
+        if photoreal:
+            prompt = (
+                f"A photorealistic photo of: {spec['name']}. Professional "
+                f"product/editorial photography, real materials and lighting, "
+                f"sharp focus. {MATTE_BG}. Generic / unbranded only: NO real or "
+                f"recognisable brand names, logos, wordmarks, or trademarked "
+                f"product designs (invent a plain, generic version of any "
+                f"branded object instead -- e.g. a plain unmarked watch, not a "
+                f"real watchmaker's design). NO human faces, portraits, or "
+                f"depictions of a real or fictional person, photoreal or "
+                f"otherwise. NO passports, ID cards, driver's licences, or any "
+                f"document laid out like a real personal-identification "
+                f"document. No text, no watermark.")
+            bad_nudge = ("\n\nThe last attempt came back as a flat illustration "
+                        "or cartoon -- redraw it as an actual photorealistic "
+                        "photo, not a doodle or vector graphic. Still generic/"
+                        "unbranded, no faces, no ID documents.")
+        else:
+            prompt = (
+                f"A rich little illustrated picture of: {spec['name']}. Not a bare "
+                f"minimal icon -- real detail and composition. In the exact flat-vector "
+                f"illustration style of the reference image -- bold black outlines, "
+                f"flat colour fills, no 3-D, no photorealism. {MATTE_BG}. No text or "
+                f"lettering, no people.")
+            bad_nudge = ("\n\nThe last attempt came back too realistic/photo-like "
+                        "-- redraw it as a flat illustrated doodle in the exact "
+                        "reference style, not a photo or 3-D render.")
         best_cut, best_sol = None, None
         for attempt in range(2):
-            nudge = ("\n\nThe last attempt came back too realistic/photo-like "
-                     "-- redraw it as a flat illustrated doodle in the exact "
-                     "reference style, not a photo or 3-D render.") if attempt else ""
+            nudge = bad_nudge if attempt else ""
             contents = [prompt + nudge]
-            if any_sheet is not None:
+            if any_sheet is not None and not photoreal:
                 contents.append(any_sheet)
             img = _pil_or_none(_generate(client, contents, cfg))
             if img is None:

@@ -64,6 +64,37 @@ def slug(text: str) -> str:
     return re.sub(r"[^a-z0-9]+", "-", text.lower()).strip("-")[:48] or "x"
 
 
+def beat_photoreal(script, beat) -> bool:
+    """Does THIS beat's prop render as a photo or as flat-vector art?
+
+    Per-beat `prop_style:` wins; otherwise the script-level
+    `photoreal_props:` default applies. Photo and cartoon are mixed freely
+    within one video on purpose -- a real object (a watch, a plane, cash)
+    reads better as a photo, while an abstract idea (a comment bubble, a
+    question mark) reads better as a doodle and looks forced as a
+    photographed object.
+    """
+    style = (getattr(beat, "prop_style", "") or "").lower()
+    if style == "photo":
+        return True
+    if style == "cartoon":
+        return False
+    return bool(getattr(script, "photoreal_props", False))
+
+
+def prop_key(name: str, photoreal: bool) -> str:
+    """Asset key for a prop. The style is part of the key so the same prop
+    name can appear as a photo in one beat and a doodle in another without
+    the two sharing (and overwriting) one cached PNG.
+
+    timeline.py builds this exact key independently when it emits prop
+    layers -- both call THIS function rather than re-deriving the rule, so
+    the two can't drift apart (the pose keys, which do re-derive it in two
+    places, carry a standing comment warning about exactly that risk).
+    """
+    return slug(name) + ("__photo" if photoreal else "")
+
+
 def _flat_bg(color: str, w: int, h: int):
     """A flat colour field with a soft corner vignette + faint grain -- warmer
     than dead flat, and with none of the 'framed poster' borders an image model
@@ -135,8 +166,9 @@ def plan_assets(script) -> dict:
         if beat.chart:
             charts_[beat.id] = beat.chart
         elif not beat.headline:
+            photo = beat_photoreal(script, beat)
             for p in beat.props:
-                props[slug(p)] = {"name": p}
+                props[prop_key(p, photo)] = {"name": p, "photoreal": photo}
         for co in beat.cutouts:
             cutouts.setdefault(_src_key(co.src), {"src": co.src, "kind": "image"})
 
@@ -777,8 +809,10 @@ def generate_assets(script, plan: dict, force: bool = False) -> None:
             if found is not None:
                 any_sheet = Image.open(found)
                 break
-    photoreal = getattr(script, "photoreal_props", False)
     for key, spec in plan["props"].items():
+        # resolved per BEAT at plan time (see beat_photoreal) -- one video
+        # freely mixes photos and doodles, so this can differ prop to prop.
+        photoreal = bool(spec.get("photoreal", False))
         out = a / "prop" / f"{key}.png"
         if out.exists() and not force:
             continue

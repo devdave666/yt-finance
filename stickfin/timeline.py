@@ -15,7 +15,7 @@ import json
 import math
 
 from . import config
-from .assets import slug
+from .assets import beat_photoreal, prop_key, slug
 
 
 _PROP_SLOTS = ["far-right-low", "far-right-mid", "right-top", "center-bottom"]
@@ -57,7 +57,8 @@ def _layers_for(script, beat, n_holds: int) -> list[dict]:
         # a chart/headline already owns the frame; a prop on top just crowds it
         if beat.chart or beat.headline:
             break
-        layers.append({"type": "prop", "asset": slug(p),
+        layers.append({"type": "prop",
+                       "asset": prop_key(p, beat_photoreal(script, beat)),
                        "at": _PROP_SLOTS[i % len(_PROP_SLOTS)],
                        "scale": config.PROP_SCALE, "from_hold": obj_hold})
 

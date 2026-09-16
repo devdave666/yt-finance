@@ -60,6 +60,7 @@ class Beat:
     live: dict | None = None     # {"src": ..., "trim": "0:00-0:03"}
     emphasis: bool = False
     tone: str = ""               # "negative" => red edge-vignette washed over the frame
+    prop_style: str = ""         # "photo" | "cartoon"; "" => inherit script.photoreal_props
 
     @property
     def is_live(self) -> bool:
@@ -114,6 +115,32 @@ def _parse_chart(raw, bid: str) -> dict | None:
         "highlight": int(hi) if isinstance(hi, (int, float)) and 0 <= int(hi) < len(values) else None,
         "note": str(raw.get("note", "")).strip(),
     }
+
+
+_PHOTO_STYLES = {"photo", "photoreal", "photorealistic", "real"}
+_CARTOON_STYLES = {"cartoon", "illustrated", "vector", "doodle", "icon"}
+
+
+def _parse_prop_style(raw, bid: str) -> str:
+    """Normalise a beat's per-beat prop style to "photo" / "cartoon" / "".
+
+    Raises on an unrecognised value rather than silently falling back to the
+    script default -- a typo'd style ("photoreal: yes", "realistic") would
+    otherwise cost a full prop generation in the WRONG style and only show
+    up as a visual surprise in the finished render.
+    """
+    if raw is None:
+        return ""
+    s = str(raw).strip().lower()
+    if not s:
+        return ""
+    if s in _PHOTO_STYLES:
+        return "photo"
+    if s in _CARTOON_STYLES:
+        return "cartoon"
+    raise ValueError(
+        f"beat {bid!r}: prop_style must be one of "
+        f"{sorted(_PHOTO_STYLES | _CARTOON_STYLES)} (got {raw!r})")
 
 
 def _parse_cutout(raw) -> Cutout:
@@ -215,6 +242,7 @@ def load_script(path) -> Script:
             headline=(str(raw["headline"]).strip()[:60] if raw.get("headline") else None),
             emphasis=bool(raw.get("emphasis")),
             tone=("negative" if str(raw.get("tone") or "").strip().lower() == "negative" else ""),
+            prop_style=_parse_prop_style(raw.get("prop_style"), bid),
         ))
 
     if not beats:

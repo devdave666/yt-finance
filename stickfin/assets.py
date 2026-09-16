@@ -235,6 +235,25 @@ _POSE_TAGS = {
     "chin-thinking-arms-crossed": {"thinking", "think", "skeptical", "chin", "doubtful", "doubt", "considering", "consider"},
     "point-up-idea": {"idea", "aha", "eureka", "realization", "realize", "realizing", "insight", "epiphany", "point"},
     "arms-crossed-serious": {"serious", "stern", "annoyed", "annoy", "unimpressed", "disapproving", "disapprove", "angry", "arms", "crossed", "cross"},
+    # gesturing/looking UP -- purpose-built for a beat with a prop/chart,
+    # which always renders in the shared asset band ABOVE both characters
+    # (see has_visual below), never beside them.
+    "present-up-open-hand-calm": {"presenting", "present", "showing", "show", "gesture", "neutral", "calm"},
+    "both-hands-up-showcase-warm": {"showcase", "showcasing", "reveal", "warm", "welcoming", "welcome", "presenting", "present"},
+    "arm-up-angled-explaining": {"explaining", "explain", "directing", "direct", "focused", "focus"},
+    "looking-up-shielding-eyes-surprised": {"surprised", "surprise", "impressed", "impress", "shielding", "shield"},
+    "hand-rising-sweep-optimistic": {"rising", "rise", "growing", "grow", "climbing", "climb", "optimistic", "optimism"},
+    "finger-tap-point-up-serious": {"emphatic", "emphasis", "firm", "serious", "pointing", "point", "warning", "warn"},
+    "arms-up-big-reveal-excited": {"excited", "excite", "enthusiastic", "reveal", "big", "announce", "announcing"},
+    "hand-up-casual-relaxed": {"casual", "relaxed", "relax", "easygoing"},
+}
+# Maps each wrong-direction (sideways) pose to its purpose-built upward
+# equivalent for the has_visual substitution below -- keeps the tonal
+# distinction the sideways pair had (calm-presenting vs stern-pointing)
+# instead of collapsing both onto one generic replacement.
+_SIDEWAYS_TO_UPWARD = {
+    "stand-presenting-open-hand": "present-up-open-hand-calm",
+    "stand-explaining-stern": "finger-tap-point-up-serious",
 }
 # The negative-reaction set (tools/cut_stickers.py sheets *__sheet_negative.png)
 # is kept OUT of the main pool above and only considered when this beat is
@@ -266,6 +285,12 @@ _SITTING_DEFAULTS = ("sit-chin-thinking", "sit-hand-knee-smirk")
 _STANDING_NEGATIVE_DEFAULTS = ("standing-sad-dejected", "slumped-defeated",
                                "hunched-exasperated", "forehead-disappointed-sigh")
 _SITTING_NEGATIVE_DEFAULTS = ("sit-arms-crossed-worried",)
+# Default pool when the beat has a prop/chart (has_visual) but nothing in
+# state text keyword-matched at all -- purpose-built upward poses only, so
+# an unmatched has_visual beat never has a chance of landing on a sideways
+# gesture via the generic rotation.
+_STANDING_VISUAL_DEFAULTS = ("present-up-open-hand-calm", "both-hands-up-showcase-warm",
+                             "arm-up-angled-explaining", "hand-up-casual-relaxed")
 
 # Poses that read as a good/happy reaction -- wrong on-screen when something
 # bad is happening to this character (a beat tagged tone:negative), even if
@@ -284,11 +309,8 @@ _POSITIVE_TAGS = {"smile", "smiling", "happy", "pleased", "content", "confident"
 # whichever OTHER character is standing next to them, not at the prop/chart
 # overhead -- confirmed live via Gemini QA critique (b06/b07 on a real
 # video: "gesturing towards the male character" while talking about the
-# calendar/snowball prop above her). point-up-idea is the one pose in the
-# library whose gesture actually goes up. Applied as a scoring nudge, not a
-# hard rule, so an explicit keyword match can still win when it should.
-_SIDEWAYS_GESTURE_POSES = {"stand-presenting-open-hand", "stand-explaining-stern"}
-_UPWARD_GESTURE_POSES = {"point-up-idea"}
+# calendar/snowball prop above her). See _SIDEWAYS_TO_UPWARD below for the
+# purpose-built replacements.
 
 
 def _word_forms(w: str) -> set[str]:
@@ -357,19 +379,21 @@ def _library_pose(voice: str, state: str, tone: str = "",
         if score > best_score:
             best_slug, best_score = slug_, score
 
-    if has_visual and best_slug in _SIDEWAYS_GESTURE_POSES:
+    if has_visual and best_slug in _SIDEWAYS_TO_UPWARD:
         # Substitution, not a scoring bonus -- an earlier version added an
         # unconditional score bump for point-up-idea whenever has_visual was
         # true, which fixed the sideways-gesture case but then ALSO won
         # against completely unrelated poses with zero keyword relation to
         # "pointing" at all (a real regression: "winces, looks away" landed
         # on point-up-idea because 0.75 beats every other pose's raw 0).
-        # point-up-idea shares no real vocabulary with "presenting/
-        # explaining" text, so it can only ever be reached by direct
-        # substitution here, not by competing in the score loop -- only kick
-        # in when a SIDEWAYS pose was actually about to win, leave every
-        # other winner (including a deliberate "no match" of 0) alone.
-        best_slug = "point-up-idea"
+        # The purpose-built upward poses share no real vocabulary with
+        # "presenting/explaining" text, so they can only ever be reached by
+        # direct substitution here, not by competing in the score loop --
+        # only kicks in when a SIDEWAYS pose was actually about to win,
+        # mapped to its tonal equivalent (calm-open vs stern-pointing);
+        # leaves every other winner (including a deliberate "no match" of 0)
+        # alone.
+        best_slug = _SIDEWAYS_TO_UPWARD[best_slug]
 
     if best_slug is None:
         # No keyword hit at all -- every unmatched beat used to collapse
@@ -380,11 +404,21 @@ def _library_pose(voice: str, state: str, tone: str = "",
         # build, so consecutive shots that both miss don't look identical.
         sitting = "sit" in raw_words
         if negative:
+            # Emotion beats gesture direction here -- there's no negative
+            # AND upward-gesturing pose in the library, and showing a warm/
+            # neutral upward pose on a beat the script explicitly flagged as
+            # something bad happening (confirmed: "scoffs, gestures
+            # dismissively" landed on both-hands-up-showcase-warm before this
+            # ordering fix) is a worse mismatch than an on-emotion pose that
+            # happens to gesture sideways.
             pool_ = _SITTING_NEGATIVE_DEFAULTS if sitting else _STANDING_NEGATIVE_DEFAULTS
+        elif has_visual and not sitting:
+            # A sitting figure gesturing "up" at an overhead chart doesn't
+            # exist in the library and would look odd anyway -- only swap in
+            # the upward pool for a standing figure.
+            pool_ = _STANDING_VISUAL_DEFAULTS
         else:
             pool_ = _SITTING_DEFAULTS if sitting else _STANDING_DEFAULTS
-        if has_visual:
-            pool_ = tuple(p for p in pool_ if p not in _SIDEWAYS_GESTURE_POSES) or pool_
         idx = int(hashlib.md5(state.encode()).hexdigest(), 16) % len(pool_)
         best_slug = pool_[idx]
     path = char_dir / f"{best_slug}.png"

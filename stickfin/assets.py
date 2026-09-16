@@ -830,7 +830,11 @@ def generate_assets(script, plan: dict, force: bool = False) -> None:
             prompt = (
                 f"A photorealistic photo of: {spec['name']}. Professional "
                 f"product/editorial photography, real materials and lighting, "
-                f"sharp focus. {MATTE_BG}. Generic / unbranded only: NO real or "
+                f"sharp focus. {MATTE_BG}. The subject must be a compact, "
+                f"solid, clearly-separated object in WARM or SATURATED colours "
+                f"that stand out strongly against that mid-grey backdrop -- "
+                f"never a grey/silver/white subject that blends into it, and "
+                f"never a thin, lacy, or wiry shape. Generic / unbranded only: NO real or "
                 f"recognisable brand names, logos, wordmarks, or trademarked "
                 f"product designs (invent a plain, generic version of any "
                 f"branded object instead -- e.g. a plain unmarked watch, not a "

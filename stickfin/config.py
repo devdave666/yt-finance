@@ -79,6 +79,20 @@ IDLE_BOB_PX = float(os.environ.get("STICKFIN_IDLE_BOB_PX", "0"))
 IDLE_BOB_HZ = 0.5
 POP_IN_S = 0.16             # new layers fade/scale in over this on each cut
 
+# ---- Layer depth ----------------------------------------------------------
+# A soft drop shadow under each character/prop/chart/cutout layer, so the flat
+# composite doesn't read as stickers pasted on a blank canvas. The shadow is
+# just that layer's own alpha silhouette, blackened + blurred + offset -- no
+# camera motion, no background change, stays inside the static-camera
+# hard-cut style. Headline text and the full-frame red-vignette tint are
+# excluded (a shadow under giant hook text looked heavy, and the vignette
+# isn't a "sticker").
+LAYER_SHADOW = os.environ.get("STICKFIN_LAYER_SHADOW", "1") == "1"
+LAYER_SHADOW_DX_FRAC = 0.004   # fraction of canvas width, offset right
+LAYER_SHADOW_DY_FRAC = 0.012  # fraction of canvas height, offset down
+LAYER_SHADOW_BLUR = 14        # ffmpeg boxblur radius, px
+LAYER_SHADOW_ALPHA = 0.30
+
 # ---- Text-to-Speech ------------------------------------------------------
 TTS_LANGUAGE = "en-US"
 # Gemini-TTS: takes a natural-language `prompt` that steers delivery style, so

@@ -66,6 +66,7 @@ def _composite_clip(shot: dict, adir: Path, fmt: str, out: Path) -> None:
 
     pop = max(config.POP_IN_S, 0.001)
     dur_s = nf / fps
+    shadow_kinds = {"character", "prop", "chart", "cutout"}
     idx, last, char_seen = 1, "b0", 0
     for i, ((layer, ap, _wh), (x, y, w, h)) in enumerate(zip(resolved, placements)):
         other_centers = centers[:i] + centers[i + 1:]
@@ -96,7 +97,27 @@ def _composite_clip(shot: dict, adir: Path, fmt: str, out: Path) -> None:
             ye = f"{y}{settle}+{amp}*sin(2*PI*{hz}*t+{phase:.3f})"
         else:
             ye = f"{y}{settle}"
-        chains.append(f"[{last}][s{idx}]overlay={x}:'{ye}':format=auto[{cur}]")
+
+        if config.LAYER_SHADOW and layer["type"] in shadow_kinds:
+            sdx = int(config.LAYER_SHADOW_DX_FRAC * cw)
+            sdy = int(config.LAYER_SHADOW_DY_FRAC * ch)
+            blur = config.LAYER_SHADOW_BLUR
+            # [s{idx}] feeds both the shadow derivation and the visible overlay
+            # below -- ffmpeg filtergraphs require an explicit split to fan a
+            # labelled pad out to two consumers, it can't just be named twice.
+            chains.append(f"[s{idx}]split=2[s{idx}a][s{idx}b]")
+            chains.append(
+                f"[s{idx}a]colorchannelmixer=rr=0:rg=0:rb=0:ra=0:gr=0:gg=0:gb=0:"
+                f"ga=0:br=0:bg=0:bb=0:ba=0:aa={config.LAYER_SHADOW_ALPHA:.2f}[sh{idx}c]")
+            chains.append(
+                f"[sh{idx}c]boxblur=luma_radius={blur}:luma_power=1:"
+                f"chroma_radius={blur}:chroma_power=1:"
+                f"alpha_radius={blur}:alpha_power=1[sh{idx}]")
+            chains.append(f"[{last}][sh{idx}]overlay={x + sdx}:'{ye}+{sdy}':"
+                          f"format=auto[{cur}sh]")
+            chains.append(f"[{cur}sh][s{idx}b]overlay={x}:'{ye}':format=auto[{cur}]")
+        else:
+            chains.append(f"[{last}][s{idx}]overlay={x}:'{ye}':format=auto[{cur}]")
         last, idx = cur, idx + 1
 
     # tone:negative -> wash a red edge-vignette over the finished frame

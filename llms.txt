@@ -11,15 +11,23 @@ caught) once.
 > I'm continuing work on "Anti Broke" (stickfin), an autonomous personal-finance
 > Shorts channel. Read `llms.txt` at the repo root first, in full — it has the
 > architecture (also see README.md/SETUP.md) and everything fixed across every
-> session so far. The most important thing to understand: character art moved
-> from live per-video AI generation to a FIXED, pre-cut pose library this
-> session (see "Character art: fixed library, not per-video generation"
-> below) — that was an open, unresolved question at the end of the previous
-> session, and it's now the actual shipped architecture, validated across two
-> published videos. Read the pose-selection section carefully before touching
-> `stickfin/assets.py` — there's a lot of hard-won nuance in how a pose gets
-> picked for a given line. Once you've read it, tell me what you understand
-> the current state to be, then I'll tell you what I want to do today.
+> session so far. Two things from the most recent session matter most before
+> you touch anything:
+> 1. Character art is a FIXED pose library (unchanged, never regenerate it
+>    live) — props/pictures are now per-video Nano Banana generations, either
+>    flat-vector (default) or photorealistic (`photoreal_props: true`). Read
+>    "Prop art" below before writing a script with props, especially before
+>    using photoreal mode — a real, unguarded generation returned a
+>    trademarked Patek Philippe watch and a fabricated passport with a
+>    synthetic face and real airline branding on the first attempt.
+> 2. `.github/workflows/publish-now.yml` and `upload-longform.yml` had a
+>    shell-injection bug that silently stripped every `$` from a video's
+>    title/description on the live post (fixed this session) — see "CI:
+>    title/description shell injection" below. The first two videos published
+>    before the fix likely still have corrupted descriptions live on YouTube/
+>    IG/TikTok; nobody has gone back to re-edit those posts yet.
+> Once you've read the whole file, tell me what you understand the current
+> state to be, then I'll tell you what I want to do today.
 
 ## Character art: fixed library, not per-video generation
 
@@ -184,6 +192,18 @@ This ALSO resolves the "Fixed-zone layout idea" that a previous session
 discussed but explicitly did not implement (see old NOT-implemented notes,
 now removed since this IS that idea, built).
 
+**Follow-up bug, found live on a published video**: `_duo_safe()` deliberately
+reserves NO top caption space in duo mode (dialogue lives in the D-boxes, not
+a shared top band) — correct for beats 2+, but wrong for beat 1 specifically
+in `caption_style: title`, where the persistent title-card caption IS a
+shared top-anchored element (MarginV=250) that competes with the beat-1
+headline graphic (`_DUO_ASSET_Y` started at 0.08). A real short shipped with
+the title card sitting on top of the headline text — invisible to
+`layout.audit()` since it only checks composited PNG layers against each
+other, never the burned-in ASS caption. Fixed with `_DUO_HEADLINE_Y0 = 0.25`,
+a lower start used only for headline layers (which only ever appear on beat
+1) in `_solve_duo`'s asset-band placement.
+
 ### Motion: characters hold still now
 
 `config.IDLE_BOB_PX` default changed to `0` (was `6`) — user feedback:
@@ -192,6 +212,34 @@ from pose variety across cuts (the default-rotation + tone/visual-aware
 selection above) instead of continuous idle motion, which fits this
 channel's existing hard-cut style (no Ken Burns/tweening anywhere else)
 better anyway.
+
+### Compositor: soft drop shadow under character/prop/chart/cutout layers
+
+`config.LAYER_SHADOW` (default on) — each layer casts a blurred, offset,
+blackened copy of its own alpha silhouette behind itself before the real
+layer draws, giving the flat composite some depth instead of reading as
+stickers pasted on a blank canvas. No camera motion, no background change —
+stays inside the static-camera hard-cut style. Headline text and the
+full-frame red "negative" vignette are excluded (a shadow under giant hook
+text looked heavy; the vignette isn't a "sticker").
+
+**ffmpeg gotcha, worth knowing if you touch `compositor.py`'s filter graph
+again**: a labelled pad (`[s{idx}]`) CANNOT be used as the input to two
+different filters without an explicit `split` first — feeding it to both the
+shadow-derivation chain and the final visible overlay without splitting
+silently dropped the visible layer entirely while the shadow still rendered
+(confirmed by disabling the shadow and comparing frames — the character was
+fully present with the shadow code removed, fully absent with it in, same
+input assets). Fixed with `[s{idx}]split=2[s{idx}a][s{idx}b]` before the two
+consumers.
+
+### Image model: bumped to gemini-3.1-flash-image
+
+`config.IMAGE_MODEL` default changed from `gemini-2.5-flash-image` to
+`gemini-3.1-flash-image`, and `IMAGE_LOCATION` from `us-central1` to
+`global` — 3.1 only serves at `location="global"`, confirmed working on this
+project. 2.5-flash-image @ us-central1 is the known-good fallback if 3.1
+ever regresses.
 
 ### QA: pose-resonance check added to the Gemini critique
 
@@ -208,6 +256,112 @@ between pose intensity and THIS line's actual intensity". New JSON field
 `pose_resonance`, one line per still. This is how the has_visual gesture-
 direction bug above was actually found — ran the check, it named the exact
 beats and explained why.
+
+## Prop art: per-video Nano Banana generation, illustrated OR photoreal
+
+**Resolved a different session** (later than the character-library work
+above, same overall direction of travel: keep character identity locked and
+cheap, but stop the rest of the frame looking generic). Character art stays
+on the fixed library, untouched — this section is only about props/pictures
+in the shared asset band.
+
+- **Why this changed**: the channel's ~34-name fixed icon vocabulary
+  (`assets/icons/*.png`, `icons.py`) is generic and reused across every
+  video regardless of topic — a Nike video and a Bitcoin video would both
+  reach for the same generic `chart-down` icon. `stickfin/assets.py`'s prop
+  loop now tries `icons.path(key)` first (unchanged, free, instant) but a
+  script simply describing a prop in freeform prose that doesn't match a
+  fixed icon name falls through to a live Nano Banana generation — which,
+  written well, can be a real story-telling picture (e.g. two pizza boxes +
+  a receipt + coins for the Bitcoin Pizza Day story) instead of a bare icon.
+  A hand-written script controls this simply by NOT using the fixed icon
+  vocabulary in its `props:` text.
+- **`ink=True` bug (fixed)**: the prop-generation cutout call originally
+  reused `ink=True` from the icon-BUILD tooling, which force-crushes any
+  fill colour below luminance 190 to solid black. Fine for the hand-picked,
+  pre-vetted icon set it was written for; it silently destroyed real colour
+  on a fresh generation — a "shiny gold coin stack" prop came back as an
+  unreadable solid-black blob. Fixed to `ink=False`, same as character poses
+  (which never had this bug, for the same reason).
+- **Style-reference fallback**: `sheets` (character reference sheets used as
+  a style anchor) is usually EMPTY, because both channel characters use the
+  fixed pose library and never generate a fresh reference sheet. Without a
+  visual anchor, a prop generation leans on the text description alone and
+  drifts toward a more rendered/realistic look than the flat-vector prompt
+  asks for — this is the documented reason props moved to a fixed icon
+  library in an even earlier session (see `icons.py`'s own docstring: "that
+  was the weak spot (inconsistent, too realistic)"). Fixed by falling back
+  to any single still already sitting in `assets/char_library/{host,second}/`
+  as the style anchor when `sheets` is empty.
+- **Solidity-checked retry**: props now get the same kind of retry loop
+  poses already had (up to 2 attempts, re-nudged toward the flat style if the
+  first came back too realistic, keeping whichever attempt scored better on
+  `_solidity()`) — added because this path now carries real production
+  weight (every prop in a hand-written script) instead of being a rare
+  fallback nobody hit in practice.
+- **Prompt STRUCTURE vs CONTENT — a real regression, caught by the user
+  live**: fixing a run of broken/illegible generations (an over-specified
+  calendar grid, an unreadable "trapdoor" composition) by simplifying the
+  prompt accidentally simplified the wrong axis — it kept the sentence
+  short (correct fix; asking for precise text/grids is what broke those two)
+  but also dropped the explicit "rich picture, not a bare icon" instruction,
+  so the next few regenerated props read as minimal icons again. These are
+  independent concerns: keep the prompt SENTENCE simple (avoid stacking many
+  separate clauses, avoid asking for precise on-image text/numeric layouts —
+  image models are unreliable at both), but keep the CONTENT instruction
+  explicitly pushing toward a full illustrated scene.
+- **`photoreal_props: true`** (new top-level script field, `script_model.py`
+  + `Script.photoreal_props`): switches the prop prompt from flat-vector-
+  matching-the-characters to actual photorealistic photos, for a video where
+  that reads better than the channel's usual doodle style (real objects —
+  a watch, a plane, cash — vs. an abstract concept a doodle icon handles
+  fine). Skips BOTH the icon library and the style-reference image in this
+  mode (a cartoon reference fights a photoreal prompt instead of helping).
+  **Real safety issue found on the first live generation, not hypothetically
+  guarded against in advance**: an unguarded `"photorealistic photo of a
+  Swiss watch"` prompt returned an exact, unmodified, brand-legible Patek
+  Philippe design, and `"photo of a passport next to a boarding pass"`
+  returned a fully fabricated ID document — a photoreal synthetic human
+  face, an invented name/passport number/date of birth, and real British
+  Airways livery on the boarding pass. This class of risk barely exists in
+  flat-vector doodle mode (a cartoon rarely spontaneously reproduces a real
+  trademark or renders a convincing fake ID) but is real and easy to hit in
+  photoreal mode. The photoreal prompt template now explicitly requires
+  generic/unbranded objects (invent a plain version of anything that would
+  normally be branded) and explicitly forbids human faces/portraits and
+  anything laid out like a real passport/ID/driver's licence. **Still
+  requires a human (or agent) visually reviewing every photoreal prop before
+  publish** — the prompt guard is necessary but a Nano Banana generation can
+  still surprise you; this was caught by actually looking at the images, not
+  by the prompt alone.
+
+## CI: title/description shell injection in publish workflows (fixed)
+
+`.github/workflows/publish-now.yml` and `upload-longform.yml` both spliced
+`${{ inputs.title }}` / `${{ inputs.description }}` directly into a bash
+`run:` script as raw text. GitHub performs that substitution BEFORE bash
+executes, so any `$` in the value (every dollar figure this channel's videos
+are about — "$5 billion", "$100") gets re-parsed as a shell variable
+reference by the Actions runner's own shell and silently vanishes; an
+embedded literal `"` in the value breaks the quoting outright and crashes the
+whole step with a confusing `unrecognized arguments` error (this is what
+actually surfaced it — a description containing `"Four easy payments"` plus
+several dollar amounts crashed a real publish run). Fixed in both workflows
+by passing title/description through `env:` vars and referencing them as
+`"$TITLE"`/`"$DESCRIPTION"` in the script — normal bash variable expansion,
+whose value is never re-interpreted as script syntax regardless of what
+characters it contains.
+
+**Known consequence, not yet fixed**: any video published via `Publish Now`
+before this fix likely has its dollar amounts silently stripped from the
+LIVE description on YouTube/Instagram/TikTok (Nike and Bitcoin Pizza Day,
+specifically) — the bug doesn't crash on a plain `$` alone, only on an
+embedded `"`, so those two went out looking successful. Re-editing those
+live posts' captions hasn't been done — flagged to the user, no takedown/
+repost policy decision made on it yet (see the "already-published videos are
+left as-is" policy note below, though this is arguably different: not a new
+finding about content quality, but a mechanical corruption of what was
+actually posted vs. what was written).
 
 ## What this project does (see README.md and SETUP.md for full detail)
 
@@ -254,6 +408,20 @@ Publishing paths (`.github/workflows/`):
 All committed to `main`, no open uncommitted work as of this file being
 written.
 
+- `eb76224` — `photoreal_props` mode + brand/face/ID-document safeguards on
+  the photoreal prompt. See "Prop art" section above.
+- `99e4f84` — restored the "rich picture, not a bare icon" instruction lost
+  in a prompt-simplification pass. See "Prop art" section above.
+- `d985161` — fixed the `publish-now.yml`/`upload-longform.yml` shell-
+  injection bug. See "CI" section above.
+- `f45637d` — fixed the beat-1 headline / title-card caption collision. See
+  the layout section's follow-up-bug note above.
+- `9676fb4` — props generate via live Nano Banana (topic-relevant pictures)
+  instead of only the fixed icon vocabulary; fixed the `ink=True` colour-
+  crush bug; added the style-reference fallback + solidity retry. See
+  "Prop art" section above.
+- `d47bc4f` — soft drop shadow under character/prop/chart/cutout layers. See
+  "Compositor" section above.
 - `5745532` — 8 more character poses per character (purpose-built upward-
   gesturing set), fixed the has_visual/negative-tone fallback priority bug.
   See "Character art" section above for the full story.
@@ -294,12 +462,39 @@ written.
   characters, and the improved (at-the-time) pose selection. Published live.
   The has_visual gesture-direction bug (fixed in `39dc801`/`5745532`) was
   found via Gemini QA critique run AFTER this video was already live.
+- `2026-09-15-nike-lost-default-status` — hand-written (not
+  `stickfin.generate`) one-off on a user-supplied topic; had to be rewritten
+  from the user's original framing into strictly past-tense, sourced facts
+  to stay inside `themes.yaml`'s no-forward-prediction rule. Published live.
+  Likely has a corrupted (dollar-amounts-stripped) live description — see
+  the CI section above.
+- `2026-09-15-bitcoin-pizza-day` — hand-written; first video with per-video
+  Nano Banana props instead of the fixed icon vocabulary (the `ink=True`
+  colour-crush bug was found and fixed mid-build on THIS video's props).
+  Published live. Also likely has a corrupted live description.
+- `2026-09-16-buy-now-pay-later-trap` — hand-written, original topic; first
+  video with a picture on every single beat (no bare talking-head shots) and
+  the fixed beat-1 headline/title-card layout. Published live, description
+  correct (built after the CI fix).
+- `2026-09-16-swiss-watch-tariff` — hand-written; first video using
+  `photoreal_props: true`. The user asked to adapt a competitor reference
+  video's exact script — declined reproducing its specific dialogue/scenes
+  (that's someone else's creative expression, not public-domain fact), and
+  the reference's core factual claim ("an empty private jet skips customs
+  scrutiny, letting buyers dodge duty on luxury goods") didn't hold up under
+  a fact-check (no documented source; every private jet clears customs
+  regardless of passenger count) — so the actual script covers a different,
+  verified real story instead (the 2025-26 US tariff on Swiss goods hitting
+  watch prices, real ~8.1% Swiss VAT / ~$800 US personal exemption figures,
+  and the real, well-documented Lewis Hamilton VAT-avoidance jet-import
+  case). Published live after the Patek Philippe / fake-passport safety
+  issue (see "Prop art" section above) was caught and fixed pre-publish.
 
 **Established policy, reconfirmed explicitly by the user again this
 session**: already-published videos are left as-is when a bug/improvement
 is found after the fact — fixes apply going forward only, no takedown/
-repost, unless the user says otherwise for a specific case. Both videos
-above are still live with their respective known issues.
+repost, unless the user says otherwise for a specific case. All videos
+listed above are still live with whatever issues are noted next to them.
 
 ## Credentials / access
 

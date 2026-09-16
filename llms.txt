@@ -1,207 +1,305 @@
 # stickfin / "Anti Broke" channel — reference for AI tools
 
 This file exists so any AI assistant picking up this repo — a fresh Claude
-session, another tool, whatever — has the context that took a full night of
-real trial-and-error to establish, without re-deriving it from scratch or
-repeating fixes already made (or mistakes already caught) once.
+session, another tool, whatever — has the context that took real
+trial-and-error across multiple sessions to establish, without re-deriving
+it from scratch or repeating fixes already made (or mistakes already
+caught) once.
 
 ## Starting a new chat? Paste this to the new AI first
 
 > I'm continuing work on "Anti Broke" (stickfin), an autonomous personal-finance
 > Shorts channel. Read `llms.txt` at the repo root first, in full — it has the
-> architecture (also see README.md/SETUP.md), everything fixed in the last
-> session, and — most important — the conclusion that session reached about
-> whether the current AI-generated-character-art approach is actually viable.
-> Read the "Is this approach viable?" section especially carefully before
-> assuming we just keep patching the same pipeline. Once you've read it, tell
-> me what you understand the current state to be, then I'll tell you what I
-> want to do today.
+> architecture (also see README.md/SETUP.md) and everything fixed across every
+> session so far. The most important thing to understand: character art moved
+> from live per-video AI generation to a FIXED, pre-cut pose library this
+> session (see "Character art: fixed library, not per-video generation"
+> below) — that was an open, unresolved question at the end of the previous
+> session, and it's now the actual shipped architecture, validated across two
+> published videos. Read the pose-selection section carefully before touching
+> `stickfin/assets.py` — there's a lot of hard-won nuance in how a pose gets
+> picked for a given line. Once you've read it, tell me what you understand
+> the current state to be, then I'll tell you what I want to do today.
 
-## Is this approach viable? Read this before doing anything else
+## Character art: fixed library, not per-video generation
 
-Short answer: the user ended the last session concluding **no, not as-is** —
-"looks like this approach will not work." That session was one long chain of
-finding a real, visible, ship-quality defect, fixing it, and finding the next
-one, across every asset category the pipeline touches:
+**Resolved this session.** The previous session ended undecided between two
+paths: keep hardening live per-video AI pose generation (Nano Banana on
+Vertex), or switch to a fixed, pre-made character-art library reused across
+every video. This session built and shipped the fixed-library path, and it
+has held up well across two full builds + publishes:
 
-- Character poses: missing mouths, a bald crown on the long-hair character
-  (3 of 14 poses in one video, 0 in another — inconsistent, not deterministic),
-  duplicate "twin" figures from a reference-sheet bug, a branded logo patch
-  that read backwards when mirrored, rembg (background removal) punching
-  random holes in torsos/necks that let the scene bleed through.
-- Layout: a prop template that placed a prop overlapping BOTH characters in a
-  2-person shot; the first fix attempt made it WORSE (66% overlap -> 84%)
-  because the real gap between two characters varies by pose and can be
-  narrower than assumed.
-- The shared icon library (32 icons, reused across every video): 9 of 32 were
-  found fully or partially hollow (transparent interior) on first inspection.
-  After fixing the prompt and regenerating, **the same specific icons kept
-  coming back broken on subsequent regenerations** — `shield`, `comment`,
-  `bookmark`, `handshake` failed hollow-fill compliance 2-3 rounds in a row
-  regardless of how explicit the "fill completely, never hollow" instruction
-  was made. A manually-applied deterministic fix (flood-fill the enclosed
-  interior with the correct colour, found via alpha-mask topology) was needed
-  in the end — twice, because the first attempt at that manual fix ALSO had a
-  bug (a hole leaking through a 1-2px gap in the outline stroke swallowed a
-  much larger area than intended on `shield`).
-- Captions: skit-format videos were shipping with ZERO on-screen text for the
-  entire back-and-forth dialogue (just one static hook line for the whole
-  video) — a genuine functional gap, not a polish issue, live on real
-  published videos before it was caught.
+- **Source**: ChatGPT image generation, NOT Vertex/Nano Banana, for character
+  and icon art. Confirmed materially more consistent at holding a character's
+  exact design (outfit, proportions, face construction) across a whole sheet
+  of poses than Nano Banana was — that inconsistency was a big chunk of what
+  made the live-generation approach fragile in the first place. The workflow:
+  paste a prompt (asking for N poses of ONE character in a grid, on a flat
+  magenta #FF00FF background, reference-locked to a previous sheet's image
+  when adding to an existing character), get a sheet back, cut it with
+  `tools/cut_stickers.py`.
+- **The cutout problem and fix**: rembg (ML background segmentation, trained
+  on real photos) doesn't understand a flat colour key — at anti-aliased
+  edges it leaves a partial-alpha pixel that's still colour-blended toward
+  magenta, which reads as a pink fringe/halo once composited onto anything
+  else. `tools/cut_stickers.py` replaces it with a proper Vlahos-style chroma
+  key: measure how much of a pixel's colour is explained by the background's
+  magenta signature (`min(R,B) - G`, normalised against the sheet's own
+  sampled background colour), then UNMIX that fraction out of the RGB to
+  recover the true colour at every partial-alpha edge pixel. A second real
+  bug this surfaced: a pastel-coloured subject (a piggy bank's pink body, on
+  an early icon-sheet test) can score nearly as "background-like" as a real
+  edge pixel by colour alone — fixed by gating on TOPOLOGY, not colour: only
+  pixels connected all the way out to the sheet's border through other
+  background-scored pixels count as background (`scipy.ndimage.label` +
+  keep only border-touching components). An enclosed same-hue fill, walled
+  off by the (very un-background-coloured) black ink outline around it,
+  stays opaque regardless of how magenta-like its own colour is.
+- **Library layout**: `assets/char_library/{host,second}/<pose-slug>.png`,
+  cut via `tools/cut_stickers.py`'s `process_sheet()` — each pose tight-
+  cropped to its OWN content bbox (not a shared/union box across poses; that
+  was tried and reverted, see below), then upscaled to a uniform 1600px
+  source height (`target_h=1600`) so every pose has the same head-to-feet
+  pixel height regardless of gesture. Sheets are archived at
+  `assets/char_library/sheets/*.png`.
+- **32 poses per character now** (64 total), built up over three ChatGPT
+  sheets each: 16 neutral/everyday (sit + stand + gesture), 8 negative-
+  reaction (defeated/frustrated/embarrassed/sulking — added after the
+  library's only negative options read as "annoyed", not "hurt"), 8
+  upward-gesturing (added after Gemini QA caught a character gesturing
+  sideways at their scene partner instead of the prop/chart rendering above
+  their head — see layout section below for why "above" is the only correct
+  direction now).
+- **`stickfin/assets.py`'s pose loop tries the library FIRST**
+  (`_library_pose(voice, state, tone, has_visual)`, keyed off voice —
+  `Orus`→host, `Aoede`→second, set deterministically in `generate.py` — not
+  off whatever name the model gave the character that script), and only
+  falls back to a live Vertex generation call if the library directory
+  doesn't exist for that voice. In practice this means ZERO Vertex image
+  calls for character art on every video built this session — cost and
+  defect-rate both dropped to ~nothing for this asset class specifically
+  (props/icons/charts/backgrounds were already non-generative before this
+  session; see below).
 
-**The pattern, not just the individual bugs**: every fix category needed
-2-3 iterations before it actually held, and fixing one asset class did not
-predict whether another asset class had the same problem — each one had to be
-independently, exhaustively checked at full resolution (thumbnail-scale
-review reliably missed real defects — e.g. the bald-crown gap was invisible
-at 400px review height, obvious at real viewing size). That's a lot of manual
-QA surface for a channel that's supposed to run unattended.
+### Pose selection — read this before touching `_library_pose` in assets.py
 
-**What's actually fixed as of this file being written**: everything found
-IS fixed and verified (see changelog below) — the pipeline as it stands
-tonight should not reproduce any of the specific bugs listed above. The open
-question the user wants addressed in a fresh chat is whether to keep
-hardening this same AI-generation approach indefinitely (each new topic/pose
-combination is a chance for a NEW instance of "AI didn't comply with an
-explicit instruction"), or switch to something structurally less exposed to
-this failure mode — e.g. a fixed library of pre-made/hand-designed character
-art reused across all videos instead of generating new pose art per video,
-a proper commercial character-animation tool/asset pack, or something else.
-**Don't assume the answer — that's the discussion to have.** But do bring
-this history so the discussion starts from real evidence, not guessing.
+A LOT of real bugs got fixed here, each confirmed on an actual build or an
+actual Gemini QA critique before being called done. The short version: match
+a beat's freeform "pose, expression" text to the closest of 32 fixed stills
+via keyword tags, with three independent bias layers on top of raw keyword
+overlap —
+
+1. **Tone bias** (`tone == "negative"`): penalises poses tagged with
+   positive-affect words (smile, confident, thumbs-up, etc.) and adds a small
+   tie-break bonus toward the negative-reaction pose set, so a character
+   doesn't stay smiling through a beat about something bad happening to
+   them. The negative-pose set is a candidate REGARDLESS of the tone flag
+   (not gated behind it) — the beat's own pose TEXT ("looking down,
+   defeated") is finer-grained signal than that one binary flag, and gating
+   lost real matches on beats that were textually obviously negative but
+   didn't happen to carry the flag. What actually needs to be gated is
+   individual ambiguous WORDS, not the whole pose set — `slumped-defeated`
+   used to include the tag "down", which matched completely unrelated text
+   ("gesturing OUT AND DOWN towards the viewer" on the warm closing CTA
+   line) and put a sad pose on the channel's sign-off. Fix the word, not the
+   gate.
+2. **Visual-target bias** (`has_visual`, true when the beat has a prop or
+   chart): any prop/chart always renders in the shared ASSET band ABOVE both
+   characters' heads (see layout section), never beside them. Two poses in
+   the original 16 — `stand-presenting-open-hand`, `stand-explaining-stern`
+   — draw an open hand/pointing gesture extended SIDEWAYS at chest height;
+   in this geometry that can only ever read as pointing at whichever OTHER
+   CHARACTER is standing next to them, never at the prop/chart overhead.
+   Caught live by Gemini's pose-resonance QA check on a real published video
+   ("gesturing towards the male character" while talking about the calendar
+   prop rendering above her). Fix: `_SIDEWAYS_TO_UPWARD` maps each sideways
+   pose to a purpose-built upward equivalent (`present-up-open-hand-calm`,
+   `finger-tap-point-up-serious`) by SUBSTITUTION after the scoring loop
+   picks a winner, not by adding those upward poses into the scoring
+   competition directly — an earlier attempt gave the upward poses an
+   unconditional score bonus whenever `has_visual` was true, which also beat
+   completely unrelated poses with zero real connection to "pointing"
+   ("winces, looks away" landed on a pointing-up pose because the bonus beat
+   every other pose's raw zero). Priority order matters: when a beat is
+   BOTH negative-toned AND has_visual with no keyword match at all, tone
+   wins the fallback-pool choice, not gesture direction — there's no
+   negative+upward-gesturing pose in the library, and a warm/neutral upward
+   pose on an explicitly bad beat is a worse mismatch than an on-emotion
+   pose that happens to gesture sideways.
+3. **Default-pool rotation**: a beat whose pose text matches NO keyword at
+   all used to collapse onto one single hardcoded default pose — confirmed
+   on a real build: 8 of 27 poses in one video (~30%) were literally
+   identical. Now rotates deterministically (hashed on the state text, so
+   still reproducible build-to-build) across a small pool of plausible
+   defaults, separate pools for standing/sitting/negative/has_visual.
+
+Two lower-level fixes worth knowing about if you're adding more tags:
+- **Light stemming** (`_word_forms`): exact-string tag matching missed a lot
+  of real hits ("gesturing" not matching a tag written as "gesture",
+  "realizing" not matching "realize"). Handles -ing and plural -s suffixes
+  only, not a real stemmer.
+- **Score per matched SOURCE WORD, not per matched tag element**
+  (`_match_count`): several tags list both a word and its -ing form (added
+  before stemming existed, e.g. "show" AND "showing" both listed). Once
+  stemming expands an input word to multiple forms, intersecting against a
+  tag set containing BOTH forms double-counts one real match as two — this
+  was enough to let a wrong-direction gesture pose outscore the correct one
+  in one real case. Count one hit per distinct source word regardless of how
+  many redundant forms exist on either side.
+
+### Layout: fixed split-screen template for two-character shots
+
+Also resolved this session, and it's the user's own hand-drawn spec (a
+photographed sketch, not a text description): a shared ASSET band on top
+(charts/headlines/props — `layout._DUO_ASSET_Y`), a per-character DIALOGUE
+strip directly above each head (D1 left / D2 right — `layout._DUO_DIALOGUE_Y`
++ `duo_dialogue_anchor()`), then two mirrored, EQUAL-HEIGHT character slots
+at the bottom (`layout._DUO_CHAR_Y` + `_DUO_LEFT_X`/`_DUO_RIGHT_X`). Replaces
+the old dynamic two-hander template entirely for any short-format shot with
+exactly 2 character layers (`layout.solve()` branches on this before
+touching the general `_regions()` template logic at all).
+
+Why: characters are fit by HEIGHT ALONE within their slot, not
+`min(width, height)` like every other template's `_fit()`. Every pose in the
+library shares the same 1600px source height, so height-first fitting alone
+guarantees two different poses in the same shot render at truly identical
+height — the old `min()` approach let a wide-armed pose lose to the width
+constraint and render visibly SHORTER than a narrow pose in the identical
+slot (confirmed: 600px vs 755px tall, same nominal region, no collision
+involved). The character-slot width band (`_DUO_CHAR_Y` height chosen
+specifically) is tuned to the single WIDEST pose in the whole library
+(1207px @ 1600 tall, an arms-flung gesture) so even the worst-case pairing
+never needs the collision-resolution fallback as a matter of course — verified
+by sweeping every pose width in the library pairwise against the widest one.
+
+Captions: `captions.py`'s "title" and "skit" caption styles now `\pos()` a
+speaking beat's dialogue line into the speaker's own D-box
+(`captions._duo_pos()`, keyed off `script.cast[beat.who].anchor` being
+"left"/"right" AND the beat actually having exactly 2 characters in
+`beat.cast` — a solo reaction beat, e.g. the closing CTA, renders in the old
+centred template instead, and pinning its caption to a D-box that doesn't
+exist on screen there would misplace it).
+
+This ALSO resolves the "Fixed-zone layout idea" that a previous session
+discussed but explicitly did not implement (see old NOT-implemented notes,
+now removed since this IS that idea, built).
+
+### Motion: characters hold still now
+
+`config.IDLE_BOB_PX` default changed to `0` (was `6`) — user feedback:
+characters should stay steady during a held shot, not sway. "Life" now comes
+from pose variety across cuts (the default-rotation + tone/visual-aware
+selection above) instead of continuous idle motion, which fits this
+channel's existing hard-cut style (no Ken Burns/tweening anywhere else)
+better anyway.
+
+### QA: pose-resonance check added to the Gemini critique
+
+`stickfin/qa.py`'s `_critique()` now hands Gemini an explicit
+beat-id → exact-spoken-line manifest alongside the sampled stills (built
+from `script.beats`, not left for Gemini to guess from the tiny burned-in
+word-reveal caption fragment visible in each still — that fragment is only
+2-3 words at that instant, not the whole line, and was too unreliable a
+ground truth for this specific judgment). Asks it to flag BOTH directions on
+every still: a bigger reaction than the line warrants (over-exaggerated) and
+a flatter one than the line warrants (under-reacting) — a genuinely big line
+still warrants a big pose, so it's not "flag all drama", it's "flag mismatch
+between pose intensity and THIS line's actual intensity". New JSON field
+`pose_resonance`, one line per still. This is how the has_visual gesture-
+direction bug above was actually found — ran the check, it named the exact
+beats and explained why.
 
 ## What this project does (see README.md and SETUP.md for full detail)
 
-Daily GitHub Actions cron: picks a personal-finance topic (`themes.yaml`),
-writes a script (Gemini/Vertex), synthesizes TTS per beat, generates
-character/prop/chart art (Nano Banana / Vertex) + cuts it out (rembg),
+Daily-ish GitHub Actions cron: picks a personal-finance topic
+(`themes.yaml`), writes a script (Gemini/Vertex), synthesizes TTS per beat,
+resolves character art from the fixed pose library (falls back to live
+Vertex/Nano Banana generation only if a character has no library — see
+above), generates prop/chart/background art (icon library first, chart/
+headline rendered locally with matplotlib/PIL, no API calls for either),
 composites static shots with hard cuts (no Ken Burns/tweening), muxes audio +
 captions, publishes to YouTube/Instagram/TikTok via Buffer.
 
 Two formats: `short` (9:16, the daily output) and `wide` (16:9 long-form,
-separate/less-used path). Two script shapes: `explainer` (one host, talks to
-camera) and `skit` (host + a second character, back-and-forth dialogue).
+separate/less-used path — the fixed duo layout above is short-format only,
+`wide` still uses the older dynamic two-hander template). Two script shapes:
+`explainer` (one host, talks to camera) and `skit` (host + a second
+character, back-and-forth dialogue) — the fixed split-screen layout and
+per-character dialogue boxes only apply to a shot with exactly 2 characters
+on screen, which in practice means skit format.
 
 Publishing paths (`.github/workflows/`):
 - `daily.yml` — manual-dispatch, full generate-through-publish, one video.
-- `batch-build.yml` + `poster.yml` — the actual automatic cadence: batch-build
-  N videos ahead into `state/queue.json`, poster.yml drains one per scheduled
-  firing (4x/day), no Vertex call needed on the posting side.
+- `batch-build.yml` + `poster.yml` — the automatic cadence: batch-build N
+  videos ahead into `state/queue.json`, poster.yml drains one per scheduled
+  firing (4x/day), no Vertex call needed on the posting side. **Note: as of
+  this session, both of these are dormant** — nobody has manually triggered
+  `batch-build.yml` since 2026-09-01, so `state/queue.json` fully drained by
+  2026-09-13 and `poster.yml` has been firing successfully on schedule with
+  nothing to post ever since. This session's videos were built and published
+  one at a time via `tools/build_one.py` (new this session — builds a
+  specific already-written script end to end without spending another
+  `generate()` call) + `publish-now.yml`, bypassing the queue entirely. The
+  queue path needs a decision: wire `batch-build.yml` onto a real schedule
+  now that the pose library makes each build cheaper (no Vertex image
+  calls), or keep hand-building one at a time for now while pose selection
+  is still actively being tuned.
 - `publish-now.yml` — publish an already-committed `media/<slug>.mp4`
-  immediately, bypassing the queue. Used for the hand-authored one-offs this
-  session (see below).
+  immediately, bypassing the queue. This session's normal path: copy the
+  local `build/<slug>/<slug>.mp4` to `media/`, commit + push, then
+  `gh workflow run publish-now.yml -f slug=... -f title=... -f description=...`.
 
 ## Session changelog (most recent first — this is what actually got fixed)
 
-All committed to `main`, no open uncommitted work.
+All committed to `main`, no open uncommitted work as of this file being
+written.
 
-- `2e5f5b7`, `62b0700` — **icon library overhaul.** Moved the white
-  sticker-border from an AI prompt instruction (unreliable: clean on solid
-  shapes, ragged on thin-line icons like chart-up/down, inconsistent even on
-  some round ones) to a deterministic code step (dilate the alpha mask by a
-  fixed radius, fill the ring white — `tools/build_icons.py:_add_border`).
-  Fixed hollow fills on 13 of 32 icons total across multiple rounds: bookmark,
-  comment, handshake, house, shield, bars-down, receipt, question, scale,
-  coin, lightbulb, warning, piggy-bank (some self-corrected on regeneration,
-  many needed the manual flood-fill in the end). `tools/build_icons.py` is
-  the one-time-generation tool (`python tools/build_icons.py --force
-  <name>...`) — icons are committed, never regenerated automatically.
-- `5f61bac` — removed 6 stale queue entries from `state/queue.json` that
-  were queued 2026-09-01 (weeks before every fix this session) and would
-  have kept auto-posting old-broken-design videos on the regular 4x/day
-  poster schedule regardless of any code fix.
-- `4ad66d8` — `assets._cutout()`: patch SMALL rembg segmentation holes only
-  (below ~0.6% of the figure's own opaque area, per connected component).
-  A blanket "fill every hole" first attempt was wrong — it would have
-  destroyed legitimate anatomical negative space (the gap under an akimbo
-  arm, inside a circular hand gesture) by filling it with garbage-coloured
-  blobs. Calibrated against confirmed real defects (~1000-1100px) vs
-  confirmed legitimate gaps (6,000-35,000px+).
-- `fa1ea62` — fixed the long-hair second character's hair prompt to
-  explicitly require full crown coverage (was: "long flowing hair framing
-  both sides", which let the model draw a side-swept style with a bald gap
-  on top — invisible at thumbnail review, obvious at real size, confirmed
-  via a live published video's actual Instagram screenshot).
-- `503bef5` — `captions.py`: skit-format videos ("title" caption style) were
-  showing ONE static hook line for the WHOLE video and never captioning the
-  actual dialogue. Fixed: the hook now covers only beat 1, every beat after
-  gets a word-by-word reveal caption highlighted in brand green
-  (`config.CAP_SPOKEN`), same mechanism explainer format already used.
-  `layout.py`: fixed a 2-character-plus-prop template that placed the prop
-  overlapping both characters (first fix attempt made it worse, 66% -> 84%
-  overlap, because the actual per-pose gap between characters isn't the
-  nominal template gap — moved the prop to the open band above both
-  characters' heads instead, where it structurally can't collide).
-- `a995e4d`, `fd4b27e` — rewrote the script-writing prompt (`generate.py`
-  SYSTEM/SCHEMA_DOC) twice, per direct user feedback: (1) dropped the fixed
-  "6-8 beats, 20-28s" target so stories run as long as they need (soft
-  ceiling: ~90s, the real Instagram Reels classification limit) and required
-  causal connectors between beats instead of standalone punchy fragments;
-  (2) fixed a "short sentences" rule that was producing staccato ad-copy
-  cadence ("No. On the entire amount. From day one.") — now explicitly
-  requires natural spoken rhythm with contractions and normal connectors.
-- `0f46b6b`, `3da0f5c`, `b064a96` — character/compositor fixes: reference
-  sheet was drawing TWO views of the same character (front + 3/4), which
-  biased pose generation toward drawing two people instead of one (confirmed
-  live: 3 of ~8 poses in a published video shipped with a visible duplicate
-  "twin"). Fixed to draw one view. Added a proper branded female second
-  character (paired with the existing "Aoede" TTS voice) instead of an
-  unbranded generic one. Fixed the compositor's facing/mirror logic, which
-  only considered charts/props when deciding which way a character faces —
-  a plain two-person dialogue shot left both characters facing the same
-  direction instead of each other. Replaced the host's "ANTI BROKE" text
-  wordmark patch with a single "A" monogram (vertically symmetric) after
-  finding the wordmark read backwards whenever the mirror logic flipped a
-  character — first attempt at just saying "draw only a letter" wasn't
-  enough, the model kept echoing the brand name from elsewhere in the same
-  prompt; removing the literal brand name from the prompt text fixed it.
-- `d95999c` and earlier — the original character redesign: replaced the old
-  bare-line stick figure with a fully-illustrated flat-vector character
-  (the "sharp" look the user asked for after seeing a competitor reel),
-  kept the faceless flat round head (brand identity), gave the host a
-  charcoal bomber jacket + branded patch. This is the redesign that then
-  needed all the follow-up fixes above.
-- `028dec1` — forced every scene to a flat background colour for ALL
-  formats (was: explainer-only; skit could still get an AI-drawn scene,
-  which is what triggered the character-quality conversation that led to
-  the redesign above).
+- `5745532` — 8 more character poses per character (purpose-built upward-
+  gesturing set), fixed the has_visual/negative-tone fallback priority bug.
+  See "Character art" section above for the full story.
+- `39dc801` — first fix at the sideways-gesture problem (substitution to
+  `point-up-idea`), plus the source-word-count scoring fix. Superseded in
+  spirit (not reverted) by `5745532`'s purpose-built poses, which replaced
+  the single generic `point-up-idea` substitution target with tonally
+  distinct ones.
+- `be6c653` — added the pose-resonance check to the Gemini QA critique.
+- `4e5302a` — `IDLE_BOB_PX` → 0 (steady characters); default-pool rotation
+  for unmatched poses; light stemming; fixed the "down" ambiguous-tag false
+  positive on the CTA line.
+- `b5d1c99` — first negative-reaction pose sheet (8 poses/character:
+  slumped-defeated, hands-covering-face, forehead-disappointed-sigh, etc.),
+  fixing the gap where a "defeated" beat had nothing better than
+  `arms-crossed-serious` (reads annoyed, not hurt) to fall back to.
+- `bbfd4c8` — the fixed split-screen duo layout + per-character dialogue
+  boxes. See "Layout" section above.
+- `5fa0f1d` — the fixed character-pose library itself: `tools/cut_stickers.py`
+  (chroma-key cutout tool), the first 16-pose library per character, and
+  `assets.py`'s `_library_pose()` wiring. This is the session's central
+  decision — see "Character art" section above.
+- `14016c0` and earlier — previous session's work (icon-library hollow-fill
+  fixes, rembg small-hole patching, character redesign to the current
+  flat-vector look, caption/layout fixes). That session ended undecided on
+  whether per-video AI character generation was viable at all; this session
+  answered that by building the alternative and shipping it.
 
-Two hand-authored one-off videos were built and published this session as
-originals (NOT reproductions) after the user brought real competitor scripts
-as "make something like this" requests that turned out to be near-verbatim
-copies of other creators' actual published videos (one ending in another
-account's Instagram handle, one in another's watermark). Declined to
-reproduce those directly; wrote original scripts on the same underlying
-mechanism instead, and declined outright a third request (a Twitch donation-
-manipulation "money idea" script — that one isn't a grey-area tax trick, it's
-a scheme to defraud a streamer's own audience, not something to produce
-regardless of format):
-- `billionaire-watch-tax-trick` — freeport / buy-borrow-die mechanism,
-  corrected a claim the source material got backwards (collectibles are
-  taxed WORSE than stocks, ~28% vs ~20%; the real advantage is deferral +
-  borrowing, not a lower rate).
-- `private-jet-tax-writeoff` — US Section 179 / bonus depreciation on a
-  business aircraft (the US equivalent of an India-specific source video),
-  corrected the "basically a free jet" framing the same way.
+## Published on the new pipeline this session
 
-Established policy, confirmed explicitly by the user each time it came up:
-**already-published videos are left as-is when a bug is found after the
-fact** (background-colour bug, duplicate-figure bug, bald-crown bug all
-shipped on real posts before being caught) — fixes apply going forward only,
-no takedown/repost, unless the user says otherwise for a specific case.
+- `2026-09-15-used-car-true-cost` — first video built entirely on the fixed
+  pose library (16-pose version, old dynamic layout still active). Published
+  live (YouTube/IG/TikTok via Buffer) before the layout/motion/pose-
+  resonance fixes above, so it does NOT have the split-screen layout, steady
+  characters, or the later pose-selection improvements.
+- `2026-09-15-berkshire-hathaway-compounding-power` — first video with the
+  fixed duo layout, per-character dialogue boxes, steady (no-bob)
+  characters, and the improved (at-the-time) pose selection. Published live.
+  The has_visual gesture-direction bug (fixed in `39dc801`/`5745532`) was
+  found via Gemini QA critique run AFTER this video was already live.
 
-## Things discussed but NOT implemented
-
-- **Fixed-zone layout idea** (user's proposal): define fixed screen regions
-  per role (e.g. lower-left = male character, lower-right = female, upper =
-  props/charts, all on the same flat background so it reads as one frame),
-  instead of the current dynamic per-shot layout solver. Assessed as a good
-  idea for the skit (2-character) case specifically — would eliminate the
-  layout-collision bug CLASS by construction rather than by collision-
-  avoidance math that can fail on some future pose combination. Would NOT
-  have prevented the rembg-hole or hollow-icon defects (different problem).
-  Not built — conversation moved to the broader "is this approach even
-  right" question before implementation started.
+**Established policy, reconfirmed explicitly by the user again this
+session**: already-published videos are left as-is when a bug/improvement
+is found after the fact — fixes apply going forward only, no takedown/
+repost, unless the user says otherwise for a specific case. Both videos
+above are still live with their respective known issues.
 
 ## Credentials / access
 
@@ -211,3 +309,6 @@ working WIF/service-account pattern if auth needs re-deriving). Buffer
 API key + channel IDs are GitHub Actions secrets only, NOT available in a
 local shell — `tools/publish_now.py` / the `Publish Now` workflow is the
 way to post a specific already-committed video without them locally.
+Character/icon art generation (ChatGPT) is a fully manual, outside-the-
+pipeline step — no API key stored anywhere in this repo for it; a human
+pastes the prompt into ChatGPT and hands the resulting sheet back.

@@ -65,10 +65,17 @@ jobs:
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
           PYTHONUNBUFFERED: "1"
+          SLUG: ${{ inputs.slug }}
+          TITLE: ${{ inputs.title }}
+          DESCRIPTION: ${{ inputs.description }}
+          TAGS: ${{ inputs.tags }}
+          PRIVACY: ${{ inputs.privacy }}
+          SYNTHETIC: ${{ inputs.synthetic }}
+        # Same fix as publish-now.yml: env vars + "$VAR", not ${{ }} spliced
+        # directly into the script -- a title/description containing $ or "
+        # gets re-parsed as shell syntax otherwise.
         run: |
-          python tools/youtube_upload.py "media/${{ inputs.slug }}.mp4" \
-            --title "${{ inputs.title }}" \
-            --description "${{ inputs.description }}" \
-            --tags "${{ inputs.tags }}" \
-            --privacy "${{ inputs.privacy }}" \
-            ${{ inputs.synthetic && '--synthetic' || '' }}
+          args=("media/$SLUG.mp4" --title "$TITLE" --description "$DESCRIPTION" \
+                --tags "$TAGS" --privacy "$PRIVACY")
+          if [ "$SYNTHETIC" = "true" ]; then args+=(--synthetic); fi
+          python tools/youtube_upload.py "${args[@]}"

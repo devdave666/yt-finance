@@ -64,6 +64,37 @@ def slug(text: str) -> str:
     return re.sub(r"[^a-z0-9]+", "-", text.lower()).strip("-")[:48] or "x"
 
 
+def beat_photoreal(script, beat) -> bool:
+    """Does THIS beat's prop render as a photo or as flat-vector art?
+
+    Per-beat `prop_style:` wins; otherwise the script-level
+    `photoreal_props:` default applies. Photo and cartoon are mixed freely
+    within one video on purpose -- a real object (a watch, a plane, cash)
+    reads better as a photo, while an abstract idea (a comment bubble, a
+    question mark) reads better as a doodle and looks forced as a
+    photographed object.
+    """
+    style = (getattr(beat, "prop_style", "") or "").lower()
+    if style == "photo":
+        return True
+    if style == "cartoon":
+        return False
+    return bool(getattr(script, "photoreal_props", False))
+
+
+def prop_key(name: str, photoreal: bool) -> str:
+    """Asset key for a prop. The style is part of the key so the same prop
+    name can appear as a photo in one beat and a doodle in another without
+    the two sharing (and overwriting) one cached PNG.
+
+    timeline.py builds this exact key independently when it emits prop
+    layers -- both call THIS function rather than re-deriving the rule, so
+    the two can't drift apart (the pose keys, which do re-derive it in two
+    places, carry a standing comment warning about exactly that risk).
+    """
+    return slug(name) + ("__photo" if photoreal else "")
+
+
 def _flat_bg(color: str, w: int, h: int):
     """A flat colour field with a soft corner vignette + faint grain -- warmer
     than dead flat, and with none of the 'framed poster' borders an image model
@@ -135,8 +166,9 @@ def plan_assets(script) -> dict:
         if beat.chart:
             charts_[beat.id] = beat.chart
         elif not beat.headline:
+            photo = beat_photoreal(script, beat)
             for p in beat.props:
-                props[slug(p)] = {"name": p}
+                props[prop_key(p, photo)] = {"name": p, "photoreal": photo}
         for co in beat.cutouts:
             cutouts.setdefault(_src_key(co.src), {"src": co.src, "kind": "image"})
 
@@ -761,27 +793,95 @@ def generate_assets(script, plan: dict, force: bool = False) -> None:
         print(f"  pose {key}" + (f"  [!! {best_score[2]}]" if best_score[2] else ""))
 
     # ---- props (transparent) ----
+    # A style reference keeps a freshly-generated prop visually on-model with
+    # the rest of the frame -- without one, Nano Banana leans on the text
+    # description alone and drifts toward a more realistic/rendered look (the
+    # documented reason props moved to a fixed icon library in the first
+    # place; see icons.py's docstring). `sheets` only holds characters that
+    # DIDN'T use the fixed pose library (usually empty, since both channel
+    # characters do), so fall back to any single still already sitting in
+    # the pose library as the style anchor.
     any_sheet = next(iter(sheets.values()), None)
+    if any_sheet is None:
+        for lib_sub in ("host", "second"):
+            found = next((CHAR_LIBRARY_DIR / lib_sub).glob("*.png"), None) \
+                if (CHAR_LIBRARY_DIR / lib_sub).is_dir() else None
+            if found is not None:
+                any_sheet = Image.open(found)
+                break
     for key, spec in plan["props"].items():
+        # resolved per BEAT at plan time (see beat_photoreal) -- one video
+        # freely mixes photos and doodles, so this can differ prop to prop.
+        photoreal = bool(spec.get("photoreal", False))
         out = a / "prop" / f"{key}.png"
         if out.exists() and not force:
             continue
-        lib = icons.path(key)
+        # The icon library and the style-reference sheet are both flat-vector
+        # doodle art -- neither belongs in photoreal mode (the icon library
+        # would silently override the user's request for a real photo, and a
+        # cartoon reference image fights a "photorealistic photo" prompt
+        # instead of helping it).
+        lib = None if photoreal else icons.path(key)
         if lib is not None:
             shutil.copyfile(lib, out)
             print(f"  prop {key}  (icon library)")
             continue
-        contents = [
-            f"{STYLE_FLOOR}\n\nDraw a single {spec['name']} as a flat 2-D doodle "
-            "in the EXACT same drawing style as the reference image: the same "
-            "thick even black ink outline and weight, at most one or two flat "
-            "solid fill colours, NO 3-D, NO shading, NO gloss or highlights, NO "
-            f"realism. One object only, centred, {MATTE_BG}. No text, no hands, "
-            "no character, no ground."]
-        if any_sheet is not None:
-            contents.append(any_sheet)
-        _cutout(_pil_from(_generate(client, contents, cfg)), ink=True).save(out)
-        print(f"  prop {key}")
+        if photoreal:
+            prompt = (
+                f"A photorealistic photo of: {spec['name']}. Professional "
+                f"product/editorial photography, real materials and lighting, "
+                f"sharp focus. {MATTE_BG}. The subject must be a compact, "
+                f"solid, clearly-separated object in WARM or SATURATED colours "
+                f"that stand out strongly against that mid-grey backdrop -- "
+                f"never a grey/silver/white subject that blends into it, and "
+                f"never a thin, lacy, or wiry shape. Generic / unbranded only: NO real or "
+                f"recognisable brand names, logos, wordmarks, or trademarked "
+                f"product designs (invent a plain, generic version of any "
+                f"branded object instead -- e.g. a plain unmarked watch, not a "
+                f"real watchmaker's design). NO human faces, portraits, or "
+                f"depictions of a real or fictional person, photoreal or "
+                f"otherwise. NO passports, ID cards, driver's licences, or any "
+                f"document laid out like a real personal-identification "
+                f"document. No text, no watermark.")
+            bad_nudge = ("\n\nThe last attempt came back as a flat illustration "
+                        "or cartoon -- redraw it as an actual photorealistic "
+                        "photo, not a doodle or vector graphic. Still generic/"
+                        "unbranded, no faces, no ID documents.")
+        else:
+            prompt = (
+                f"A rich little illustrated picture of: {spec['name']}. Not a bare "
+                f"minimal icon -- real detail and composition. In the exact flat-vector "
+                f"illustration style of the reference image -- bold black outlines, "
+                f"flat colour fills, no 3-D, no photorealism. {MATTE_BG}. No text or "
+                f"lettering, no people.")
+            bad_nudge = ("\n\nThe last attempt came back too realistic/photo-like "
+                        "-- redraw it as a flat illustrated doodle in the exact "
+                        "reference style, not a photo or 3-D render.")
+        best_cut, best_sol = None, None
+        for attempt in range(2):
+            nudge = bad_nudge if attempt else ""
+            contents = [prompt + nudge]
+            if any_sheet is not None and not photoreal:
+                contents.append(any_sheet)
+            img = _pil_or_none(_generate(client, contents, cfg))
+            if img is None:
+                continue
+            # ink=False, same as character poses -- ink=True force-crushes
+            # any fill below luminance 190 to solid black, which is fine for
+            # the hand-picked icon set it was built for but destroys real
+            # colour on a freshly-generated prop (confirmed: a "shiny gold
+            # coin stack" and pepperoni/cheese fills both came back as
+            # unreadable solid-black blobs under it).
+            cut = _cutout(img, ink=False)
+            sol = _solidity(cut)
+            if best_sol is None or sol < best_sol:
+                best_cut, best_sol = cut, sol
+            if sol <= 0.45:
+                break
+        if best_cut is None:
+            raise RuntimeError(f"prop {key}: no image returned")
+        best_cut.save(out)
+        print(f"  prop {key}" + (f"  [!! solidity {best_sol:.2f}]" if best_sol > 0.45 else ""))
 
     # ---- cutouts (ingested, transparent) ----
     for key, spec in plan["cutouts"].items():

@@ -1,0 +1,243 @@
+title: "He Made Billions And Paid Zero Tax"
+slug: 2026-09-16-buy-borrow-die
+format: short
+caption_style: title
+title_card: How billionaires actually pay for things 💳
+cast:
+  Alex:
+    look: 'the channel''s host character: a sharp, fully-illustrated flat-vector
+      character, not a stick figure. The head is a completely FLAT, BLANK round
+      head like a plain cream-white egg or balloon -- absolutely NO skin tone, NO
+      shading, NO jawline, NO cheeks, NO chin contour, NO ears, NO nose, and NO
+      realistic human face structure of any kind. The head is one flat, evenly-coloured
+      circle with only these features drawn directly on its flat surface: a few
+      bold spiky black hair strands on top, two small solid-black dot eyes, two
+      short sharp angled eyebrows, and a simple drawn mouth for the expression.
+      It must read as a faceless, abstract cartoon head -- never a human portrait.
+      A clearly visible mouth always shows the expression (flat, frown, grimace,
+      open shout, small smile). He wears the channel''s signature fit: a fitted
+      charcoal-grey bomber jacket over a plain white tee, with a small bold lime-green
+      circular patch on the left chest containing ONLY a single bold black capital
+      letter ''A'' monogram, centred, NO other letters and NO other text of any
+      kind on the patch -- a single vertically-symmetric glyph so the mark still
+      reads correctly even when the whole figure is mirrored to face the other
+      way, dark slim jeans, and clean white sneakers with a lime-green accent stripe.
+      Real clothing rendered in flat colour fills with bold clean black outlines
+      and light cel-shading for form -- never a bare line figure, never a plain
+      silhouette with no clothing detail visible.'
+    anchor: left
+    voice: Orus
+  Ben:
+    look: 'the channel''s second character, a woman (she/her) -- same faceless
+      flat-head construction as the host, but the head is a completely FLAT, BLANK
+      round head like a plain cream-white egg or balloon -- absolutely NO skin
+      tone, NO shading, NO jawline, NO cheeks, NO chin contour, NO ears, NO nose,
+      and NO realistic human face structure of any kind. The head is one flat,
+      evenly-coloured circle with only these features drawn directly on its flat
+      surface: long flowing black hair that FULLY COVERS THE TOP OF THE HEAD (the
+      crown) with NO bald patch or gap between the hairline and where the hair
+      frames the sides -- the hair grows from the very top, not just draped over
+      the shoulders --  and continues down past the jaw framing both sides (never
+      short or spiky). Two small solid-black dot eyes, two short sharp angled eyebrows,
+      and a simple drawn mouth for the expression. It must read as a faceless,
+      abstract cartoon head -- never a human portrait. A clearly visible mouth
+      always shows the expression. She wears a distinct outfit -- never the host''s
+      exact jacket colour or cut -- but carries the SAME channel branding he does:
+      a small bold lime-green circular patch on the left chest containing ONLY
+      a single bold black capital letter ''A'' monogram, centred, NO other letters
+      and NO other text of any kind on the patch -- a single vertically-symmetric
+      glyph so the mark still reads correctly even when the whole figure is mirrored
+      to face the other way, on a cropped rust-orange utility jacket with rolled
+      sleeves over a plain cream top, olive-green straight-leg trousers, and white
+      sneakers. Same sharp flat-vector illustration style as the host, fully clothed,
+      never a bare stick figure.'
+    anchor: right
+    voice: Aoede
+scenes:
+  stage:
+    color: '#f4efe4'
+beats:
+- id: b01
+  scene: stage
+  who: Alex
+  say: In two thousand seven, Jeff Bezos paid zero federal income tax.
+  cast:
+    Alex: standing, pointing at the headline, serious
+    Ben: standing, listening, neutral
+  headline: "$0 IN TAX"
+  props: []
+- id: b02
+  scene: stage
+  who: Alex
+  say: And that wasn't a fluke. He did it again in twenty eleven, and Musk did
+    it in twenty eighteen.
+  cast:
+    Alex: standing, gesturing up at the prop, serious
+    Ben: standing, listening, surprised
+  props:
+  - a tax return form with a single large zero written in the total box
+- id: b03
+  scene: stage
+  who: Ben
+  say: Okay, wait. How is that legal?
+  cast:
+    Alex: standing, neutral
+    Ben: standing, hands up, confused
+  props:
+  - a wooden judge's gavel resting beside a small stack of paperwork
+  prop_style: photo
+- id: b04
+  scene: stage
+  who: Alex
+  say: That's the part that got me. It is. They're not hiding anything, they
+    just don't really have income.
+  cast:
+    Alex: standing, explaining, calm
+    Ben: standing, listening, thinking
+  props:
+  - an empty paycheck stub with a blank amount line
+- id: b05
+  scene: stage
+  who: Ben
+  say: He built Amazon. How do you not have income?
+  cast:
+    Alex: standing, neutral
+    Ben: standing, arms crossed, unimpressed, skeptical
+  props:
+  - a paper share certificate with an ornate border
+  prop_style: photo
+- id: b06
+  scene: stage
+  who: Alex
+  say: He owned shares. And shares aren't income until you sell them. So he
+    doesn't sell them.
+  cast:
+    Alex: standing, pointing up at the prop, explaining
+    Ben: standing, listening
+  props:
+  - a padlock sitting on top of a stack of share certificates, holding them shut
+- id: b07
+  scene: stage
+  who: Ben
+  say: Then where does the money to actually live on come from?
+  cast:
+    Alex: standing, neutral
+    Ben: standing, curious, leaning in
+  props:
+  - an open empty wallet
+  prop_style: photo
+- id: b08
+  scene: stage
+  who: Alex
+  say: He borrows it. You put the stock up as collateral, and the bank hands
+    you cash.
+  cast:
+    Alex: standing, gesturing up at the prop, explaining
+    Ben: standing, listening, focused
+  props:
+  - a bank building with tall columns and a dollar sign on the front, with a
+    fat arrow running from the bank across to a small stack of cash
+- id: b09
+  scene: stage
+  who: Ben
+  say: Oh. And a loan isn't income.
+  cast:
+    Alex: standing, nodding
+    Ben: standing, aha moment, idea dawning
+  props:
+  - a single banknote with a curved arrow above it looping back around, showing
+    the money has to go back
+- id: b10
+  scene: stage
+  who: Alex
+  say: Right. So you spend millions, and on paper you earned nothing.
+  cast:
+    Alex: standing, arms open, matter-of-fact
+    Ben: standing, listening, sobered
+  props:
+  - a thick banded stack of hundred dollar bills
+  prop_style: photo
+- id: b11
+  scene: stage
+  who: Ben
+  say: That can't just go on forever, though.
+  cast:
+    Alex: standing, neutral, wry
+    Ben: standing, chin in hand, doubtful, skeptical
+  props:
+  - a simple circular arrow loop with no beginning or end
+- id: b12
+  scene: stage
+  who: Alex
+  say: It kind of does. There's even a name for it. Buy, borrow, die.
+  cast:
+    Alex: standing, gesturing up at the prop, serious
+    Ben: standing, listening, uneasy
+  tone: negative
+  props:
+  - three simple arrows in a row, each one flowing into the next
+- id: b13
+  scene: stage
+  who: Ben
+  say: Die?
+  cast:
+    Alex: standing, neutral
+    Ben: standing, startled, blinking
+  tone: negative
+  props:
+  - an hourglass with most of the sand already fallen through
+  prop_style: photo
+- id: b14
+  scene: stage
+  who: Alex
+  say: When the shares pass to the heirs, the gain resets. The capital gains
+    tax nobody ever paid just disappears.
+  cast:
+    Alex: standing, pointing up at the prop, firm, emphatic
+    Ben: standing, listening, taking it in
+  emphasis: true
+  tone: negative
+  props:
+  - a price tag with a reset arrow curling back around it
+- id: b15
+  scene: stage
+  who: Alex
+  say: The twenty-five richest Americans gained four hundred billion dollars
+    in five years, and paid about thirteen billion in income tax.
+  cast:
+    Alex: standing, pointing up at the chart, serious
+    Ben: standing, listening, sobered
+  chart:
+    type: bar
+    title: Richest 25 Americans, 2014-18
+    labels:
+    - Wealth gained
+    - Income tax paid
+    values:
+    - 400
+    - 13
+    unit: $B
+    highlight: 1
+    note: 3.4% rate
+- id: b16
+  scene: stage
+  who: Ben
+  say: So they're not beating the system. They're just not really in it.
+  cast:
+    Alex: standing, nodding slowly
+    Ben: standing, matter-of-fact
+  props:
+  - a thick red velvet rope barrier hanging in a curve between two shiny gold
+    posts
+- id: cta
+  scene: stage
+  who: Alex
+  say: Agree or disagree? Say it in the comments, and save this for later.
+  cast:
+    Alex: standing, warm inviting expression, gesturing out and down towards the
+      viewer
+    Ben: standing, nodding
+  props:
+  - a bold rounded speech bubble with three small dots inside it
+narrator:
+  voice: Orus

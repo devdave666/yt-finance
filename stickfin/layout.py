@@ -69,6 +69,18 @@ _PRIORITY = {"headline": 4, "chart": 3, "character": 2, "cutout": 1, "prop": 1}
 # fully inside the existing side-margin safe area on their own, so a pose
 # only ever spills toward the centre gap or the other slot, never off-canvas.
 _DUO_ASSET_Y = (0.08, 0.46)
+# A headline graphic only ever renders on beat 1 (SCHEMA_DOC requires it
+# there, nowhere else), and beat 1 in `caption_style: title` is exactly when
+# the persistent title-card caption sits top-anchored at MarginV=250 (see
+# captions.py's TITLE_CARD_MARGIN_V) -- roughly y=250-430px on a 1920 canvas,
+# fraction ~0.13-0.22. _DUO_ASSET_Y's normal 0.08 start put the headline
+# graphic's region overlapping that caption directly; a real published short
+# shipped with the title card pill sitting on top of the headline text.
+# layout.audit()'s collision check only sees composited PNG layers, never
+# the burned-in ASS caption, so this class of bug is invisible to it -- fixed
+# by giving the headline its own lower start instead, generous enough to
+# clear a worst-case 3-line wrapped title card.
+_DUO_HEADLINE_Y0 = 0.25
 _DUO_DIALOGUE_Y = (0.47, 0.565)
 # Height chosen so the WIDEST pose in the char library (1207x1600, an
 # arms-flung gesture) still fits its own half-slot width (394px) at the
@@ -313,8 +325,9 @@ def _solve_duo(elements: list[dict], kinds: list[str], cw: int, ch: int,
         boxes[i] = _clamp((x, y, w, h), safe)
 
     for j, i in enumerate(others):
-        region = (0.06, _DUO_ASSET_Y[0], 0.94, _DUO_ASSET_Y[1]) if j == 0 \
-            else (0.30, _DUO_ASSET_Y[0], 0.70, _DUO_ASSET_Y[1])
+        y0 = _DUO_HEADLINE_Y0 if kinds[i] == "headline" else _DUO_ASSET_Y[0]
+        region = (0.06, y0, 0.94, _DUO_ASSET_Y[1]) if j == 0 \
+            else (0.30, y0, 0.70, _DUO_ASSET_Y[1])
         boxes[i] = _clamp(_fit(elements[i]["wh"], region, cw, ch, "center"), safe)
 
     return boxes

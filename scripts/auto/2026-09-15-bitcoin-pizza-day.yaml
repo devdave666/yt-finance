@@ -1,0 +1,183 @@
+title: "The $700 Million Pizza Order"
+slug: 2026-09-15-bitcoin-pizza-day
+format: short
+caption_style: title
+title_card: The most expensive pizza order ever 🍕
+cast:
+  Alex:
+    look: 'the channel''s host character: a sharp, fully-illustrated flat-vector
+      character, not a stick figure. The head is a completely FLAT, BLANK round
+      head like a plain cream-white egg or balloon -- absolutely NO skin tone, NO
+      shading, NO jawline, NO cheeks, NO chin contour, NO ears, NO nose, and NO
+      realistic human face structure of any kind. The head is one flat, evenly-coloured
+      circle with only these features drawn directly on its flat surface: a few
+      bold spiky black hair strands on top, two small solid-black dot eyes, two
+      short sharp angled eyebrows, and a simple drawn mouth for the expression.
+      It must read as a faceless, abstract cartoon head -- never a human portrait.
+      A clearly visible mouth always shows the expression (flat, frown, grimace,
+      open shout, small smile). He wears the channel''s signature fit: a fitted
+      charcoal-grey bomber jacket over a plain white tee, with a small bold lime-green
+      circular patch on the left chest containing ONLY a single bold black capital
+      letter ''A'' monogram, centred, NO other letters and NO other text of any
+      kind on the patch -- a single vertically-symmetric glyph so the mark still
+      reads correctly even when the whole figure is mirrored to face the other
+      way, dark slim jeans, and clean white sneakers with a lime-green accent stripe.
+      Real clothing rendered in flat colour fills with bold clean black outlines
+      and light cel-shading for form -- never a bare line figure, never a plain
+      silhouette with no clothing detail visible.'
+    anchor: left
+    voice: Orus
+  Ben:
+    look: 'the channel''s second character, a woman (she/her) -- same faceless
+      flat-head construction as the host, but the head is a completely FLAT, BLANK
+      round head like a plain cream-white egg or balloon -- absolutely NO skin
+      tone, NO shading, NO jawline, NO cheeks, NO chin contour, NO ears, NO nose,
+      and NO realistic human face structure of any kind. The head is one flat,
+      evenly-coloured circle with only these features drawn directly on its flat
+      surface: long flowing black hair that FULLY COVERS THE TOP OF THE HEAD (the
+      crown) with NO bald patch or gap between the hairline and where the hair
+      frames the sides -- the hair grows from the very top, not just draped over
+      the shoulders --  and continues down past the jaw framing both sides (never
+      short or spiky). Two small solid-black dot eyes, two short sharp angled eyebrows,
+      and a simple drawn mouth for the expression. It must read as a faceless,
+      abstract cartoon head -- never a human portrait. A clearly visible mouth
+      always shows the expression. She wears a distinct outfit -- never the host''s
+      exact jacket colour or cut -- but carries the SAME channel branding he does:
+      a small bold lime-green circular patch on the left chest containing ONLY
+      a single bold black capital letter ''A'' monogram, centred, NO other letters
+      and NO other text of any kind on the patch -- a single vertically-symmetric
+      glyph so the mark still reads correctly even when the whole figure is mirrored
+      to face the other way, on a cropped rust-orange utility jacket with rolled
+      sleeves over a plain cream top, olive-green straight-leg trousers, and white
+      sneakers. Same sharp flat-vector illustration style as the host, fully clothed,
+      never a bare stick figure.'
+    anchor: right
+    voice: Aoede
+scenes:
+  stage:
+    color: '#f4efe4'
+beats:
+- id: b01
+  scene: stage
+  who: Alex
+  say: In twenty ten, a guy paid ten thousand bitcoin for two pizzas.
+  cast:
+    Alex: standing, pointing at the headline, amused
+    Ben: standing, listening, neutral
+  headline: "10,000 BTC = 2 PIZZAS"
+  props: []
+- id: b02
+  scene: stage
+  who: Alex
+  say: His name's Laszlo, and at the time that was worth about forty-one dollars.
+  cast:
+    Alex: standing, gesturing up at the prop, amused
+    Ben: standing, listening, curious
+  props:
+  - a little scene of two open cardboard pizza boxes side by side on a wooden
+    tabletop, one showing a whole round pizza with bright yellow-orange cheese
+    and small bright-red pepperoni circles, the other box completely empty with
+    a plain clean white interior and no marks or stains, a crumpled paper receipt
+    and a couple of loose coins resting near the boxes
+- id: b03
+  scene: stage
+  who: Ben
+  say: Forty-one bucks? So that bitcoin's basically worthless now, right?
+  cast:
+    Alex: standing, neutral
+    Ben: standing, shrugging, unsure
+  props: []
+- id: b04
+  scene: stage
+  who: Alex
+  say: Actually, no. Those ten thousand coins are still sitting untouched on the
+    blockchain.
+  cast:
+    Alex: standing, pointing up at the prop, serious
+    Ben: standing, listening
+  props:
+  - a little scene of a short stack of thick warm-yellow-gold coins, each with
+    a bold black letter B stamped on its face, sitting in front of a glowing
+    laptop screen showing a simple green upward price-line, a few small sparkle
+    accents around the coins
+- id: b05
+  scene: stage
+  who: Ben
+  say: Okay... so what are they worth today?
+  cast:
+    Alex: standing, neutral
+    Ben: standing, curious, leaning in
+  props: []
+- id: b06
+  scene: stage
+  who: Alex
+  say: Right now, that's more than seven hundred million dollars.
+  cast:
+    Alex: standing, arms wide, big reveal
+    Ben: standing, watching, stunned
+  emphasis: true
+  props:
+  - a little scene of a cartoon rocket ship with a round warm-yellow-gold bitcoin
+    coin stamped with a bold black letter B as its nose cone, blasting off with
+    an orange-and-yellow flame trail toward a smiling crescent moon, a scatter
+    of small stars around them
+- id: b07
+  scene: stage
+  who: Ben
+  say: Seven hundred million? For two pizzas?
+  cast:
+    Alex: standing, neutral, satisfied
+    Ben: standing, hands on head, shocked
+  props: []
+- id: b08
+  scene: stage
+  who: Alex
+  say: He still says he doesn't regret it. People even celebrate the day every
+    year now.
+  cast:
+    Alex: standing, gesturing up at the prop, wry smile
+    Ben: standing, listening, amused
+  props:
+  - a little scene of a wall calendar page, header reading the word MAY in large
+    letters, below it just one single big number, 22, circled in thick red marker
+    ink -- no other numbers or grid -- with a couple of small confetti pieces and
+    a tiny pizza slice icon scattered near the circled number
+- id: b09
+  scene: stage
+  who: Ben
+  say: There's an actual holiday for the worst trade in history?
+  cast:
+    Alex: standing, neutral, amused
+    Ben: standing, shrugging, disbelief
+  props: []
+- id: b10
+  scene: stage
+  who: Alex
+  say: Every early bitcoin story has someone who cashed out, or spent it, right
+    before it mattered.
+  cast:
+    Alex: standing, explaining, thoughtful
+    Ben: standing, listening, thinking
+  props: []
+- id: b11
+  scene: stage
+  who: Ben
+  say: So the real lesson isn't the pizza. It's that nobody can tell which day
+    turns out to be the one that matters.
+  cast:
+    Alex: standing, nodding
+    Ben: standing, matter-of-fact
+  props: []
+- id: cta
+  scene: stage
+  who: Alex
+  say: Agree or disagree? Say it in the comments, and save this for later.
+  cast:
+    Alex: standing, warm inviting expression, gesturing out and down towards the
+      viewer
+    Ben: standing, nodding
+  props:
+  - a little scene of a bold rounded speech bubble with three small dots inside
+    it, a small heart and a small thumbs-up icon floating beside the bubble
+narrator:
+  voice: Orus

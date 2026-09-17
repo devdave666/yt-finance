@@ -1,0 +1,181 @@
+title: "The $25 Payment That's Actually $100"
+slug: 2026-09-16-buy-now-pay-later-trap
+format: short
+caption_style: title
+title_card: Four "easy" payments... or one bill 💳
+cast:
+  Alex:
+    look: 'the channel''s host character: a sharp, fully-illustrated flat-vector
+      character, not a stick figure. The head is a completely FLAT, BLANK round
+      head like a plain cream-white egg or balloon -- absolutely NO skin tone, NO
+      shading, NO jawline, NO cheeks, NO chin contour, NO ears, NO nose, and NO
+      realistic human face structure of any kind. The head is one flat, evenly-coloured
+      circle with only these features drawn directly on its flat surface: a few
+      bold spiky black hair strands on top, two small solid-black dot eyes, two
+      short sharp angled eyebrows, and a simple drawn mouth for the expression.
+      It must read as a faceless, abstract cartoon head -- never a human portrait.
+      A clearly visible mouth always shows the expression (flat, frown, grimace,
+      open shout, small smile). He wears the channel''s signature fit: a fitted
+      charcoal-grey bomber jacket over a plain white tee, with a small bold lime-green
+      circular patch on the left chest containing ONLY a single bold black capital
+      letter ''A'' monogram, centred, NO other letters and NO other text of any
+      kind on the patch -- a single vertically-symmetric glyph so the mark still
+      reads correctly even when the whole figure is mirrored to face the other
+      way, dark slim jeans, and clean white sneakers with a lime-green accent stripe.
+      Real clothing rendered in flat colour fills with bold clean black outlines
+      and light cel-shading for form -- never a bare line figure, never a plain
+      silhouette with no clothing detail visible.'
+    anchor: left
+    voice: Orus
+  Ben:
+    look: 'the channel''s second character, a woman (she/her) -- same faceless
+      flat-head construction as the host, but the head is a completely FLAT, BLANK
+      round head like a plain cream-white egg or balloon -- absolutely NO skin
+      tone, NO shading, NO jawline, NO cheeks, NO chin contour, NO ears, NO nose,
+      and NO realistic human face structure of any kind. The head is one flat,
+      evenly-coloured circle with only these features drawn directly on its flat
+      surface: long flowing black hair that FULLY COVERS THE TOP OF THE HEAD (the
+      crown) with NO bald patch or gap between the hairline and where the hair
+      frames the sides -- the hair grows from the very top, not just draped over
+      the shoulders --  and continues down past the jaw framing both sides (never
+      short or spiky). Two small solid-black dot eyes, two short sharp angled eyebrows,
+      and a simple drawn mouth for the expression. It must read as a faceless,
+      abstract cartoon head -- never a human portrait. A clearly visible mouth
+      always shows the expression. She wears a distinct outfit -- never the host''s
+      exact jacket colour or cut -- but carries the SAME channel branding he does:
+      a small bold lime-green circular patch on the left chest containing ONLY
+      a single bold black capital letter ''A'' monogram, centred, NO other letters
+      and NO other text of any kind on the patch -- a single vertically-symmetric
+      glyph so the mark still reads correctly even when the whole figure is mirrored
+      to face the other way, on a cropped rust-orange utility jacket with rolled
+      sleeves over a plain cream top, olive-green straight-leg trousers, and white
+      sneakers. Same sharp flat-vector illustration style as the host, fully clothed,
+      never a bare stick figure.'
+    anchor: right
+    voice: Aoede
+scenes:
+  stage:
+    color: '#f4efe4'
+beats:
+- id: b01
+  scene: stage
+  who: Alex
+  say: Four easy payments of twenty-five dollars sounds so much smaller than one
+    hundred dollars.
+  cast:
+    Alex: standing, pointing at the headline, amused
+    Ben: standing, listening, neutral
+  headline: "STILL $100"
+  props: []
+- id: b02
+  scene: stage
+  who: Alex
+  say: That's the whole trick behind "buy now, pay later."
+  cast:
+    Alex: standing, gesturing up at the prop, amused
+    Ben: standing, listening, curious
+  props:
+  - four identical round coin icons in a straight row, each with a dollar sign
+    inside, the first one bright green and glowing, the other three plain grey
+- id: b03
+  scene: stage
+  who: Ben
+  say: Okay, but it's interest-free. What's the actual catch?
+  cast:
+    Alex: standing, neutral
+    Ben: standing, shrugging, curious
+  props:
+  - a large bold question mark with a small dollar-sign coin peeking out from
+    behind it
+- id: b04
+  scene: stage
+  who: Alex
+  say: Miss just one of those four payments and a late fee hits automatically
+    -- and most people miss more than one.
+  cast:
+    Alex: standing, pointing up at the prop, serious
+    Ben: standing, listening, concerned
+  tone: negative
+  props:
+  - a smartphone notification bubble showing a bold red exclamation mark next
+    to a small dollar sign
+- id: b05
+  scene: stage
+  who: Ben
+  say: Wait, people stack these across different apps?
+  cast:
+    Alex: standing, neutral
+    Ben: standing, surprised
+  props:
+  - four identical rounded-square phone app icons fanned out like playing cards,
+    each a different solid color with a small shopping-bag symbol on it
+- id: b06
+  scene: stage
+  who: Alex
+  say: Different apps, different due dates -- easy to lose track of which payment's
+    due when.
+  cast:
+    Alex: standing, gesturing up at the prop, wry
+    Ben: standing, listening, worried
+  tone: negative
+  props:
+  - three round alarm-clock icons overlapping each other in a small cluster,
+    each clock a different solid color
+- id: b07
+  scene: stage
+  who: Ben
+  say: So the "convenience" is kind of the whole trap.
+  cast:
+    Alex: standing, neutral, wry
+    Ben: standing, arms crossed, realizing
+  tone: negative
+  props:
+  - a simple square floor mat viewed from above with a square trapdoor cut into
+    its center, the trapdoor propped open at an angle revealing plain black
+    darkness underneath
+- id: b08
+  scene: stage
+  who: Alex
+  say: Those fees can add up to more than you'd have paid in interest on the
+    same purchase with a normal card.
+  cast:
+    Alex: standing, pointing up at the prop, serious
+    Ben: standing, listening
+  props:
+  - two short stacks of gold coins side by side for comparison, one noticeably
+    taller than the other
+- id: b09
+  scene: stage
+  who: Ben
+  say: So it's not free money. It's just the same money, owed in four separate
+    pieces.
+  cast:
+    Alex: standing, nodding
+    Ben: standing, matter-of-fact
+  props:
+  - one large gold coin at the top splitting apart into four smaller identical
+    coins below it
+- id: b10
+  scene: stage
+  who: Alex
+  say: The purchase was never twenty-five dollars. It was always the hundred
+    -- just spread across a schedule you might miss.
+  cast:
+    Alex: standing, arms wide, landing the point
+    Ben: standing, nodding, sobered
+  emphasis: true
+  props:
+  - a short paper receipt unfolding downward to reveal a much longer hidden receipt
+    underneath it
+- id: cta
+  scene: stage
+  who: Alex
+  say: Agree or disagree? Say it in the comments, and save this for later.
+  cast:
+    Alex: standing, warm inviting expression, gesturing out and down towards the
+      viewer
+    Ben: standing, nodding
+  props:
+  - a bold rounded speech bubble with three small dots inside it
+narrator:
+  voice: Orus

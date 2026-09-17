@@ -20,8 +20,8 @@ this repo. **Run these yourself** — they change IAM on your project and need
 your own credentials by design.
 
 ```bash
-PROJECT_ID="project-58f4f689-36b9-406b-bfa"
-PROJECT_NUMBER="584573644858"
+PROJECT_ID="core-decor-657616"
+PROJECT_NUMBER="75129415228"
 
 # a) let the new repo impersonate the runner service account
 gcloud iam service-accounts add-iam-policy-binding \
@@ -76,7 +76,7 @@ API. Shorts keep using Buffer — don't move them, the API quota won't take it
 
 YouTube refuses service-account uploads to a human-owned channel, so this needs
 a user OAuth token. Already done for you: the **YouTube Data API v3 is enabled**
-on `project-58f4f689-36b9-406b-bfa`. The rest needs your Google account:
+on `core-decor-657616`. The rest needs your Google account:
 
 1. Console → **APIs & Services → OAuth consent screen**, User type **External**.
 2. **Set Publishing status to "In production".** This matters: while it is

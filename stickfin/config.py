@@ -8,7 +8,7 @@ through vertexai=True.
 """
 import os
 
-GCP_PROJECT = os.environ.get("GCP_PROJECT", "project-58f4f689-36b9-406b-bfa")
+GCP_PROJECT = os.environ.get("GCP_PROJECT", "core-decor-657616")
 
 # gemini-2.5-flash-image ("Nano Banana"): confirmed working for this project in
 # us-central1 (core-decor verified 2026-08-22). No "-preview" suffix. Neither

@@ -14,8 +14,10 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from stickfin import config
 
-# Only the Veo 3.1 family is enabled on this GCP project (project-58f4f689...);
-# veo-2.0 / veo-3.0 all 404. Confirmed in core-decor-automation's llms.txt.
+# Only the Veo 3.1 family was enabled on the project this pipeline used to run
+# on; veo-2.0 / veo-3.0 all 404 there. Confirmed in core-decor-automation's
+# llms.txt. Project migrated 2026-09-17 to core-decor-657616 (shared with
+# core-decor-automation) -- re-verify model availability if Veo is used again.
 #   veo-3.1-generate-001       Standard, audio-on, ~$0.75/s
 #   veo-3.1-fast-generate-001  Fast, ~$0.15/s
 #   veo-3.1-lite-generate-001  Lite, audio off, ~$0.05/s

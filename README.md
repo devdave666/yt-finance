@@ -61,7 +61,7 @@ covers image + TTS; it does **not** cover the AI Studio API (calls force
 
 ```bash
 gcloud auth application-default login
-gcloud services enable texttospeech.googleapis.com --project project-58f4f689-36b9-406b-bfa
+gcloud services enable texttospeech.googleapis.com --project core-decor-657616
 pip install -r requirements.txt      # ffmpeg + ffprobe already on PATH; rembg pulls onnxruntime (~180MB model on first run)
 ```
 

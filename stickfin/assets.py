@@ -59,12 +59,11 @@ CHAR_FLOOR = (
 # Flat mid-grey keys out cleanly against both black outlines and white fills.
 MATTE_BG = "on a completely flat solid #8a8a8a grey background, no gradient, no shadow, no floor line, no horizon"
 
-# Opt-in alternate look (Script.cinematic): a full-bleed photoreal cinematic
+# The channel's LOCKED house style since 2026-09-17 (see memory:
+# project-cinematic-pivot -- supersedes the old plain-background-only flat-
+# vector look, which is paused not deleted). A full-bleed photoreal cinematic
 # still per beat -- the character IS in the scene, so there's no separate
-# cutout/compositing step for it (see generate_assets' bg branch below). Not
-# the channel's house style (see memory: plain-background-only) -- this is a
-# one-off experiment kept behind a script-level flag so the default flat-
-# vector / flat-stage pipeline is completely untouched.
+# cutout/compositing step for it (see generate_assets' bg branch below).
 CINEMATIC_STYLE = (
     "Premium 3D animated style -- Pixar/DreamWorks polish mixed with "
     "cinematic realism. Highly detailed surface textures: crisp suit fabric "
@@ -79,14 +78,30 @@ CINEMATIC_STYLE = (
     "for a company, no mechanical funnels spitting out coins for a merger of "
     "funds -- show the literal real-world object or document instead: a "
     "filing cabinet, a folder, a bank statement, a wire transfer screen). "
-    "Any prop bearing text (a document title, a dollar figure, a stamped "
-    "seal, a sign) renders ONLY the exact words given for it below -- if no "
-    "text is specified for an object, it carries NO text or lettering at "
+    "EVERY environment must be visually rich and eye-catching, in warm "
+    "mahogany/gold or cool marble/steel tones -- NEVER a bare, sterile, or "
+    "plain-white/grey set (no plain white desks, walls, or blank white "
+    "screens/panels used as generic set dressing); even a clean modern space "
+    "needs real material texture, colour, and background detail. Any prop "
+    "bearing text (a document title, a dollar figure, a stamped seal, a "
+    "sign, a screen) renders ONLY the exact words given for it below -- if "
+    "no text is specified for an object, it carries NO text or lettering at "
     "all, never an invented label. Rendered text is large, bold, spelled "
     "correctly, and each word appears exactly once -- never a duplicated or "
-    "garbled word. Built for a 9:16 vertical frame: the character or focus "
-    "object sits in the upper and middle thirds, leaving the lower third "
-    "visually uncluttered for caption text."
+    "garbled word. If the character is shown using a personal device (a "
+    "laptop, phone, or tablet) whose screen displays text/numbers the viewer "
+    "needs to read, compose the shot from an angle where that screen "
+    "actually faces the camera (e.g. beside/behind the character looking "
+    "over their shoulder) -- a screen cannot simultaneously face the "
+    "character typing on it head-on AND face the camera head-on; when the "
+    "character is shown frontally at a desk, put any readable text on a "
+    "large wall-mounted monitor, framed document, or printed sign facing the "
+    "camera instead of on their personal device's screen. Built for a 9:16 "
+    "vertical frame: the character or focus object sits in the upper and "
+    "middle thirds. The lower third stays free of busy activity for caption "
+    "text, but is never a flat, empty, undetailed gap -- it still shows real "
+    "environment (floor, desk edge, furniture, wall base) continuing "
+    "naturally into frame."
 )
 
 

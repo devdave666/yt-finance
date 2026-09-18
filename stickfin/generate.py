@@ -316,14 +316,19 @@ def _inject_identity(script_obj: dict) -> None:
 # Every video ends on a branded call-to-action beat -- appended here,
 # guaranteed, rather than asked of the model (SCHEMA_DOC explicitly tells it
 # NOT to end on a CTA, so its own closer stays a real takeaway line; this is
-# a separate beat bolted on after). Rotates through a few lines/scenes so it
-# isn't purely identical every time, same spirit as the topic/direction
-# variety.
+# a separate beat bolted on after). Picked at random (not `len(beats) % n`,
+# which used to pick the line -- Dev noticed almost every video landed on
+# "Which side are you on?" because most scripts happen to land on a beat
+# count congruent to the same residue mod 4, not because it actually fit).
+# Every line below is deliberately generic enough to fit ANY video shape --
+# this channel's content is mostly "here's a hidden mechanism" reveals, not
+# two-sided debates, so a line presupposing a debate ("which side are you
+# on", "agree or disagree") doesn't fit most topics and was dropped.
 _CTA_LINES = [
-    "Have you been through something like this? Comment below, and save this for later.",
     "Comment your take below, then save this so future-you remembers.",
-    "Agree or disagree? Say it in the comments, and save this for later.",
-    "Which side are you on? Comment below, and save this before you need it.",
+    "If this surprised you, comment below and save it for later.",
+    "Comment what surprised you most about this, and save it for later.",
+    "Tell me in the comments if you knew this already, and save it for later.",
 ]
 _CTA_SCENES = [
     "Sarah leans casually against the edge of her mahogany desk, warm confident smile, "
@@ -340,8 +345,8 @@ def _append_cta(script_obj: dict) -> None:
     if not beats:
         return
     n = len(beats)
-    say = _CTA_LINES[n % len(_CTA_LINES)]
-    scene_text = _CTA_SCENES[n % len(_CTA_SCENES)]
+    say = random.choice(_CTA_LINES)
+    scene_text = random.choice(_CTA_SCENES)
     bid = f"cta{n:03d}"
     sid = f"s_{bid}"
     script_obj.setdefault("scenes", {})[sid] = {"bg": scene_text}

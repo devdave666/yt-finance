@@ -169,6 +169,42 @@ SCHEMA_DOC = """Return ONLY a JSON object, no prose, with this shape:
   }
 }
 
+CAMERA CRAFT -- part of what made the channel's best-performing video work was
+real shot variety, not just good writing. Every beat's `scene` must choose a
+shot type on purpose, matched to what that beat needs the viewer to FEEL.
+Never default to the same eye-level medium "she's facing the camera" shot for
+every beat -- that reads flat and static no matter how good the writing is.
+Draw from:
+- Extreme close-up (a hand, a signature, a stamped seal, a single object) for
+  an intimate, ominous, or pivotal reveal -- isolates one detail and creates
+  tension.
+- Low angle (camera below eye level, looking up at her) for a beat about
+  authority, power, or confidence -- reads as commanding.
+- High angle (camera above, looking down) for vulnerability, being caught
+  out, or something going wrong -- reads as small/exposed. Pairs naturally
+  with `tone: negative`.
+- Wide/establishing shot (the whole room, the whole building, a skyline) for
+  scale or grandeur, or to plant a new location -- lets the environment sell
+  the stakes instead of her expression.
+- Eye-level medium shot as the connective/default for a plain explanation
+  beat -- direct and conversational, but should NOT be every beat's choice.
+- A slightly tilted/off-kilter angle, used sparingly, for a beat about a
+  trap, a threat, or something being wrong.
+Before finalizing, scan the sequence of shots across the whole video: if
+three beats in a row land on the same distance/angle, change one. The result
+should read like a director made deliberate choices shot to shot, not a
+slideshow of the same composition against different backdrops.
+
+SCRIPTING STYLE -- the strongest shape, and the one to reach for by default,
+follows ONE concrete throughline like a documentary exposing exactly how she
+operates: not a list of facts, but a mechanism or decision path revealed
+layer by layer, beat by beat ("First she does X. That gets her Y. Then Z
+becomes possible..."). That reads as a story with momentum. Reach for a
+structured side-by-side comparison instead only when the topic is genuinely
+several disconnected categories with no causal chain between them (e.g.
+comparing discrete net-worth tiers) -- and even then, camera variety (above)
+still matters just as much.
+
 Rules:
 - Accurate. Any figure used must be roughly correct.
 - No predictions as fact. Never say a future or uncertain event WILL happen ("the Fed is about to

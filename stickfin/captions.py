@@ -35,6 +35,11 @@ _STYLES = {
     # so it can never collide with the art above it.
     "subtitle":  ("Arial", config.SUBTITLE_FONT_PX, 1, 3, config.CAP_OUTLINE, 2,
                   config.SUBTITLE_MARGIN_V, -1),
+    # cinematic: 1-3 word pop-in, bottom-anchored around chest height (not the
+    # very bottom edge) -- overlaps the live-action-style scene directly,
+    # matching the reference full-bleed photoreal look rather than sitting in
+    # a reserved band above/below the art.
+    "cinematic": ("Arial", 84, 1, 5, config.CAP_OUTLINE, 2, 620, -1),
 }
 
 

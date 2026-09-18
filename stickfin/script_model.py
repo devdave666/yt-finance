@@ -18,7 +18,7 @@ import yaml
 from . import config
 
 _SLUG_RE = re.compile(r"^[a-z0-9][a-z0-9-]{1,60}$")
-_CAPTION_STYLES = {"explainer", "skit", "title", "subtitle", "none"}
+_CAPTION_STYLES = {"explainer", "skit", "title", "subtitle", "cinematic", "none"}
 _ANCHORS = {"left", "center", "right"}
 
 
@@ -80,6 +80,9 @@ class Script:
     scenes: dict[str, Scene]
     beats: list[Beat]
     photoreal_props: bool = False
+    cinematic: bool = False      # full-bleed photoreal scene-per-beat generation
+                                  # instead of the flat-vector cutout-on-flat-stage
+                                  # style; see assets.py's bg-generation branch
 
     @property
     def build_dir(self) -> Path:
@@ -260,4 +263,5 @@ def load_script(path) -> Script:
         scenes=scenes,
         beats=beats,
         photoreal_props=bool(data.get("photoreal_props", False)),
+        cinematic=bool(data.get("cinematic", False)),
     )

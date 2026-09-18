@@ -109,7 +109,9 @@ TTS_STYLE = os.environ.get("STICKFIN_TTS_STYLE", (
     "little skeptical, faintly amused at how rigged the fine print is. Brisk and "
     "clear -- a confident clip, keep it moving. Hold that same brisk pace from "
     "the first word to the last: never rush a single phrase and never let one "
-    "drag out. Enunciate the numbers. No hype, no goofiness, no sing-song."
+    "drag out. Enunciate the numbers. No hype, no goofiness, no sing-song. Read "
+    "the line exactly once, word for word, and stop at the end -- never repeat "
+    "or restart a word or phrase."
 ))
 TTS_SAMPLE_RATE = 48000
 TTS_TARGET_LUFS = -15.0

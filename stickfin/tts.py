@@ -33,9 +33,26 @@ def _esc(t: str) -> str:
     return t.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 
 
+_ELLIPSIS_RE = re.compile(r"\.{2,}")
+
+
+def _tts_text(text: str) -> str:
+    """Text as sent to the synthesiser -- NOT what captions/timing use.
+
+    A leading or trailing "..." is a script-writing device (a beat trailing
+    off into the next one) that reads fine on screen but is a confirmed
+    Gemini-TTS destabiliser: two separate published-video glitches (a
+    stuttered word, a mid-sentence restart) both landed on lines carrying an
+    ellipsis. Collapsing it to a comma keeps the same pacing cue without the
+    literal "..." token reaching the model.
+    """
+    return _ELLIPSIS_RE.sub(",", text).strip(" ,")
+
+
 def _synth_raw(client, text: str, voice: str, out_raw: Path, style: str = "") -> None:
     from google.cloud import texttospeech
 
+    text = _tts_text(text)
     model = config.TTS_MODEL
     if model.startswith("gemini"):
         # Gemini-TTS wants a bare roster name (Charon, Aoede, ...). Map any

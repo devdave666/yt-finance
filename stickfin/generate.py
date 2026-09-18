@@ -5,11 +5,17 @@ cooldown window, asks Gemini (Vertex) to write a script + YouTube metadata,
 validates it by loading it through script_model, and writes:
 
     scripts/auto/<date>-<slug>.yaml       the script
-    scripts/auto/<date>-<slug>.meta.json  {title, description, tags, format}
+    scripts/auto/<date>-<slug>.meta.json  {title, description, tags}
     state/topic_history.json              appended (committed back by CI)
 
-Voices are assigned here, not by the model, so the channel keeps a consistent
-narrator.
+Every script generated here is CINEMATIC format (see assets.py/script_model.py):
+one consistent character, Riley, full-bleed photoreal scenes per beat, instead
+of the channel's original flat-vector faceless cutout-on-flat-stage look.
+Locked in 2026-09-17 after a live test published well (see memory /
+llms.txt for the before/after) -- the flat-vector pipeline code is untouched
+and still runnable by hand for a manually-authored script, but this
+generator no longer produces it. Voices/identity are assigned here, not by
+the model, so the channel keeps one consistent character across every video.
 """
 from __future__ import annotations
 
@@ -21,80 +27,31 @@ from pathlib import Path
 
 import yaml
 
-from . import config, icons, script_model
+from . import config, script_model
 
 TEXT_MODELS = [("us-central1", "gemini-2.5-pro"), ("us-central1", "gemini-2.5-flash")]
 
-CHANNEL_VOICE = "Orus"       # narrator / first character (Gemini-TTS roster), every video
-SECOND_VOICE = "Aoede"       # the other character in a skit
-
-# Every explainer uses this one flat warm backdrop (compositor adds a soft
-# vignette + grain). Not an image-model generation -- it kept drawing a framed
-# border / rectangle around the "backdrop".
-STAGE_COLOR = "#f4efe4"
-
-# The channel's recurring characters -- fixed here (not written by the model) so
-# the figure looks identical across every upload. The model still chooses poses
-# and expressions per beat.
-_FACELESS_HEAD = (
-    "a completely FLAT, BLANK round head like a plain cream-white egg or "
-    "balloon -- absolutely NO skin tone, NO shading, NO jawline, NO cheeks, "
-    "NO chin contour, NO ears, NO nose, and NO realistic human face structure "
-    "of any kind. The head is one flat, evenly-coloured circle with only "
-    "these features drawn directly on its flat surface: a few bold spiky "
-    "black hair strands on top, two small solid-black dot eyes, two short "
-    "sharp angled eyebrows, and a simple drawn mouth for the expression. It "
-    "must read as a faceless, abstract cartoon head -- never a human portrait."
-)
-_FACELESS_HEAD_LONG_HAIR = (
-    "a completely FLAT, BLANK round head like a plain cream-white egg or "
-    "balloon -- absolutely NO skin tone, NO shading, NO jawline, NO cheeks, "
-    "NO chin contour, NO ears, NO nose, and NO realistic human face structure "
-    "of any kind. The head is one flat, evenly-coloured circle with only "
-    "these features drawn directly on its flat surface: long flowing black "
-    "hair that FULLY COVERS THE TOP OF THE HEAD (the crown) with NO bald "
-    "patch or gap between the hairline and where the hair frames the sides -- "
-    "the hair grows from the very top, not just draped over the shoulders --  "
-    "and continues down past the jaw framing both sides (never short or "
-    "spiky). Two small solid-black dot eyes, two short sharp angled "
-    "eyebrows, and a simple drawn mouth for the expression. It must read as "
-    "a faceless, abstract cartoon head -- never a human portrait."
-)
-_BRAND_PATCH = (
-    "a small bold lime-green circular patch on the left chest containing "
-    "ONLY a single bold black capital letter 'A' monogram, centred, NO other "
-    "letters and NO other text of any kind on the patch -- a single "
-    "vertically-symmetric glyph so the mark still reads correctly even when "
-    "the whole figure is mirrored to face the other way"
-)
-HOST_LOOK = (
-    "the channel's host character: a sharp, fully-illustrated flat-vector "
-    f"character, not a stick figure. The head is {_FACELESS_HEAD} A clearly visible mouth "
-    "always shows the expression (flat, frown, grimace, open shout, small "
-    "smile). He wears the channel's signature fit: a fitted charcoal-grey "
-    f"bomber jacket over a plain white tee, with {_BRAND_PATCH}, dark slim "
-    "jeans, and clean white sneakers with a lime-green accent stripe. Real "
-    "clothing rendered in flat colour fills with bold clean black outlines "
-    "and light cel-shading for form -- never a bare line figure, never a "
-    "plain silhouette with no clothing detail visible."
-)
-SECOND_LOOK = (
-    "the channel's second character, a woman (she/her) -- same faceless "
-    f"flat-head construction as the host, but the head is {_FACELESS_HEAD_LONG_HAIR} "
-    "A clearly visible mouth always shows the expression. She wears a "
-    "distinct outfit -- never the host's exact jacket colour or cut -- but "
-    f"carries the SAME channel branding he does: {_BRAND_PATCH}, on a "
-    "cropped rust-orange utility jacket with rolled sleeves over a plain "
-    "cream top, olive-green straight-leg trousers, and white sneakers. Same "
-    "sharp flat-vector illustration style as the host, fully clothed, never "
-    "a bare stick figure."
+# The channel's one recurring character -- fixed here (not written by the
+# model) so she looks and sounds identical across every upload. Wardrobe/
+# style matches the reference sheet that shipped in the first published
+# cinematic video: navy three-piece suit, red tie, gold accents. The model
+# still writes a fresh scene (environment, pose, action) for every beat.
+RILEY_VOICE = "Aoede"
+RILEY_LOOK = (
+    "Riley, the channel's recurring host: a sharp, confident woman with long "
+    "dark hair, wearing a tailored navy three-piece suit, a red silk tie, a "
+    "crisp white dress shirt, and gold accents (a wristwatch, a ring) -- "
+    "authority and wealth, rendered in the channel's premium cinematic style. "
+    "A small lime-green circular brand patch sits discreetly on her left lapel."
 )
 
 STATE = Path("state/topic_history.json")
 AUTO_DIR = Path("scripts/auto")
 
-SYSTEM = """You are the head writer for "Anti Broke", a faceless personal-finance YouTube Shorts channel.
-You write tight, accurate scripts that a stick-figure animation pipeline turns into a vertical video.
+SYSTEM = """You are the head writer for "Anti Broke", a personal-finance YouTube Shorts channel
+fronted by one consistent host character, Riley. You write tight, accurate scripts that a
+cinematic animation pipeline turns into a vertical video: one richly detailed photoreal scene
+per beat, Riley narrating throughout.
 
 Voice: a sharp market analyst who's a little pissed off on the viewer's behalf. Dry, calm, specific.
 The edge comes from exposing how rigged the fine print is -- never from jokes, puns, or mocking the viewer.
@@ -112,10 +69,9 @@ words (and, so, because, but) and contractions (it's, you're, that's). Cut a lin
 only where a real person would actually pause for effect, not on every single beat. If it reads like a
 movie-trailer voiceover instead of a person mid-conversation, rewrite it.
 
-Skit dialogue is a REAL back-and-forth, not two narrators trading alternating punchlines. Let people
-react the way people actually do -- "wait", "hold on", "so basically", "okay but" -- and let a beat just
-be a reaction that sets up the next one instead of every single line landing a fact. Vary who talks more
-in a given exchange; real conversations aren't perfectly one-line-each.
+Never write a line that trails off with "..." -- it reads fine on screen but the voice model
+audibly stutters or restarts on it. End every beat on a normal full stop, comma, or dash instead,
+even a beat that's conceptually "unfinished" (the NEXT beat still lands the twist).
 
 The bar is HIGH. Every video must be genuinely surprising -- the kind of thing a smart person watches
 and thinks "wait, WHAT". If the idea wouldn't make someone stop scrolling and say that out loud, pick a
@@ -128,13 +84,14 @@ or asset, a real (rounded, widely-cited) dollar outcome, landing on a lesson abo
 compounding. You explain how the machine works or what history actually shows; you never tell anyone
 what to buy today, promise future returns, or give individualised advice.
 
-Sameness is a real failure mode, not just a style nitpick -- a channel where every video is "one figure
-states a number next to a chart" is boring no matter how good any single fact is. The topic is the WHAT;
-the FORMAT/STRUCTURE instruction you're given below is the HOW, and you follow it, not your own default.
-If you're given "what if you'd invested" material, do NOT just reach for "$1,000 in [company]'s IPO is
-worth $X today" again -- that shape has already been used repeatedly. Find the angle in the specific
-topic that's actually interesting: the surprising REASON, the person it happened to, the moment things
-could have gone the other way, the counterintuitive comparison -- not a fill-in-the-blank template.
+Sameness is a real failure mode, not just a style nitpick -- a channel where every video opens the same
+way and marches through beats the same shape is boring no matter how good any single fact is. The topic
+is the WHAT; the FORMAT/STRUCTURE instruction you're given below is the HOW, and you follow it, not your
+own default. If you're given "what if you'd invested" material, do NOT just reach for "$1,000 in
+[company]'s IPO is worth $X today" again -- that shape has already been used repeatedly. Find the angle
+in the specific topic that's actually interesting: the surprising REASON, the person it happened to, the
+moment things could have gone the other way, the counterintuitive comparison -- not a fill-in-the-blank
+template.
 
 Never state a prediction, forecast, or a scheduled-but-uncertain future event as a fact. Do NOT open
 "The Fed is about to raise rates", "rates are going up next month", "a recession is coming". Nobody
@@ -149,7 +106,6 @@ what your bank does."). Never imply a recent event that did not happen -- no "ag
 SCHEMA_DOC = """Return ONLY a JSON object, no prose, with this shape:
 
 {
-  "format": "explainer" | "skit",
   "slug": "kebab-case-topic-slug",
   "title": "YouTube title, <=70 chars, specific, no clickbait punctuation spam",
   "description": "2-3 sentence description, then a blank line, then 3-5 hashtags",
@@ -158,37 +114,12 @@ SCHEMA_DOC = """Return ONLY a JSON object, no prose, with this shape:
     "title": "same as title",
     "slug": "same as slug",
     "format": "short",
-    "caption_style": "explainer" for explainer format, "title" for skit format,
-    "title_card": "only for skit format: the persistent meme-style caption, with one emoji",
-    "cast": {
-      "<name>": { "look": "detailed stick-figure description: outline weight, head, face, clothing/props", "anchor": "left"|"center"|"right" }
-      // explainer: exactly ONE character named "host", anchor center
-      // skit: exactly TWO characters, one anchor left and one anchor right
-    },
-    "scenes": {
-      "<name>": {}
-      // a single scene named "stage" -- OMIT "bg", the pipeline fills every
-      // scene with one flat backdrop colour regardless of format
-    },
     "beats": [
       {
         "id": "b01",
-        "scene": "<scene name>",
-        "who": "<character name>",       // the speaker; for explainer always "host"
-        "say": "ONE spoken beat, natural sentence rhythm -- punchy on the hook, can run longer on a beat that's genuinely explaining something, never a paragraph",
-        "cast": { "<name>": "pose and facial expression, e.g. 'standing, pointing to the right, neutral'" },
-        "props": ["at most ONE prop per beat, chosen ONLY from the PROP VOCAB below (exact name), or omit"],
-        "headline": "BEAT 1 ONLY, REQUIRED there: the hook as 2-5 words of huge on-screen text -- a number or a punch (\"$35. EVERY TIME.\", \"YOU'RE LOSING MONEY.\", \"$2.9 TRILLION.\"). Not a full sentence. Omit on every other beat.",
-        "tone": "OPTIONAL: set to \"negative\" on a beat about a loss, a fee, a trap, a threat, or the villain -- the pipeline washes a red edge-vignette over the frame so the visuals match the sting. Omit on neutral, hopeful, or payoff beats. Use it on the 1-3 beats that genuinely bite, never on every beat.",
-        "chart": {   // OPTIONAL -- use on a beat that cites a trend or 2+ real numbers, INSTEAD of a prop
-          "type": "bar" | "line" | "hbar",
-          "title": "<= 6 word chart title",
-          "labels": ["2018","2020","2022","2024"],   // 2-6 short labels
-          "values": [80, 180, 340, 520],             // plain numbers, same length as labels
-          "unit": "$B" | "%" | "",
-          "highlight": <index of the value the narration calls out>,
-          "note": "<= 4 word red callout, or omit"
-        }
+        "say": "ONE spoken beat, natural sentence rhythm -- punchy on the hook, can run longer on a beat that's genuinely explaining something, never a paragraph, NEVER trailing off with '...'",
+        "scene": "A FRESH, richly detailed description of THIS beat's shot only -- never reused from another beat. Must specify: (1) the environment/location, (2) Riley's exact pose, action, and facial expression in it, (3) the lighting. If any document, sign, screen, or object in the shot carries text, WRITE OUT THAT EXACT TEXT here in quotes -- if you don't specify text for an object, the renderer puts NONE on it, so never leave a prop's wording to be invented. A number written on a prop/sign in this beat MUST be the identical figure this beat's `say` states (if `say` says 'fifty thousand dollars', the sign must read '$50,000', not a rounder or different figure). If Riley makes a counting gesture (holding up fingers), the count must exactly match a number named in `say`. Prefer real, literal objects (a filing cabinet, a folder, a bank statement, a phone screen) over a symbolic/storybook stand-in for an idea (no glowing treasure chests for a company, no funnel spitting coins for a merger of funds).",
+        "tone": "OPTIONAL: set to \\"negative\\" on a beat about a loss, a fee, a trap, a threat, or the villain -- the pipeline washes a red edge-vignette over the frame so the visuals match the sting. Omit on neutral, hopeful, or payoff beats. Use it on the 1-3 beats that genuinely bite, never on every beat."
       }
       // As many beats as the story genuinely needs -- end when the explanation and
       // payoff are actually complete, not on a fixed beat count. Don't pad or repeat
@@ -196,8 +127,7 @@ SCHEMA_DOC = """Return ONLY a JSON object, no prose, with this shape:
       // either. A tight, complete story at 20 seconds is just as valid as one that
       // needs 60 -- length follows the explanation, not the other way round. The one
       // real ceiling: Instagram stops treating a video as a Reel past ~90 seconds of
-      // narration, so land it under that. Every character mentioned in a beat's cast
-      // must be in the top-level cast.
+      // narration, so land it under that.
       //
       // BEAT 1 is the whole game -- it decides whether anyone watches beat 2.
       //   `say`: the spoken hook, <= 12 words, ONE of:
@@ -206,8 +136,8 @@ SCHEMA_DOC = """Return ONLY a JSON object, no prose, with this shape:
       //     - a claim that sounds wrong but isn't ("Paying the minimum on a $5,000 card takes over twenty years.")
       //     - loss framed at the viewer ("Right now you're paying interest on things you already paid off.")
       //     - a stakes/aspiration flip ("Two people invest the same money. One ends up with double. Here's why.")
-      //   `headline`: 2-5 words of huge text that IS the hook visually -- the number or the punch.
-      //   `cast`: the host reacting to it (pointing at it, arms wide, unimpressed, alarmed).
+      //   `scene`: Riley reacting to it -- pointing at something, arms wide, unimpressed, alarmed -- in a
+      //     scene that visually states the hook (the exact number/figure on a document, sign, or screen).
       //   NEVER a definition, NEVER "let me explain", NEVER a soft yes/no question. Open on the payoff.
       // BEAT 2 IS THE REHOOK -- not a transition. Re-hook the viewer who nearly swiped: restate the
       //   stakes a sharper way, add the detail that makes it worse or bigger, or name exactly who this
@@ -218,26 +148,8 @@ SCHEMA_DOC = """Return ONLY a JSON object, no prose, with this shape:
       //   turn -- connected is not the same as padded. Name the villain: the fine print, the default
       //   setting, the fee schedule.
       // Last beat before the auto-CTA: land the same punch you opened with -- a one-liner that could
-      //   loop straight back into beat 1. The pipeline reprises the beat-1 hook text on that frame.
-      // Last beat: a memorable one-liner the viewer could repeat -- not a summary, not a call to action.
-      // EVERY beat needs something on screen besides the host: a prop, a chart, or (beat 1) the headline.
-      //   A beat that is just the host talking is a dead frame -- give the last beat a prop too (the
-      //   villain object: the contract, the fine print, the fee schedule, the default toggle).
-      // At most one prop OR one chart per beat. A beat with a chart should not also list a prop.
-      // USE A CHART, not a generic prop icon, on any beat that states a trend, a comparison, a
-      //   before/after, or "X of Y" statistic -- a bare arrow-up/bars-up/calendar icon on a beat
-      //   like that is a missed real number, not a stylistic choice. A data-driven topic (market
-      //   history, any topic with 2+ real figures) should have a chart on MOST of its numeric
-      //   beats, not just one -- err toward more charts, fewer generic icons.
-      // The chart's numbers MUST be ones the narration states and MUST be roughly accurate.
-      // NUMBER MATCH: whatever a beat's `say` states a figure as (a percent, "half", "double",
-      //   a dollar amount), the chart/prop on that SAME beat must show that same figure, not a
-      //   looser or rounder one -- e.g. if the chart shows 46%, `say` should reference 46%
-      //   ("cut to forty-six percent") or "less than half", not the looser "cut in half". A viewer
-      //   who can read catches the mismatch immediately.
-      // Props must be concrete and instantly readable -- not abstract. `comment` and `bookmark`
-      //   are reserved for the closing CTA beat the pipeline appends automatically -- don't use
-      //   them elsewhere.
+      //   loop straight back into beat 1, a memorable line the viewer could repeat -- not a summary,
+      //   not a call to action.
     ]
   }
 }
@@ -258,16 +170,10 @@ Rules:
   (Apple, Amazon, Bitcoin, the S&P 500, Berkshire Hathaway, ...) -- strictly past tense ("would have grown
   to roughly $X"), round widely-cited public figures only (never a suspiciously precise number), and it
   must land on a lesson (time in the market, compounding, diversification) -- never framed as "buy this now".
-  This kind of topic should almost always use a `chart` beat (type "line" for growth-over-time reveals)
-  instead of a prop, since the number IS the hook.
-- explainer = one narrator ("host") explaining to camera; keep gestures simple ("pointing to the right", "shrugging", "arms open").
-- skit = two named, distinct characters (give them different anchors, different poses/energy -- not two
-  copies of the host) in one concrete, specific situation the topic actually implies (a customer and a
-  bank employee, two friends comparing choices, present-you and past-you, a person and their own
-  reflection). Real back-and-forth dialogue -- neither character just recites facts at the other. One of
-  them is wrong, surprised, or caught out by the fact; the punchline lands ON that, in the final beat, not
-  as a tacked-on moral.
-- Every `say` must land in about 1-2 seconds of speech. Short. Punchy. Spoken, not written.
+- Every `say` must land in about 1-2 seconds of speech. Short. Punchy. Spoken, not written. Never ends
+  with "..." (see above -- it destabilises the voice model).
+- Riley is the ONLY character. Every scene features her (unless a beat is explicitly a cutaway to an
+  unnamed third party she's describing, which should be rare).
 """
 
 
@@ -292,7 +198,7 @@ def _pick_topic(themes: dict, history: list[dict]) -> str:
     return random.choice(eligible)
 
 
-def _ask(topic: str, themes: dict, format_hint: str, structure_hint: str) -> dict:
+def _ask(topic: str, themes: dict, structure_hint: str) -> dict:
     # NOTE: keep a reference to the genai Client for the whole call. If it is
     # only a throwaway in an expression (mk().models.generate_content(...)) the
     # SDK's httpx transport gets closed on GC mid-request -> "client has been
@@ -300,17 +206,14 @@ def _ask(topic: str, themes: dict, format_hint: str, structure_hint: str) -> dic
     from google import genai
     from google.genai import types
 
-    vocab = ", ".join(icons.names()) or "(none available -- use no props)"
     prompt = (
         f"{SCHEMA_DOC}\n\n"
-        f"PROP VOCAB (use these exact names, nothing else):\n{vocab}\n\n"
         f"CHANNEL NICHE:\n{themes['niche']}\n\n"
         f"NARRATION VOICE:\n{themes['voice']}\n\n"
         f"HARD RULES:\n- " + "\n- ".join(themes.get("rules", [])) + "\n\n"
         f"TODAY'S TOPIC: {topic}\n\n"
-        f"FORMAT FOR THIS ONE (not your choice -- the channel rotates formats so "
-        f"every video doesn't look the same): \"format\" MUST be \"{format_hint}\". "
-        f"{structure_hint}\n\n"
+        f"STRUCTURE FOR THIS ONE (not your choice -- the channel rotates structures so "
+        f"every video doesn't look the same): {structure_hint}\n\n"
         "Write the video now. JSON only."
     )
     cfg = types.GenerateContentConfig(
@@ -330,121 +233,91 @@ def _ask(topic: str, themes: dict, format_hint: str, structure_hint: str) -> dic
 
 
 def _inject_identity(script_obj: dict) -> None:
-    """Force the channel's fixed voices, character designs and backdrop onto
-    whatever the model returned, so brand identity is stable across uploads."""
-    cast = script_obj.get("cast") or {}
-    for i, name in enumerate(cast):
-        cast[name]["voice"] = CHANNEL_VOICE if i == 0 else SECOND_VOICE
-        cast[name]["look"] = HOST_LOOK if i == 0 else SECOND_LOOK
-    script_obj.setdefault("narrator", {})["voice"] = CHANNEL_VOICE
+    """Force Riley's identity, voice, and the cinematic render pipeline onto
+    whatever the model returned, so the channel's identity is stable across
+    uploads -- the model never picks the character or the visual format."""
+    script_obj["cast"] = {"riley": {"voice": RILEY_VOICE, "look": RILEY_LOOK}}
+    script_obj.setdefault("narrator", {})["voice"] = RILEY_VOICE
+    script_obj["cinematic"] = True
+    script_obj["caption_style"] = "cinematic"
 
-    # every format gets one flat backdrop, never a drawn scene -- a busy
-    # background collides with props/charts and makes chart text hard to read
-    scenes = script_obj.setdefault("scenes", {})
-    if not scenes:
-        scenes["stage"] = {}
-    for name in scenes:
-        scenes[name] = {"color": STAGE_COLOR}
-    only = next(iter(scenes))
-    for beat in script_obj.get("beats", []):
-        beat["scene"] = only
-
-    # drop any prop the model invented that isn't in the committed icon library
-    allowed = set(icons.names())
-    if allowed:
-        for beat in script_obj.get("beats", []):
-            beat["props"] = [p for p in (beat.get("props") or []) if p in allowed][:1]
-
-    # strip left/right from pose directions -- the pose is always generated
-    # facing one way and the compositor mirrors it to face the scene's content,
-    # so an explicit "pointing left" just fights that
-    _dir = re.compile(r",?\s*\b(?:to (?:the|their) |towards? (?:the|their) |"
-                      r"towards? )?(?:left|right)\b", re.I)
-    for beat in script_obj.get("beats", []):
-        cast = beat.get("cast") or {}
-        for cname, pose in list(cast.items()):
-            cast[cname] = re.sub(r"\s{2,}", " ", _dir.sub("", str(pose))).strip(" ,")
-
-    # beat 1 must have a hook headline -- synthesise one from the line if missing
+    scenes: dict = {}
     beats = script_obj.get("beats", [])
-    if beats and not beats[0].get("headline"):
-        say = beats[0].get("say", "")
-        m = re.search(r"\$?\d[\d,]*(?:\.\d+)?\s*(?:billion|trillion|million|percent|%|dollars?)?", say)
-        beats[0]["headline"] = (m.group(0).strip() if m
-                                else " ".join(say.split()[:4]).rstrip(".,"))
-        beats[0]["props"] = []
+    for i, beat in enumerate(beats):
+        bid = str(beat.get("id") or f"b{i:02d}").strip()
+        beat["id"] = bid
+        raw_scene = str(beat.pop("scene", "") or "").strip()
+        sid = f"s_{bid}"
+        scenes[sid] = {"bg": raw_scene}
+        beat["scene"] = sid
+        # single-character narration -- no per-beat cast/pose dict, no prop
+        # icons, no chart overlay in the cinematic pipeline; the scene text
+        # above is the entire visual for the beat.
+        beat.pop("cast", None)
+        beat.pop("props", None)
+        beat.pop("chart", None)
+        beat.pop("headline", None)
+    script_obj["scenes"] = scenes
 
     _append_cta(script_obj)
 
 
-# Every video now ends on a branded call-to-action beat -- appended here,
+# Every video ends on a branded call-to-action beat -- appended here,
 # guaranteed, rather than asked of the model (SCHEMA_DOC explicitly tells it
 # NOT to end on a CTA, so its own closer stays a real takeaway line; this is
-# a separate beat bolted on after). A comment prompt + a save prompt both
-# feed the platform's own distribution algorithm, and the old ending just
-# left that on the table. Rotates through a few lines/icons so it isn't
-# purely identical every time, same spirit as the direction/topic variety.
+# a separate beat bolted on after). Rotates through a few lines/scenes so it
+# isn't purely identical every time, same spirit as the topic/direction
+# variety.
 _CTA_LINES = [
-    ("Have you been through something like this? Comment below, and save this for later.", "comment"),
-    ("Comment your take below -- then save this so future-you remembers.", "bookmark"),
-    ("Agree or disagree? Say it in the comments, and save this for later.", "comment"),
-    ("Which side are you on? Comment below, and save this before you need it.", "bookmark"),
+    "Have you been through something like this? Comment below, and save this for later.",
+    "Comment your take below, then save this so future-you remembers.",
+    "Agree or disagree? Say it in the comments, and save this for later.",
+    "Which side are you on? Comment below, and save this before you need it.",
+]
+_CTA_SCENES = [
+    "Riley leans casually against the edge of her mahogany desk, warm confident smile, "
+    "one hand gesturing invitingly out toward camera. Soft evening light through a "
+    "large office window behind her, city lights beginning to glow outside.",
+    "Riley closes a leather folder on her desk and looks directly at camera with a "
+    "warm, knowing smile, one hand open toward the viewer in an inviting gesture. "
+    "Warm desk-lamp light, soft blue dusk through the window behind her.",
 ]
 
 
 def _append_cta(script_obj: dict) -> None:
     beats = script_obj.get("beats", [])
-    cast = script_obj.get("cast") or {}
-    primary = next(iter(cast), None)
-    if not beats or not primary:
+    if not beats:
         return
-    say, icon = _CTA_LINES[len(beats) % len(_CTA_LINES)]
-    beats.append({
-        "id": f"cta{len(beats):03d}",
-        "scene": beats[-1].get("scene"),
-        "who": primary,
-        "say": say,
-        "cast": {primary: "standing, warm inviting expression, gesturing out and down towards the viewer"},
-        "props": [icon],
-    })
+    n = len(beats)
+    say = _CTA_LINES[n % len(_CTA_LINES)]
+    scene_text = _CTA_SCENES[n % len(_CTA_SCENES)]
+    bid = f"cta{n:03d}"
+    sid = f"s_{bid}"
+    script_obj.setdefault("scenes", {})[sid] = {"bg": scene_text}
+    beats.append({"id": bid, "scene": sid, "say": say})
 
 
 # Picked LRU, same mechanism as _pick_topic (not a fixed rotation -- a fixed
 # cycle of even a dozen shapes is still a pattern a 3x/day viewer notices
-# within days). Left to the model's free choice it picked "explainer" +
-# plain-reveal on literally every one of the first 40+ real generations, so
-# it isn't picked freely either -- but the pool is now large and growing
-# rather than a tight cycle, and cooldown keeps a direction from repeating
-# until most of the others have had a turn.
+# within days). Solo-narration structures only (Riley is the one recurring
+# character now -- see module docstring); the earlier two-character/skit
+# directions (myth-vs-reality, debate, interview, ...) are retired along
+# with the flat-vector pipeline they were written for.
 _DIRECTIONS = [
-    {"id": "reveal", "format": "explainer",
+    {"id": "reveal",
      "hint": "State the surprising fact plainly, then reveal the mechanism. Direct and sharp -- the baseline shape, not a crutch."},
-    {"id": "myth-vs-reality", "format": "skit",
-     "hint": "One character states the common belief everyone assumes is true, confidently, to the other. The other flips it with the real number. A real disagreement, not a lecture in two voices."},
-    {"id": "then-vs-now", "format": "explainer",
+    {"id": "then-vs-now",
      "hint": "Anchor on a concrete before/after comparison across time (a price, a payout, a rule) so the scale of change is visceral, not abstract."},
-    {"id": "relatable-mistake", "format": "skit",
-     "hint": "A specific, mundane moment where one character is caught making this mistake by the other -- a roommate, a partner, a friend noticing the receipt/statement/bill."},
-    {"id": "two-paths", "format": "skit",
-     "hint": "Two characters start from the same point (same job, same paycheck) and make one different choice early on; the beats jump to where each of them ends up."},
-    {"id": "pov-confession", "format": "skit",
-     "hint": "One character confesses a money mistake straight to camera, documentary-testimonial style; the other interrupts or reacts from the side."},
-    {"id": "insider-reveal", "format": "explainer",
+    {"id": "insider-reveal",
      "hint": "Delivered like someone leaking a secret the industry doesn't want said out loud -- conspiratorial energy, not a lecture."},
-    {"id": "countdown", "format": "explainer",
+    {"id": "countdown",
      "hint": "A numbered countdown/listicle shape -- each beat is a distinct point, building to the sharpest one last."},
-    {"id": "debate", "format": "skit",
-     "hint": "Two characters openly argue opposite takes on the same decision; one lands the correct read by the final beat, but both get real lines."},
-    {"id": "explain-like-five", "format": "explainer",
+    {"id": "explain-like-five",
      "hint": "Radically simplify -- explain it the way you'd explain it to a confused friend who's never heard of this, leaning on the most everyday analogy you can find."},
-    {"id": "news-flash", "format": "explainer",
+    {"id": "news-flash",
      "hint": "Delivered like a breaking-news anchor cutting in with urgent energy -- headline-first, short declarative bursts."},
-    {"id": "interview", "format": "skit",
-     "hint": "One character interrogates the other street-interview style -- rapid-fire questions, genuine surprised reactions to the answers."},
-    {"id": "timeline-walk", "format": "explainer",
+    {"id": "timeline-walk",
      "hint": "Walk chronologically through a sequence of moments/events, each beat one step forward in time, building to the payoff at the end."},
-    {"id": "personification", "format": "skit",
-     "hint": "Personify the financial concept itself as a character (Interest, Inflation, the Fine Print) who shows up and confronts the other character directly."},
 ]
 
 
@@ -481,14 +354,13 @@ def generate(out_dir: Path | None = None, dry_topic: str | None = None) -> tuple
 
     topic = dry_topic or _pick_topic(themes, history)
     direction = _pick_direction(history)
-    format_hint = direction["format"]
     structure_hint = f"[{direction['id']}] {direction['hint']}"
     print(f"[generate] topic: {topic}")
-    print(f"[generate] direction: {direction['id']} ({format_hint})  |  {direction['hint'][:70]}...")
+    print(f"[generate] direction: {direction['id']}  |  {direction['hint'][:70]}...")
 
     obj = None
     for attempt in range(3):
-        cand = _ask(topic, themes, format_hint, structure_hint)
+        cand = _ask(topic, themes, structure_hint)
         script_obj = cand["script"]
         script_obj["slug"] = f"{date}-{_slugify(cand.get('slug') or topic)}"
         script_obj["title"] = cand.get("title") or script_obj.get("title") or topic
@@ -499,10 +371,6 @@ def generate(out_dir: Path | None = None, dry_topic: str | None = None) -> tuple
         if script_obj["slug"] in published:
             print(f"  slug collides with an already-published video "
                  f"(attempt {attempt + 1}): {script_obj['slug']}")
-            continue
-        if cand.get("format") != format_hint:
-            print(f"  model ignored the forced format ({cand.get('format')!r} != "
-                 f"{format_hint!r}, attempt {attempt + 1})")
             continue
         _inject_identity(script_obj)
         path = AUTO_DIR / f"{script_obj['slug']}.yaml"
@@ -520,7 +388,6 @@ def generate(out_dir: Path | None = None, dry_topic: str | None = None) -> tuple
 
     meta = {
         "topic": topic,
-        "format": obj.get("format"),
         "title": obj["title"] if "title" in obj else script_obj["title"],
         "description": obj.get("description", ""),
         "tags": obj.get("tags", []),
@@ -530,12 +397,11 @@ def generate(out_dir: Path | None = None, dry_topic: str | None = None) -> tuple
     (AUTO_DIR / f"{script_obj['slug']}.meta.json").write_text(json.dumps(meta, indent=2))
 
     history.append({"date": date, "topic": topic, "slug": script_obj["slug"],
-                    "direction": direction["id"], "format": format_hint})
+                    "direction": direction["id"]})
     STATE.parent.mkdir(parents=True, exist_ok=True)
     STATE.write_text(json.dumps(history, indent=2))
 
-    print(f"[generate] wrote {path}  ({obj.get('format')}, "
-          f"{len(script_obj['beats'])} beats)")
+    print(f"[generate] wrote {path}  ({len(script_obj['beats'])} beats)")
     return path, meta
 
 

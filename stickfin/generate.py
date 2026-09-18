@@ -162,9 +162,16 @@ SCHEMA_DOC = """Return ONLY a JSON object, no prose, with this shape:
       //   at them. Each one still has to earn its place with a real number, a concrete image, or a
       //   turn -- connected is not the same as padded. Name the villain: the fine print, the default
       //   setting, the fee schedule.
-      // Last beat before the auto-CTA: land the same punch you opened with -- a one-liner that could
-      //   loop straight back into beat 1, a memorable line the viewer could repeat -- not a summary,
+      // Second-to-last beat: land the same punch you opened with -- a one-liner that could loop
+      //   straight back into beat 1, a memorable line the viewer could repeat -- not a summary,
       //   not a call to action.
+      // LAST beat, always, is the call-to-action -- write it yourself, don't skip it. It must
+      //   still prompt two actions (comment + save), but phrase them so they clearly react to
+      //   THIS video's specific topic/number/mechanism, not a generic template -- e.g. for a video
+      //   about a hidden fee: "Comment if a bank's ever done this to you, and save this before it
+      //   happens again" -- not "comment your take below". Give it its own `scene`: Sarah addressing
+      //   the viewer directly, warm and inviting, same rules as every other scene (rich environment,
+      //   no plain white, deliberate camera choice).
     ]
   }
 }
@@ -313,17 +320,16 @@ def _inject_identity(script_obj: dict) -> None:
     _append_cta(script_obj)
 
 
-# Every video ends on a branded call-to-action beat -- appended here,
-# guaranteed, rather than asked of the model (SCHEMA_DOC explicitly tells it
-# NOT to end on a CTA, so its own closer stays a real takeaway line; this is
-# a separate beat bolted on after). Picked at random (not `len(beats) % n`,
-# which used to pick the line -- Dev noticed almost every video landed on
-# "Which side are you on?" because most scripts happen to land on a beat
-# count congruent to the same residue mod 4, not because it actually fit).
-# Every line below is deliberately generic enough to fit ANY video shape --
-# this channel's content is mostly "here's a hidden mechanism" reveals, not
-# two-sided debates, so a line presupposing a debate ("which side are you
-# on", "agree or disagree") doesn't fit most topics and was dropped.
+# SCHEMA_DOC now requires the model to write its own final CTA beat, phrased
+# to react to THIS video's specific topic (Dev: a bolted-on generic line
+# "almost never fits our reel" -- true, it doesn't reference anything the
+# video actually said). This is now a FALLBACK ONLY, for the rare case the
+# model skips it -- never the primary path. If it fires often, that's a sign
+# SCHEMA_DOC's instruction needs strengthening, not that these lines need
+# expanding back out.
+# (These generic lines intentionally avoid presupposing a debate -- "which
+# side are you on"/"agree or disagree" doesn't fit most of this channel's
+# "here's a hidden mechanism" content, confirmed by Dev's own feedback.)
 _CTA_LINES = [
     "Comment your take below, then save this so future-you remembers.",
     "If this surprised you, comment below and save it for later.",
@@ -341,8 +347,14 @@ _CTA_SCENES = [
 
 
 def _append_cta(script_obj: dict) -> None:
+    """Fallback only -- see comment above _CTA_LINES. Does nothing if the
+    model's own last beat already reads like a CTA (mentions commenting or
+    saving), which should be the normal case now."""
     beats = script_obj.get("beats", [])
     if not beats:
+        return
+    last_say = str(beats[-1].get("say", "")).lower()
+    if "comment" in last_say or "save" in last_say:
         return
     n = len(beats)
     say = random.choice(_CTA_LINES)
@@ -351,6 +363,7 @@ def _append_cta(script_obj: dict) -> None:
     sid = f"s_{bid}"
     script_obj.setdefault("scenes", {})[sid] = {"bg": scene_text}
     beats.append({"id": bid, "scene": sid, "say": say})
+    print("  ! model didn't write its own CTA beat -- used the generic fallback")
 
 
 # Picked LRU, same mechanism as _pick_topic (not a fixed rotation -- a fixed

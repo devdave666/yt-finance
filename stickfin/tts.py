@@ -152,21 +152,29 @@ def _wps(path: Path, n_words: int, gap_s: float | None = None) -> float:
 
 
 def _polish_pace(path: Path, n_words: int, target: float | None = None,
-                 gap_s: float | None = None) -> float:
-    """Bring a beat to the format's target wps with a pitch-preserving atempo
-    (0.85x-1.28x). Gemini-TTS delivers this voice slow, so this is normally a
-    ~1.2x speed-up for short-form and a gentler nudge for long-form."""
+                 gap_s: float | None = None, lo: float | None = None,
+                 hi: float | None = None) -> float:
+    """Pitch-preserving atempo (0.85x-1.28x) correction for a take that's
+    OUTSIDE the comfortable (lo, hi) pace band -- NOT a push toward one exact
+    number. A take already inside the band is left alone: natural line-to-line
+    pace variation is real, good delivery (a punchy hook reads faster than a
+    longer explainer beat), and force-normalising every take toward a single
+    target made pace feel MORE inconsistent, not less (some lines audibly
+    sped up, some audibly slowed down) -- this only steps in for a genuinely
+    broken take (a stalled/runaway read the retry loop in synthesize()
+    couldn't fully fix)."""
     if n_words < 2:
         return _wps(path, n_words, gap_s)
     target = config.TTS_TARGET_WPS if target is None else target
+    lo = config.TTS_WPS_BAND[0] if lo is None else lo
+    hi = config.TTS_WPS_BAND[1] if hi is None else hi
     wps = _wps(path, n_words, gap_s)
-    factor = target / wps
-    if 0.97 <= factor <= 1.03:
+    if lo <= wps <= hi:
         return wps
     # Gemini-TTS runs slow with this voice, so the usual move is a ~1.2x speed-up;
     # verified clean by ear + critique. Cap at 1.28x (past that atempo warbles);
     # a slower raw take just lands a little under target, which is fine.
-    factor = min(1.28, max(0.85, round(factor, 3)))
+    factor = min(1.28, max(0.85, round(target / wps, 3)))
     tmp = path.with_suffix(".pace.wav")
     run_ffmpeg(["-i", path, "-af", f"atempo={factor}",
                 "-ar", config.TTS_SAMPLE_RATE, "-ac", "1", tmp],
@@ -278,7 +286,8 @@ def synthesize(script, force: bool = False) -> dict:
                         print(f"    {beat.id}: take {take + 1} was {w:.2f} wps "
                               f"(want {lo_wps}-{hi_wps}), re-rolling")
                 best.replace(final)
-                w = _polish_pace(final, n_words, target=target_wps, gap_s=gap_s)
+                w = _polish_pace(final, n_words, target=target_wps, gap_s=gap_s,
+                                 lo=lo_wps, hi=hi_wps)
                 print(f"    {beat.id}: {w:.2f} wps")
             raw.unlink(missing_ok=True)
 

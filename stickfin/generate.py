@@ -9,7 +9,7 @@ validates it by loading it through script_model, and writes:
     state/topic_history.json              appended (committed back by CI)
 
 Every script generated here is CINEMATIC format (see assets.py/script_model.py):
-one consistent character, Riley, full-bleed photoreal scenes per beat, instead
+one consistent character, Sarah, full-bleed photoreal scenes per beat, instead
 of the channel's original flat-vector faceless cutout-on-flat-stage look.
 Locked in 2026-09-17 after a live test published well (see memory /
 llms.txt for the before/after) -- the flat-vector pipeline code is untouched
@@ -31,27 +31,42 @@ from . import config, script_model
 
 TEXT_MODELS = [("us-central1", "gemini-2.5-pro"), ("us-central1", "gemini-2.5-flash")]
 
-# The channel's one recurring character -- fixed here (not written by the
-# model) so she looks and sounds identical across every upload. Wardrobe/
-# style matches the reference sheet that shipped in the first published
-# cinematic video: navy three-piece suit, red tie, gold accents. The model
-# still writes a fresh scene (environment, pose, action) for every beat.
-RILEY_VOICE = "Aoede"
-RILEY_LOOK = (
-    "Riley, the channel's recurring host: a sharp, confident woman with long "
+# The channel's recurring characters -- fixed here (not written by the model)
+# so they look and sound identical across every upload. Wardrobe/style
+# matches the reference sheet that shipped in the first published cinematic
+# video: navy three-piece suit, red tie, gold accents. The model still writes
+# a fresh scene (environment, pose, action) for every beat.
+#
+# Sarah is the default narrator for every auto-generated video (single-
+# character solo narration, same as the validated first upload). Mike is
+# locked and available as a second character for a future two-hander/
+# dialogue format, but `_inject_identity` below doesn't use him yet -- solo
+# Sarah is still the only shape `generate()` produces.
+SARAH_VOICE = "Aoede"
+SARAH_LOOK = (
+    "Sarah, the channel's recurring host: a sharp, confident woman with long "
     "dark hair, wearing a tailored navy three-piece suit, a red silk tie, a "
     "crisp white dress shirt, and gold accents (a wristwatch, a ring) -- "
     "authority and wealth, rendered in the channel's premium cinematic style. "
     "A small lime-green circular brand patch sits discreetly on her left lapel."
+)
+MIKE_VOICE = "Orus"
+MIKE_LOOK = (
+    "Mike, the channel's recurring second character: a sharp, confident man "
+    "with short dark hair, wearing a tailored charcoal three-piece suit, a "
+    "red silk tie, a crisp white dress shirt, and gold accents (a wristwatch, "
+    "a ring) -- authority and wealth, rendered in the channel's premium "
+    "cinematic style. A small lime-green circular brand patch sits discreetly "
+    "on his left lapel."
 )
 
 STATE = Path("state/topic_history.json")
 AUTO_DIR = Path("scripts/auto")
 
 SYSTEM = """You are the head writer for "Anti Broke", a personal-finance YouTube Shorts channel
-fronted by one consistent host character, Riley. You write tight, accurate scripts that a
+fronted by one consistent host character, Sarah. You write tight, accurate scripts that a
 cinematic animation pipeline turns into a vertical video: one richly detailed photoreal scene
-per beat, Riley narrating throughout.
+per beat, Sarah narrating throughout.
 
 Voice: a sharp market analyst who's a little pissed off on the viewer's behalf. Dry, calm, specific.
 The edge comes from exposing how rigged the fine print is -- never from jokes, puns, or mocking the viewer.
@@ -118,7 +133,7 @@ SCHEMA_DOC = """Return ONLY a JSON object, no prose, with this shape:
       {
         "id": "b01",
         "say": "ONE spoken beat, natural sentence rhythm -- punchy on the hook, can run longer on a beat that's genuinely explaining something, never a paragraph, NEVER trailing off with '...'",
-        "scene": "A FRESH, richly detailed description of THIS beat's shot only -- never reused from another beat. Must specify: (1) the environment/location, (2) Riley's exact pose, action, and facial expression in it, (3) the lighting. If any document, sign, screen, or object in the shot carries text, WRITE OUT THAT EXACT TEXT here in quotes -- if you don't specify text for an object, the renderer puts NONE on it, so never leave a prop's wording to be invented. A number written on a prop/sign in this beat MUST be the identical figure this beat's `say` states (if `say` says 'fifty thousand dollars', the sign must read '$50,000', not a rounder or different figure). If Riley makes a counting gesture (holding up fingers), the count must exactly match a number named in `say`. Prefer real, literal objects (a filing cabinet, a folder, a bank statement, a phone screen) over a symbolic/storybook stand-in for an idea (no glowing treasure chests for a company, no funnel spitting coins for a merger of funds).",
+        "scene": "A FRESH, richly detailed description of THIS beat's shot only -- never reused from another beat. Must specify: (1) the environment/location, (2) Sarah's exact pose, action, and facial expression in it, (3) the lighting. If any document, sign, screen, or object in the shot carries text, WRITE OUT THAT EXACT TEXT here in quotes -- if you don't specify text for an object, the renderer puts NONE on it, so never leave a prop's wording to be invented. A number written on a prop/sign in this beat MUST be the identical figure this beat's `say` states (if `say` says 'fifty thousand dollars', the sign must read '$50,000', not a rounder or different figure). If Sarah makes a counting gesture (holding up fingers), the count must exactly match a number named in `say`. Prefer real, literal objects (a filing cabinet, a folder, a bank statement, a phone screen) over a symbolic/storybook stand-in for an idea (no glowing treasure chests for a company, no funnel spitting coins for a merger of funds).",
         "tone": "OPTIONAL: set to \\"negative\\" on a beat about a loss, a fee, a trap, a threat, or the villain -- the pipeline washes a red edge-vignette over the frame so the visuals match the sting. Omit on neutral, hopeful, or payoff beats. Use it on the 1-3 beats that genuinely bite, never on every beat."
       }
       // As many beats as the story genuinely needs -- end when the explanation and
@@ -136,7 +151,7 @@ SCHEMA_DOC = """Return ONLY a JSON object, no prose, with this shape:
       //     - a claim that sounds wrong but isn't ("Paying the minimum on a $5,000 card takes over twenty years.")
       //     - loss framed at the viewer ("Right now you're paying interest on things you already paid off.")
       //     - a stakes/aspiration flip ("Two people invest the same money. One ends up with double. Here's why.")
-      //   `scene`: Riley reacting to it -- pointing at something, arms wide, unimpressed, alarmed -- in a
+      //   `scene`: Sarah reacting to it -- pointing at something, arms wide, unimpressed, alarmed -- in a
       //     scene that visually states the hook (the exact number/figure on a document, sign, or screen).
       //   NEVER a definition, NEVER "let me explain", NEVER a soft yes/no question. Open on the payoff.
       // BEAT 2 IS THE REHOOK -- not a transition. Re-hook the viewer who nearly swiped: restate the
@@ -172,7 +187,7 @@ Rules:
   must land on a lesson (time in the market, compounding, diversification) -- never framed as "buy this now".
 - Every `say` must land in about 1-2 seconds of speech. Short. Punchy. Spoken, not written. Never ends
   with "..." (see above -- it destabilises the voice model).
-- Riley is the ONLY character. Every scene features her (unless a beat is explicitly a cutaway to an
+- Sarah is the ONLY character. Every scene features her (unless a beat is explicitly a cutaway to an
   unnamed third party she's describing, which should be rare).
 """
 
@@ -233,11 +248,11 @@ def _ask(topic: str, themes: dict, structure_hint: str) -> dict:
 
 
 def _inject_identity(script_obj: dict) -> None:
-    """Force Riley's identity, voice, and the cinematic render pipeline onto
+    """Force Sarah's identity, voice, and the cinematic render pipeline onto
     whatever the model returned, so the channel's identity is stable across
     uploads -- the model never picks the character or the visual format."""
-    script_obj["cast"] = {"riley": {"voice": RILEY_VOICE, "look": RILEY_LOOK}}
-    script_obj.setdefault("narrator", {})["voice"] = RILEY_VOICE
+    script_obj["cast"] = {"sarah": {"voice": SARAH_VOICE, "look": SARAH_LOOK}}
+    script_obj.setdefault("narrator", {})["voice"] = SARAH_VOICE
     script_obj["cinematic"] = True
     script_obj["caption_style"] = "cinematic"
 
@@ -275,10 +290,10 @@ _CTA_LINES = [
     "Which side are you on? Comment below, and save this before you need it.",
 ]
 _CTA_SCENES = [
-    "Riley leans casually against the edge of her mahogany desk, warm confident smile, "
+    "Sarah leans casually against the edge of her mahogany desk, warm confident smile, "
     "one hand gesturing invitingly out toward camera. Soft evening light through a "
     "large office window behind her, city lights beginning to glow outside.",
-    "Riley closes a leather folder on her desk and looks directly at camera with a "
+    "Sarah closes a leather folder on her desk and looks directly at camera with a "
     "warm, knowing smile, one hand open toward the viewer in an inviting gesture. "
     "Warm desk-lamp light, soft blue dusk through the window behind her.",
 ]
@@ -299,7 +314,7 @@ def _append_cta(script_obj: dict) -> None:
 
 # Picked LRU, same mechanism as _pick_topic (not a fixed rotation -- a fixed
 # cycle of even a dozen shapes is still a pattern a 3x/day viewer notices
-# within days). Solo-narration structures only (Riley is the one recurring
+# within days). Solo-narration structures only (Sarah is the one recurring
 # character now -- see module docstring); the earlier two-character/skit
 # directions (myth-vs-reality, debate, interview, ...) are retired along
 # with the flat-vector pipeline they were written for.

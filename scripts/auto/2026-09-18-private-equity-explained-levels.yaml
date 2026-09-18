@@ -1,0 +1,172 @@
+slug: 2026-09-18-private-equity-explained-levels
+title: Private Equity Explained Like A Video Game
+format: short
+beats:
+- id: b01
+  say: This is how five pounds turns into ten thousand pounds, completely legally.
+  scene: s_b01
+- id: b02
+  say: Meet Bill. He thinks you're smart with money.
+  scene: s_b02
+- id: b03
+  say: He hands you five pounds. He wants more back.
+  scene: s_b03
+- id: b04
+  say: You agree. Congratulations, that's private equity. Level one.
+  scene: s_b04
+- id: b05
+  say: Level two. Jeff hears about it, and gives you five pounds too.
+  scene: s_b05
+- id: b06
+  say: Now you've got ten pounds. Bill and Jeff are called investors.
+  scene: s_b06
+- id: b07
+  say: You lock it away somewhere safe. That's called a fund.
+  scene: s_b07
+- id: b08
+  say: Level three. You use their money to buy something real.
+  scene: s_b08
+- id: b09
+  say: Ryanair. Ten pounds buys the whole airline.
+  scene: s_b09
+- id: b10
+  say: You get to work. Fewer delays. Cleaner planes.
+  scene: s_b10
+- id: b11
+  say: You also quietly let go of a thousand people.
+  tone: negative
+  scene: s_b11
+- id: b12
+  say: Level four. Everyone loves the airline now.
+  scene: s_b12
+- id: b13
+  say: So you sell the whole company for thirty pounds.
+  scene: s_b13
+- id: b14
+  say: Bill gets his ten back. Jeff gets his ten back.
+  scene: s_b14
+- id: b15
+  say: You keep the rest. Level five is where it gets serious.
+  scene: s_b15
+- id: b16
+  say: You hire a team to hunt for undervalued companies.
+  scene: s_b16
+- id: b17
+  say: They find ten of them. Twenty investors, Bill included, want in.
+  scene: s_b17
+- id: b18
+  say: In total, they hand you one hundred pounds.
+  scene: s_b18
+- id: b19
+  say: The ten companies cost one thousand pounds. You're short by nine hundred.
+  scene: s_b19
+- id: b20
+  say: So you borrow it. Nine hundred pounds, straight from the bank.
+  scene: s_b20
+- id: b21
+  say: A hundred pounds of theirs, nine hundred of the bank's. You buy all ten.
+  scene: s_b21
+- id: b22
+  say: You fix them up, and sell the lot for ten thousand pounds.
+  scene: s_b22
+- id: b23
+  say: Everyone gets paid. But most of that money was never yours to begin with.
+  scene: s_b23
+- id: cta023
+  scene: s_cta023
+  say: Which side are you on? Comment below, and save this before you need it.
+cast:
+  sarah:
+    voice: Aoede
+    look: 'Sarah, the channel''s recurring host: a sharp, confident woman with long
+      dark hair, wearing a tailored navy three-piece suit, a red silk tie, a crisp
+      white dress shirt, and gold accents (a wristwatch, a ring) -- authority and
+      wealth, rendered in the channel''s premium cinematic style. A small lime-green
+      circular brand patch sits discreetly on her left lapel.'
+narrator:
+  voice: Aoede
+cinematic: true
+caption_style: cinematic
+scenes:
+  s_b01:
+    bg: Extreme close-up, low angle. A single dramatic spotlight on a crisp five-pound
+      note held up between two fingers against a near-black background. Shallow depth
+      of field, high tension, high contrast.
+  s_b02:
+    bg: 'Eye-level medium shot. An older man in a modest cardigan, Bill, sits across
+      a small kitchen table from Sarah. Warm afternoon light, a cosy but plain kitchen
+      with real detail: patterned wallpaper, a fruit bowl, family photos on the wall.'
+  s_b03:
+    bg: Close-up on Bill's hand placing a crisp five-pound note into Sarah's open
+      palm across the wooden kitchen table.
+  s_b04:
+    bg: Tight medium shot on Sarah, a small confident smirk, holding the five-pound
+      note up beside her face. In the top corner of the frame, a bold clean graphic
+      overlay reads "LEVEL 1".
+  s_b05:
+    bg: Wide shot in a busy, warm-lit coffee shop. A second man, Jeff, younger and
+      in a blazer, hands Sarah another crisp five-pound note. A bold graphic overlay
+      in the top corner reads "LEVEL 2".
+  s_b06:
+    bg: Close-up on Sarah's hands stacking two five-pound notes together on a polished
+      wooden table.
+  s_b07:
+    bg: Low angle shot. Sarah places the two five-pound notes into a small, elegant
+      brass safe built into a mahogany bookshelf. Warm lamp light.
+  s_b08:
+    bg: Wide establishing shot at dusk on an airport tarmac. Sarah stands confidently
+      in front of a commercial airliner with a plain, unbranded silver-and-red livery,
+      city lights glittering in the distance. A bold graphic overlay reads "LEVEL
+      3".
+  s_b09:
+    bg: Medium shot, low angle looking up at Sarah standing with arms crossed in front
+      of the aircraft, golden hour light, confident expression.
+  s_b10:
+    bg: Eye-level medium shot inside an aircraft cabin. Cleaning staff in plain generic
+      uniforms tidy the seats while Sarah walks the aisle inspecting with a clipboard,
+      satisfied expression.
+  s_b11:
+    bg: High angle shot looking down. Sarah stands alone in a vast, empty airport
+      hangar, one small spotlight on her, the rest of the cavernous space in shadow.
+  s_b12:
+    bg: Wide shot of a busy, bustling airport departure gate full of happy travellers,
+      warm daylight through tall windows. A bold graphic overlay reads "LEVEL 4".
+  s_b13:
+    bg: 'Extreme close-up on a handshake over a glossy boardroom table, a printed
+      term sheet visible beneath it clearly reading "SALE PRICE: £30".'
+  s_b14:
+    bg: Medium shot at the same kitchen table from earlier. Sarah hands Bill and Jeff
+      each a small envelope, both men smiling warmly.
+  s_b15:
+    bg: Low angle, dramatic. Sarah stands alone in a grand, marble-floored office
+      lobby at night, floor-to-ceiling windows behind her. A bold graphic overlay
+      reads "LEVEL 5".
+  s_b16:
+    bg: Wide shot. Sarah stands at the head of a long conference table where a small
+      team of analysts in suits review documents, city skyline visible through floor-to-ceiling
+      windows.
+  s_b17:
+    bg: Medium shot. A large corkboard displays ten small, plain generic company logos
+      pinned up in a grid, Sarah pointing at it while addressing the team.
+  s_b18:
+    bg: 'Extreme close-up on a bank deposit slip on a mahogany desk, clearly printed
+      with "TOTAL DEPOSIT: £100".'
+  s_b19:
+    bg: 'High angle shot looking down at Sarah seated at her desk, a calculator and
+      a document in front of her clearly reading "TOTAL COST: £1,000", concerned expression.'
+  s_b20:
+    bg: 'Eye-level medium shot. Sarah sits across a bank loan officer''s desk, signing
+      a document clearly reading "LOAN AMOUNT: £900".'
+  s_b21:
+    bg: Wide shot at dusk. Sarah stands in front of a row of ten small, plain generic
+      storefronts and office buildings, like a strip of shops.
+  s_b22:
+    bg: 'Extreme close-up on a final contract on a glossy desk, clearly printed with
+      "SALE PRICE: £10,000", a pen resting on it.'
+  s_b23:
+    bg: Tight medium shot, eye-level. Sarah looks directly into the camera with a
+      knowing, satisfied smile, the grand marble lobby from Level 5 behind her.
+  s_cta023:
+    bg: Sarah closes a leather folder on her desk and looks directly at camera with
+      a warm, knowing smile, one hand open toward the viewer in an inviting gesture.
+      Warm desk-lamp light, soft blue dusk through the window behind her.

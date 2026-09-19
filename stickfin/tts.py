@@ -238,7 +238,7 @@ def synthesize(script, force: bool = False) -> dict:
     lo_wps, hi_wps = config.tts_wps_band(fmt)
     target_wps = config.tts_target_wps(fmt)
     gap_s = config.beat_gap_s(fmt)
-    style_base = config.tts_style(fmt)
+    style_base = getattr(script, "tts_style", None) or config.tts_style(fmt)
     client = None
     entries = []
     for i, beat in enumerate(script.beats):

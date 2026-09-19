@@ -83,6 +83,9 @@ class Script:
     cinematic: bool = False      # full-bleed photoreal scene-per-beat generation
                                   # instead of the flat-vector cutout-on-flat-stage
                                   # style; see assets.py's bg-generation branch
+    tts_style: str | None = None  # optional per-script delivery-style override
+                                   # for tts.py's Gemini-TTS prompt; None => the
+                                   # channel's default (config.tts_style(fmt))
 
     @property
     def build_dir(self) -> Path:
@@ -264,4 +267,5 @@ def load_script(path) -> Script:
         beats=beats,
         photoreal_props=bool(data.get("photoreal_props", False)),
         cinematic=bool(data.get("cinematic", False)),
+        tts_style=(str(data["tts_style"]).strip() if data.get("tts_style") else None),
     )

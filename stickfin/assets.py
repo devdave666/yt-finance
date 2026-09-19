@@ -299,6 +299,20 @@ def _pil_or_none(response):
 CHAR_LIBRARY_DIR = Path("assets/char_library")
 _VOICE_TO_LIBCHAR = {"Orus": "host", "Aoede": "second"}
 
+# Persistent, cross-VIDEO cast reference for the cinematic style (Sarah,
+# Mike, ...). Each script build lives in its own build/<slug>/ dir, so
+# without this a character's reference sheet -- and therefore their whole
+# appearance -- was being regenerated FROM SCRATCH (text only) for every new
+# video, with nothing guaranteeing video N's Sarah looks like video N+1's
+# Sarah. Confirmed as a real problem (Dev: a recurring male character was
+# Black in every scene but one, where he was White -- that's scene-to-scene
+# drift within a single video; this directory additionally locks the
+# canonical look ACROSS videos, which is the "no exceptions" bar Dev asked
+# for). The first time a cast name is ever built, its sheet is generated and
+# saved here permanently; every later video reuses this exact file instead
+# of rolling a fresh interpretation of the text description.
+CINEMATIC_CAST_DIR = Path("assets/cinematic_cast")
+
 # keyword tags per library pose, used to match a beat's freeform "pose,
 # expression" text to the closest fixed still. Not exact -- a stylised
 # explainer reads fine off an approximate gesture match.
@@ -747,6 +761,14 @@ def generate_assets(script, plan: dict, force: bool = False) -> None:
             # library character (e.g. "Aoede").
             continue
         out = a / "char" / f"_{name}.png"
+        canonical = CINEMATIC_CAST_DIR / f"{name}.png"
+        if cinematic and canonical.exists() and not force:
+            # reuse the one true cross-video reference instead of rolling a
+            # fresh interpretation of the text description for this build
+            shutil.copyfile(canonical, out)
+            sheets[name] = Image.open(out)
+            print(f"  char sheet {name}  (canonical: {canonical})")
+            continue
         if not out.exists() or force:
             if cinematic:
                 prompt = (
@@ -774,6 +796,12 @@ def generate_assets(script, plan: dict, force: bool = False) -> None:
             if img is None:
                 raise RuntimeError(f"char sheet {name}: no image returned")
             img.save(out)
+            if cinematic:
+                # lock this in as the canonical cross-video reference so
+                # every future build of every future script reuses THIS
+                # exact image instead of rolling a new one
+                CINEMATIC_CAST_DIR.mkdir(parents=True, exist_ok=True)
+                img.save(canonical)
             tag = "" if cinematic else f" (solidity {_solidity(img):.2f})"
             print(f"  char sheet {name}{tag}")
         sheets[name] = Image.open(out)
@@ -795,13 +823,38 @@ def generate_assets(script, plan: dict, force: bool = False) -> None:
             # exactly like the pose-generation call below does.
             refs = [sheets[n] for n in plan["characters"] if n in sheets
                     and re.search(rf"\b{re.escape(n)}\b", sc["bg"], re.I)]
+            # Explicit, repeated, no-exceptions wording -- confirmed live that
+            # a softer "match their face, hair, and outfit" instruction still
+            # let a recurring character's apparent race/ethnicity drift scene
+            # to scene (same video: he read as Black in most scenes, White in
+            # one). Naming race/ethnicity explicitly as something that must
+            # NOT change is the fix, not a vaguer "stay on-model" phrasing.
+            if len(refs) == 1:
+                lock_note = (
+                    " CHARACTER LOCK: the attached reference image is this "
+                    "scene's character -- match their exact face, skin tone, "
+                    "ethnicity, hair texture and colour, and outfit. Do NOT "
+                    "lighten, darken, or otherwise change their apparent "
+                    "race or ethnicity, and do not substitute a different-"
+                    "looking person. This is the SAME person in every single "
+                    "scene of this video -- zero variation allowed.")
+            elif refs:
+                lock_note = (
+                    " CHARACTER LOCK: the attached reference images are this "
+                    "scene's recurring characters, one image per person -- "
+                    "match each one's exact face, skin tone, ethnicity, hair "
+                    "texture and colour, and outfit. Do NOT lighten, darken, "
+                    "or otherwise change anyone's apparent race or ethnicity, "
+                    "and do not substitute a different-looking person for "
+                    "either of them. These are the SAME people in every "
+                    "single scene of this video -- zero variation allowed.")
+            else:
+                lock_note = ""
             contents = [
                 f"{sc['bg']}\n\n{CINEMATIC_STYLE}\n\nCinematic still, full-bleed, "
                 f"filling a {config.aspect_ratio(script.fmt)} "
                 f"{'landscape' if script.fmt == 'wide' else 'vertical'} frame. "
-                "No text, no captions, no borders, no watermark." +
-                (" The reference image shows this scene's recurring character "
-                 "-- match their face, hair, and outfit exactly." if refs else ""),
+                "No text, no captions, no borders, no watermark." + lock_note,
                 *refs,
             ]
             resp = _generate(client, contents, cfg)

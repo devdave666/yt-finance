@@ -52,11 +52,14 @@ SARAH_LOOK = (
 )
 MIKE_VOICE = "Orus"
 MIKE_LOOK = (
-    "Mike, the channel's recurring second character: a sharp, confident man "
-    "with short dark hair, wearing a tailored charcoal three-piece suit, a "
-    "red silk tie, a crisp white dress shirt, and gold accents (a wristwatch, "
-    "a ring) -- authority and wealth, rendered in the channel's premium "
-    "cinematic style. A small lime-green circular brand patch sits discreetly "
+    "Mike, the channel's recurring second character: a racially ambiguous, "
+    "handsome man with warm olive-tan skin, short curly dark hair, and a "
+    "sharp, defined jawline -- features that read as mixed/ambiguous "
+    "heritage rather than any single clearly-identifiable race. Wearing a "
+    "tailored charcoal three-piece suit, a red silk tie, a crisp white dress "
+    "shirt, and gold accents (a wristwatch, a ring) -- authority and wealth, "
+    "rendered in the channel's premium cinematic style. A small lime-green "
+    "circular brand patch sits discreetly "
     "on his left lapel."
 )
 

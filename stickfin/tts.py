@@ -24,6 +24,25 @@ def _client():
     return texttospeech.TextToSpeechClient()
 
 
+_LOCALE_VOICE_RE = re.compile(r"^[a-z]{2}-[A-Z]{2}-")
+
+
+def _is_gemini_voice(voice: str) -> bool:
+    """True for a bare Gemini-TTS roster name (Aoede, Orus, ...), false for a
+    full standard Cloud TTS voice id (en-US-Journey-D, en-US-Chirp3-HD-Charon,
+    en-US-Wavenet-D, ...).
+
+    Deciding this from `config.TTS_MODEL.startswith("gemini")` alone -- the
+    old check -- ignores the actual voice being requested: since TTS_MODEL is
+    always a gemini-* model, EVERY voice silently took the Gemini-TTS branch
+    regardless of its name, including a real standard voice id like
+    "en-US-Journey-D" (whose last '-' segment, "D", isn't a real Gemini
+    roster name and would silently mis-synthesize). The locale prefix is a
+    reliable tell: a Gemini roster name is always a single bare word.
+    """
+    return not _LOCALE_VOICE_RE.match(voice)
+
+
 def _is_ssml_voice(voice: str) -> bool:
     low = voice.lower()
     return not any(k in low for k in ("chirp", "journey", "studio", "casual"))
@@ -54,10 +73,9 @@ def _synth_raw(client, text: str, voice: str, out_raw: Path, style: str = "") ->
 
     text = _tts_text(text)
     model = config.TTS_MODEL
-    if model.startswith("gemini"):
-        # Gemini-TTS wants a bare roster name (Charon, Aoede, ...). Map any
-        # legacy "en-US-Chirp3-HD-Charon" style id down to its last segment.
-        gem_voice = voice.split("-")[-1] if "-" in voice else voice
+    if _is_gemini_voice(voice):
+        # Gemini-TTS wants a bare roster name (Charon, Aoede, ...).
+        gem_voice = voice
         # Gemini-TTS: plain text + a natural-language delivery prompt
         payload = texttospeech.SynthesisInput(
             text=text, prompt=(style or config.TTS_STYLE))

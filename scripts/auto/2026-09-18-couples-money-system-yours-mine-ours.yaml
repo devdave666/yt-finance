@@ -1,0 +1,130 @@
+title: The Yours, Mine, and Ours Money System For Couples
+slug: 2026-09-18-couples-money-system-yours-mine-ours
+format: short
+caption_style: cinematic
+cinematic: true
+narrator:
+  voice: en-US-Journey-D
+cast:
+  sarah:
+    anchor: center
+    voice: Aoede
+    look: 'Sarah, the channel''s recurring host: a sharp, confident woman with long
+      dark hair, wearing a tailored navy three-piece suit, a red silk tie, a crisp
+      white dress shirt, and gold accents (a wristwatch, a ring) -- authority and
+      wealth, rendered in the channel''s premium cinematic style. A small lime-green
+      circular brand patch sits discreetly on her left lapel.'
+  mike:
+    anchor: center
+    voice: en-US-Journey-D
+    look: 'Mike, the channel''s recurring second character: a sharp, confident man
+      with short dark hair, wearing a tailored charcoal three-piece suit, a red silk
+      tie, a crisp white dress shirt, and gold accents (a wristwatch, a ring) -- authority
+      and wealth, rendered in the channel''s premium cinematic style. A small lime-green
+      circular brand patch sits discreetly on his left lapel.'
+scenes:
+  s_b01:
+    bg: Extreme close-up, warm light. Two identical bank cards rest side by side,
+      slightly overlapping, on a wooden table, symbolizing two incomes becoming one
+      plan. Intimate, low lighting.
+  s_b02:
+    bg: Wide shot. Sarah and Mike stand together in a bright, half-unpacked new apartment,
+      moving boxes around them, smiling at each other, warm afternoon light through
+      a large window.
+  s_b03:
+    bg: Medium shot. Sarah and Mike sit across a kitchen table covered in bills and
+      receipts, both looking mildly overwhelmed, cool evening light.
+  s_b04:
+    bg: Close-up, eye-level. Three neatly labeled folders on the table read "YOURS",
+      "MINE", and "OURS" in clean lettering. Sarah's hand arranges them into a row.
+  s_b05:
+    bg: Medium shot, over-the-shoulder behind Sarah and Mike, both looking at a laptop
+      screen between them that faces the camera, displaying a simple banking app screen
+      labeled "OURS -- SHARED ACCOUNT".
+  s_b06:
+    bg: Extreme close-up on a handwritten notebook page with two columns headed "SARAH"
+      and "MIKE", each with a matching entry, a pen resting on top.
+  s_b07:
+    bg: Wide shot of a cozy living room. Sarah relaxes on one side reading a book
+      with a coffee; Mike sits on the other side at a small desk with headphones and
+      a hobby model kit. Warm lamp light connects both halves of the room.
+  s_b08:
+    bg: Close-up on Sarah smiling contentedly, sipping coffee alone, soft natural
+      window light, relaxed body language.
+  s_b09:
+    bg: Medium shot. Sarah and Mike stand together in their home office facing the
+      camera, a large wall-mounted screen behind them (facing the camera) reading
+      "AUTOMATED SAVINGS".
+  s_b10:
+    bg: 'Extreme close-up on the same wall-mounted screen, now showing four simple
+      labeled bars: "EMERGENCY FUND", "HOME", "TRIP", "INVESTING".'
+  s_b11:
+    bg: Warm, cozy wide shot. Sarah and Mike sit together at a small round table with
+      two cups of tea and a lit candle, a wall calendar behind them with one date
+      circled.
+  s_b12:
+    bg: Close-up over their shoulders on a notebook between them with a short handwritten
+      list, both leaning in together, engaged expressions.
+  s_b13:
+    bg: Tight two-shot, eye-level. Sarah and Mike smile warmly at each other across
+      the small table, soft candlelight.
+  s_b14:
+    bg: Eye-level medium shot. Sarah and Mike stand together, facing the camera directly,
+      confident and warm, their bright home behind them.
+  s_b15:
+    bg: Warm two-shot. Sarah and Mike face the camera together, Mike gesturing invitingly
+      toward the viewer, soft evening light through the window behind them.
+beats:
+- id: b01
+  scene: s_b01
+  say: This is the simplest money system for couples who never want to fight about
+    money.
+- id: b02
+  scene: s_b02
+  say: Sarah and Mike fell in love. Soon, two paychecks became one shared life.
+- id: b03
+  scene: s_b03
+  say: But love doesn't decide who pays the rent, whose card covers groceries, or
+    where the vacation money goes.
+  tone: negative
+- id: b04
+  scene: s_b04
+  say: So they use one simple system. Yours. Mine. Ours.
+- id: b05
+  scene: s_b05
+  say: First, ours. One shared account covers rent, bills, groceries, everything they
+    use together.
+- id: b06
+  scene: s_b06
+  say: They each contribute an amount they agree on, split equally or based on income.
+- id: b07
+  scene: s_b07
+  say: Next, yours and mine. Each keeps personal spending money. Coffee, hobbies,
+    little treats.
+- id: b08
+  scene: s_b08
+  say: No permission, no guilt, no interrogation.
+- id: b09
+  scene: s_b09
+  say: Finally, our future. They automate money toward the goals they share.
+- id: b10
+  scene: s_b10
+  say: An emergency fund. A home. A trip. Long-term investing.
+- id: b11
+  scene: s_b11
+  say: Once a month, they have a twenty-minute money date.
+- id: b12
+  scene: s_b12
+  say: They review what they spent, talk about what's next, and agree on where they're
+    headed.
+- id: b13
+  scene: s_b13
+  say: No blame. No surprises. Just one shared plan.
+- id: b14
+  scene: s_b14
+  say: Because couples don't need to combine every dollar. They need to agree on what
+    every dollar is for.
+- id: b15
+  scene: s_b15
+  say: If you and your partner have ever argued about money, try this system, tell
+    us how it goes in the comments, and save this for your next money date.

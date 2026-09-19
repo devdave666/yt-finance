@@ -53,8 +53,9 @@ SARAH_LOOK = (
 MIKE_VOICE = "Orus"
 MIKE_LOOK = (
     "Mike, the channel's recurring second character: a racially ambiguous, "
-    "handsome man with warm olive-tan skin, short curly dark hair, and a "
-    "sharp, defined jawline -- features that read as mixed/ambiguous "
+    "handsome man with a warm, light olive skin tone (a shade lighter than "
+    "deep olive-tan), short curly dark hair, and a sharp, defined jawline -- "
+    "features that read as mixed/ambiguous "
     "heritage rather than any single clearly-identifiable race. Wearing a "
     "tailored charcoal three-piece suit, a red silk tie, a crisp white dress "
     "shirt, and gold accents (a wristwatch, a ring) -- authority and wealth, "

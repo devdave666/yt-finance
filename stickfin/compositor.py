@@ -30,15 +30,32 @@ def _resolve(layer: dict, adir: Path) -> Path | None:
     return p if p.exists() else None
 
 
-def _composite_clip(shot: dict, adir: Path, fmt: str, out: Path) -> None:
+def _composite_clip(shot: dict, adir: Path, fmt: str, out: Path,
+                    cinematic: bool = False) -> None:
     cw, ch = config.canvas(fmt)
     fps, nf = config.FPS, int(shot["frames"])
+    dur_s = nf / fps
 
     inputs: list[str] = []
     if shot.get("scene"):
         bg = adir / "bg" / f"{shot['scene']}.png"
         inputs += ["-loop", "1", "-i", str(bg)]
-        chains = [f"[0:v]scale={cw}:{ch},setsar=1,fps={fps}[b0]"]
+        if cinematic and not shot["layers"]:
+            # A cinematic beat has no character/prop/chart layers to pop in --
+            # the bg IS the whole shot -- so a plain static hold reads dead.
+            # Give it the slow, continuous push-in described for this style
+            # (still images, motion added entirely via camera movement, not a
+            # full 3D render). Wires up config.ZOOM_RATE_PER_S/MAX_ZOOM, which
+            # nothing previously read.
+            target = min(1.0 + config.ZOOM_RATE_PER_S * dur_s, config.MAX_ZOOM)
+            step = (target - 1.0) / max(nf, 1)
+            chains = [
+                f"[0:v]scale={cw}:{ch},setsar=1,"
+                f"zoompan=z='min(zoom+{step:.6f}\\,{target:.4f})':d=1:"
+                f"x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':s={cw}x{ch}:"
+                f"fps={fps}[b0]"]
+        else:
+            chains = [f"[0:v]scale={cw}:{ch},setsar=1,fps={fps}[b0]"]
     else:
         inputs += ["-f", "lavfi", "-i", f"color=c=white:s={cw}x{ch}:r={fps}"]
         chains = ["[0:v]setsar=1[b0]"]
@@ -65,7 +82,6 @@ def _composite_clip(shot: dict, adir: Path, fmt: str, out: Path) -> None:
     centers = [bx + bw / 2 for bx, _, bw, _ in placements]
 
     pop = max(config.POP_IN_S, 0.001)
-    dur_s = nf / fps
     shadow_kinds = {"character", "prop", "chart", "cutout"}
     idx, last, char_seen = 1, "b0", 0
     for i, ((layer, ap, _wh), (x, y, w, h)) in enumerate(zip(resolved, placements)):
@@ -165,7 +181,8 @@ def render_shots(script, timeline: dict) -> Path:
         if shot["kind"] == "live":
             _live_clip(shot, script.fmt, clip)
         else:
-            _composite_clip(shot, adir, script.fmt, clip)
+            _composite_clip(shot, adir, script.fmt, clip,
+                            cinematic=script.cinematic)
         paths.append(clip)
 
     if config.VEO_HOOK and paths:

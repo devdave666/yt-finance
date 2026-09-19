@@ -136,16 +136,22 @@ def check(script, run_critique: bool = True) -> QAResult:
         res.blockers.append("no rendered video")
 
     # ---- pace consistency (the big one) ----
+    # Thresholds widened alongside config.TTS_WPS_BAND (2.0-4.2, a 2.1x sanity
+    # range) -- tts.py no longer force-normalises every take toward one exact
+    # wps, so natural line-to-line variation within that band is expected,
+    # good delivery now, not a defect. These only need to catch a spread
+    # BEYOND what the (now wide) band itself allows -- i.e. a real outlier
+    # take that slipped through the retry loop.
     spread = narration.get("wps_spread", 1.0)
-    if spread > 1.8:
+    if spread > 2.3:
         wps = ", ".join(f"{b['id']}:{b['wps']}" for b in narration["beats"] if b.get("wps"))
         res.blockers.append(f"speech pace jumps around ({spread}x spread) -- {wps}")
-    elif spread > 1.55:
+    elif spread > 2.0:
         res.warnings.append(f"speech pace a bit uneven ({spread}x)")
 
     for b in narration["beats"]:
         w = b.get("wps")
-        if w and (w < 2.0 or w > 3.9):
+        if w and (w < 1.8 or w > 4.4):
             res.warnings.append(f"beat {b['id']} at {w} wps (outside natural range)")
         if b.get("wps") and (b["speech_end_s"] - b["speech_start_s"]) < 0.25:
             res.blockers.append(f"beat {b['id']} has words but no detected speech")

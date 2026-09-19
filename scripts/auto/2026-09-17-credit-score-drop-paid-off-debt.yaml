@@ -1,0 +1,84 @@
+title: Why Paying Off Debt Can Hurt Your Credit Score
+slug: 2026-09-17-credit-score-drop-paid-off-debt
+format: short
+beats:
+- id: b01
+  say: You just paid off your last loan. So why did your credit score go down?
+  scene: s_b01
+- id: b02
+  say: No, it’s not a mistake. The system is designed to see that as a new risk.
+  tone: negative
+  scene: s_b02
+- id: b03
+  say: First, scoring models want to see a 'credit mix'—different types of debt at
+    once.
+  scene: s_b03
+- id: b04
+  say: When you close your last loan, your 'mix' is gone. To the algorithm, that's
+    a downgrade.
+  tone: negative
+  scene: s_b04
+- id: b05
+  say: Second, about fifteen percent of your score is the average age of your accounts.
+  scene: s_b05
+- id: b06
+  say: Closing your oldest account, even when it's paid off, can lower that average
+    instantly.
+  tone: negative
+  scene: s_b06
+- id: b07
+  say: So you did the responsible thing, and the system flagged you as less reliable.
+    It's not fair, it's just how the machine works.
+  scene: s_b07
+- id: cta007
+  scene: s_cta007
+  say: Which side are you on? Comment below, and save this before you need it.
+cast:
+  sarah:
+    voice: Aoede
+    look: 'Sarah, the channel''s recurring host: a sharp, confident woman with long
+      dark hair, wearing a tailored navy three-piece suit, a red silk tie, a crisp
+      white dress shirt, and gold accents (a wristwatch, a ring) -- authority and
+      wealth, rendered in the channel''s premium cinematic style. A small lime-green
+      circular brand patch sits discreetly on her left lapel.'
+narrator:
+  voice: Aoede
+cinematic: true
+caption_style: cinematic
+scenes:
+  s_b01:
+    bg: Eye-level medium shot. Sarah stands in a sleek, modern home office with warm
+      wood paneling. She holds a smartphone towards the camera, looking annoyed. The
+      phone screen displays a credit score app with a large number '742' and a prominent
+      red arrow pointing down next to it, labeled '-15 POINTS'.
+  s_b02:
+    bg: Low-angle shot. Sarah leans forward conspiratorially over a dark, polished
+      mahogany table in a dimly lit, executive-style room. The only light source is
+      a sharp key light from the side, casting shadows across her face, making her
+      look like an insider leaking a secret.
+  s_b03:
+    bg: 'Wide shot. Sarah stands beside a large, glowing monitor on a dark marble
+      wall. The monitor displays a clean pie chart graphic under the heading ''CREDIT
+      MIX: HEALTHY''. The chart has two distinct, brightly colored sections labeled
+      ''REVOLVING CREDIT (Cards)'' and ''INSTALLMENT LOAN (Auto/Student)''.'
+  s_b04:
+    bg: 'Extreme close-up on the monitor from the previous shot. The ''INSTALLMENT
+      LOAN'' slice of the pie chart flashes, then turns grey. A stark red ''X'' animates
+      over that section, and the heading changes to ''CREDIT MIX: WEAK''.'
+  s_b05:
+    bg: 'Medium shot. Sarah is in a quiet, impressive library with floor-to-ceiling
+      shelves of old, leather-bound books. She pulls a heavy, dusty ledger from a
+      shelf and blows a bit of dust off the cover, which reads ''ACCOUNT HISTORY:
+      EST. 2008''.'
+  s_b06:
+    bg: 'High-angle shot looking down. Sarah stands over a sleek, modern paper shredder.
+      She solemnly feeds a document into it. The top of the document is clearly visible
+      as it goes in, reading ''ACCOUNT PAID IN FULL & CLOSED — OPENED: 15 YEARS AGO''.'
+  s_b07:
+    bg: Tight medium shot, eye-level. Sarah looks directly into the camera with a
+      calm, deadpan expression. The background is the same sleek office from the first
+      beat, but the focus is entirely on her face and its frank, unimpressed look.
+  s_cta007:
+    bg: Sarah closes a leather folder on her desk and looks directly at camera with
+      a warm, knowing smile, one hand open toward the viewer in an inviting gesture.
+      Warm desk-lamp light, soft blue dusk through the window behind her.

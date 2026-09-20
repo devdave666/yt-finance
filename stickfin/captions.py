@@ -28,7 +28,13 @@ _STYLES = {
     # name -> (Font, Size, BorderStyle, Outline, Outline colour, Align, MarginV, Bold)
     "explainer": ("Arial", 96, 1, 6, config.CAP_OUTLINE, 8, 360, -1),
     "skit":      ("Arial", 66, 3, 6, "&H00000000", 8, 320, -1),
-    "title":     ("Arial", 58, 3, 8, "&H00000000", 8, 250, -1),
+    # Big, alone, dead-centre -- the ONE hook sentence covering beat 1's full
+    # duration, nothing else on screen with it (see captions.build's `style
+    # == "title"` branch). Outline-only (no opaque box) to match the clean
+    # cinematic look, not the old flat-vector meme-caption box this style
+    # used to be tuned for -- if the flat-vector "skit" format is ever
+    # reactivated, revisit this (see memory: project-cinematic-pivot).
+    "title":     ("Arial", 110, 1, 10, config.CAP_OUTLINE, 5, 0, -1),
     # 16:9 long-form: a normal lower-third subtitle, not a scroll-stopper.
     # Alignment 2 = bottom-centre, sitting inside layout's reserved bottom band
     # -- which is computed from exactly these numbers (config.subtitle_band_frac),
@@ -43,9 +49,25 @@ _STYLES = {
 }
 
 
+def _style_line(name, tup):
+    font, size, border, outline, oc, align, marginv, bold = tup
+    return (f"Style: {name},{font},{size},{_WHITE},{_WHITE},{oc},{oc},{bold},0,0,0,"
+            f"100,100,0,0,{border},{outline},1,{align},60,60,{marginv},1")
+
+
 def _header(fmt, style_name):
     w, h = config.canvas(fmt)
-    font, size, border, outline, oc, align, marginv, bold = _STYLES[style_name]
+    style_lines = [_style_line("Cap", _STYLES[style_name])]
+    if style_name == "title":
+        # "title" mode: beat 1 gets its own big/centred "Title" style (the
+        # lone hook sentence); "Cap" -- used by every reveal caption from
+        # beat 2 on, via _reveal()'s hardcoded style name -- is repointed at
+        # the normal cinematic caption size instead of the title style's own
+        # (deliberately oversized) look, so the rest of the video isn't
+        # captioned in giant centred text too.
+        style_lines = [_style_line("Cap", _STYLES["cinematic"]),
+                       _style_line("Title", _STYLES["title"])]
+    styles_block = "\n".join(style_lines)
     return f"""[Script Info]
 ScriptType: v4.00+
 PlayResX: {w}
@@ -55,7 +77,7 @@ ScaledBorderAndShadow: yes
 
 [V4+ Styles]
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
-Style: Cap,{font},{size},{_WHITE},{_WHITE},{oc},{oc},{bold},0,0,0,100,100,0,0,{border},{outline},1,{align},60,60,{marginv},1
+{styles_block}
 
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
@@ -274,8 +296,12 @@ def build(script, out_path):
         # for the whole video.
         beats = narration["beats"]
         b1_dur = beats[0]["duration_s"] if beats else 0.0
-        lines.append(f"Dialogue: 0,{_ts(0)},{_ts(b1_dur)},Cap,,0,0,0,,"
-                     f"{{\\fad(150,0)}}{_wrap(script.title_card or script.title, 24)}")
+        # \fad(in,out) fades out over the LAST 300ms of this line's own
+        # Start-End window (which is exactly beat 1's duration) -- so it's
+        # always fully gone before beat 2's reveal caption starts at b1_dur.
+        # Titles and captions never overlap.
+        lines.append(f"Dialogue: 0,{_ts(0)},{_ts(b1_dur)},Title,,0,0,0,,"
+                     f"{{\\fad(150,300)}}{_wrap(script.title_card or script.title, 14)}")
         t = b1_dur
         for entry in beats[1:]:
             d = entry["duration_s"]

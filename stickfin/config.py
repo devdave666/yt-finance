@@ -268,5 +268,12 @@ def subtitle_band_frac(canvas_h: int) -> float:
 CAP_SPOKEN = "&H0042B37C"     # #7CB342 brand green (ASS is &HBBGGRR)
 CAP_PENDING = "&H00FFFFFF"    # white
 CAP_OUTLINE = "&H00181818"    # near-black
-ZOOM_RATE_PER_S = 0.05
-MAX_ZOOM = 1.25
+# Raised 2026-09-19 (Dev: "the last reel died in the first 3 seconds... a
+# frozen image reads as a photo and people swipe instantly") -- 0.05/s took
+# 2 full seconds to reach a barely-visible 10% zoom, which doesn't read as
+# motion at opening-hook stakes. At 0.18/s a 2-second hook shot reaches a
+# clearly perceptible 36% push-in (clamped to MAX_ZOOM); anything longer
+# just holds at the cap instead of continuing to creep, so this doesn't
+# make a long beat look over-zoomed.
+ZOOM_RATE_PER_S = 0.18
+MAX_ZOOM = 1.4

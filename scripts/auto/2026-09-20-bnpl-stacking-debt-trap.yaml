@@ -1,0 +1,72 @@
+title: The Buy Now Pay Later Trap Nobody Tracks
+slug: 2026-09-20-bnpl-stacking-debt-trap
+format: short
+caption_style: title
+title_card: ONE IN FOUR BUY NOW PAY LATER PURCHASES IS FOR GROCERIES.
+cinematic: true
+narrator:
+  voice: Aoede
+tts_style: You're talking directly to a friend about money -- warm, natural, conversational
+  pace. Real pauses between thoughts, natural emphasis on the words that matter, like
+  you genuinely mean it. Not a pitch, not brisk news-anchor energy -- unhurried and
+  sincere. Read the line exactly once, word for word, and stop at the end -- never
+  repeat or restart a word or phrase.
+cast:
+  sarah:
+    anchor: center
+    voice: Aoede
+    look: 'Sarah, the channel''s recurring host: a sharp, confident woman with long
+      dark hair, wearing a tailored navy three-piece suit, a red silk tie, a crisp
+      white dress shirt, and gold accents (a wristwatch, a ring) -- authority and
+      wealth, rendered in the channel''s premium cinematic style. A small lime-green
+      circular brand patch sits discreetly on her left lapel.'
+scenes:
+  s_b01:
+    bg: Extreme close-up, low angle. Sarah holds a grocery receipt in one hand and
+      a phone showing a generic "Pay in 4" checkout screen in the other (no legible
+      brand names), skeptical and serious expression, direct eye contact with camera.
+      Warm-to-cool dual lighting, modern kitchen-office blend.
+  s_b02:
+    bg: Medium shot. Sarah stands with arms slightly open in an explaining gesture,
+      serious expression, cool lighting, modern office backdrop.
+  s_b03:
+    bg: Close-up on a printed credit report document on a desk. Sarah's finger points
+      to a section of the page. Warm desk-lamp light.
+  s_b04:
+    bg: Wide shot. Sarah stands beside a large wall-mounted screen facing the camera,
+      her face clearly visible beside it, displaying five small generic app-icon squares
+      multiplying across the screen. Cool-to-warm dual lighting.
+  s_b05:
+    bg: 'Extreme close-up on the same wall-mounted screen, framed tighter on bold
+      text: "63%" above the label "HAVE MULTIPLE LOANS ACTIVE". Cool blue light.'
+  s_b06:
+    bg: 'Wide shot. Sarah stands well to one side, face and body fully visible and
+      unobstructed, gesturing toward a large wall-mounted screen beside her displaying
+      a clean two-line graphic: "CAN''T AFFORD IT ONCE" on the first line and "CAN''T
+      AFFORD IT 4 TIMES EITHER" on the second line, bold and legible. Warm gold lighting.'
+  s_b07:
+    bg: Eye-level medium shot, direct to camera. Sarah leans in slightly, genuinely
+      curious and inviting expression, warm inviting lighting, soft office background.
+beats:
+- id: b01
+  scene: s_b01
+  say: One in four Buy Now Pay Later purchases right now is for groceries.
+- id: b02
+  scene: s_b02
+  say: That's not a payment plan. That's a warning sign.
+- id: b03
+  scene: s_b03
+  say: These loans don't show up on your credit report.
+- id: b04
+  scene: s_b04
+  say: So you can stack four or five of them, and nothing stops you.
+- id: b05
+  scene: s_b05
+  say: 63% of users already have more than one loan active at once.
+- id: b06
+  scene: s_b06
+  say: If you can't afford it in one payment, splitting it into four doesn't change
+    that.
+- id: b07
+  scene: s_b07
+  say: Have you ever stacked more than one of these without realizing it?

@@ -47,11 +47,22 @@ def _composite_clip(shot: dict, adir: Path, fmt: str, out: Path,
             # (still images, motion added entirely via camera movement, not a
             # full 3D render). Wires up config.ZOOM_RATE_PER_S/MAX_ZOOM, which
             # nothing previously read.
+            #
+            # z MUST be computed as an absolute function of `on` (zoompan's
+            # own output-frame counter), NOT as a `zoom+step` accumulator --
+            # confirmed live (Dev: "there is no motion at all in the first
+            # frame") that the accumulator never actually advances past a
+            # few-pixel rounding difference when the source is a single
+            # looped still image (`-loop 1 -i file.png`): zoompan doesn't
+            # reliably persist `zoom` frame-to-frame from a looped stream the
+            # way it does from a real decoded video. Driving it off `on`
+            # instead has no such dependency and was verified frame-by-frame
+            # (first vs. last frame of a real shot) to actually change.
             target = min(1.0 + config.ZOOM_RATE_PER_S * dur_s, config.MAX_ZOOM)
-            step = (target - 1.0) / max(nf, 1)
+            rate = (target - 1.0) / max(nf, 1)
             chains = [
                 f"[0:v]scale={cw}:{ch},setsar=1,"
-                f"zoompan=z='min(zoom+{step:.6f}\\,{target:.4f})':d=1:"
+                f"zoompan=z='min(1+{rate:.6f}*on\\,{target:.4f})':d=1:"
                 f"x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':s={cw}x{ch}:"
                 f"fps={fps}[b0]"]
         else:

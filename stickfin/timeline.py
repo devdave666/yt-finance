@@ -149,6 +149,7 @@ def plan(script, narration: dict) -> dict:
             shot = {
                 "beat_id": beat.id, "index": k, "n": n_holds,
                 "start_frame": f0, "frames": nf,
+                "beat_frames": beat_frames, "hold_start_in_beat": f0 - frame_cursor,
                 "start_s": round(f0 / fps, 3), "dur_s": round(nf / fps, 3),
                 "kind": "live" if beat.is_live else "composite",
                 "scene": None if beat.is_live else beat.scene,

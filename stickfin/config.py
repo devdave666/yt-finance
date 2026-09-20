@@ -268,12 +268,17 @@ def subtitle_band_frac(canvas_h: int) -> float:
 CAP_SPOKEN = "&H0042B37C"     # #7CB342 brand green (ASS is &HBBGGRR)
 CAP_PENDING = "&H00FFFFFF"    # white
 CAP_OUTLINE = "&H00181818"    # near-black
-# Raised 2026-09-19 (Dev: "the last reel died in the first 3 seconds... a
-# frozen image reads as a photo and people swipe instantly") -- 0.05/s took
-# 2 full seconds to reach a barely-visible 10% zoom, which doesn't read as
-# motion at opening-hook stakes. At 0.18/s a 2-second hook shot reaches a
-# clearly perceptible 36% push-in (clamped to MAX_ZOOM); anything longer
-# just holds at the cap instead of continuing to creep, so this doesn't
-# make a long beat look over-zoomed.
-ZOOM_RATE_PER_S = 0.18
-MAX_ZOOM = 1.4
+# Ken Burns push-in for a cinematic scene-only shot (compositor.py). Total
+# zoom GAIN for a beat is a function of that beat's own full duration (across
+# however many holds it's split into), not a fixed rate -- a fixed %/s rate
+# either finishes early and freezes for a long beat, or whips too fast for a
+# short one; Dev caught both ("some zoom ins are way too fast and repeats if
+# the zoom reaches the end... make sure if speech is small zoom is not super
+# fast"). gain(duration) = ZOOM_MAX_GAIN * duration / (duration +
+# ZOOM_HALF_SATURATION_S) -- a saturating curve: near 0 for a very short
+# beat (gentle, not a whip), asymptotically approaching ZOOM_MAX_GAIN for a
+# long one, and by construction (rate = gain / duration) ALWAYS reaches
+# exactly `1 + gain` on the beat's own last frame, never before -- so it can
+# never finish early and hold static either.
+ZOOM_MAX_GAIN = 0.35            # asymptotic max zoom (35%) for a very long beat
+ZOOM_HALF_SATURATION_S = 2.5    # beat duration at which gain reaches half of max

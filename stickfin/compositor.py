@@ -58,11 +58,37 @@ def _composite_clip(shot: dict, adir: Path, fmt: str, out: Path,
             # way it does from a real decoded video. Driving it off `on`
             # instead has no such dependency and was verified frame-by-frame
             # (first vs. last frame of a real shot) to actually change.
-            target = min(1.0 + config.ZOOM_RATE_PER_S * dur_s, config.MAX_ZOOM)
-            rate = (target - 1.0) / max(nf, 1)
+            #
+            # The target/rate are sized off the WHOLE BEAT's duration
+            # (`beat_frames`), not just this hold's own frame count, and the
+            # `on` counter is offset by how many frames of the beat already
+            # played in an EARLIER hold (`hold_start_in_beat`). A beat whose
+            # line is long enough to need multiple holds still shows the
+            # exact same background on every hold (see timeline.py) -- without
+            # this, each hold is a separate ffmpeg process whose `on` restarts
+            # at 0, so the zoom visibly snapped back to 1.0 and restarted at
+            # every cut instead of continuing (Dev: "zoom... repeats if it
+            # reaches the end"). Sizing off the per-hold duration also made
+            # short holds of a long beat zoom much faster than intended
+            # (Dev: "some zoom ins are way too fast") since each hold's target
+            # was computed as if it were the whole shot.
+            beat_frames = int(shot.get("beat_frames", nf))
+            hold_offset = int(shot.get("hold_start_in_beat", 0))
+            beat_dur_s = beat_frames / fps
+            gain = config.ZOOM_MAX_GAIN * beat_dur_s / (beat_dur_s + config.ZOOM_HALF_SATURATION_S)
+            target = 1.0 + gain
+            rate = gain / max(beat_frames, 1)
+            # Pre-upscale well past the canvas size before zoompan crops+
+            # scales every frame -- without this the crop position rounds to
+            # whole SOURCE pixels each frame, and at this rate that rounding
+            # step is coarse enough to show up as a visible micro-jitter/shake
+            # (Dev: "there is a little shake in the motion"). Cropping from a
+            # much larger canvas gives the same rounding sub-pixel headroom at
+            # the final output size, so it disappears.
+            up_w, up_h = cw * 4, ch * 4
             chains = [
-                f"[0:v]scale={cw}:{ch},setsar=1,"
-                f"zoompan=z='min(1+{rate:.6f}*on\\,{target:.4f})':d=1:"
+                f"[0:v]scale={up_w}:{up_h}:flags=lanczos,setsar=1,"
+                f"zoompan=z='min(1+{rate:.6f}*(on+{hold_offset})\\,{target:.4f})':d=1:"
                 f"x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':s={cw}x{ch}:"
                 f"fps={fps}[b0]"]
         else:

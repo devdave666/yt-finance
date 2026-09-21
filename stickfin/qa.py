@@ -115,8 +115,11 @@ def check(script, run_critique: bool = True) -> QAResult:
     # the Shorts window would reject every long-form video outright. The short
     # window itself is no longer a tight scroll-stopper target -- scripts now
     # run as long as the story genuinely needs, so this only enforces the real
-    # platform ceiling: Instagram stops treating a video as a Reel past ~90s.
-    lo_s, hi_s = (150.0, 1500.0) if script.fmt == "wide" else (12.0, 90.0)
+    # platform ceiling: Instagram Reels currently top out at 3 minutes (was
+    # ~90s at an earlier point, which is why this used to be a tighter 90s cap
+    # -- confirmed stale when a genuine 90-120s narrative short, built exactly
+    # to spec, got hard-blocked at 111s for no real platform reason).
+    lo_s, hi_s = (150.0, 1500.0) if script.fmt == "wide" else (12.0, 180.0)
     total = narration["total_s"]
     if not (lo_s <= total <= hi_s):
         res.blockers.append(

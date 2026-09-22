@@ -6,28 +6,217 @@ trial-and-error across multiple sessions to establish, without re-deriving
 it from scratch or repeating fixes already made (or mistakes already
 caught) once.
 
+## READ THIS FIRST: the channel's live identity is the cinematic pipeline, on `test`
+
+Everything below this section (character library, flat-vector props, the old
+"Starting a new chat" callout) describes the pipeline as it stood through
+2026-09-16, on `main`. As of 2026-09-17 (`b3181de`, memory:
+project-cinematic-pivot) the channel's actual identity is a full-bleed
+photoreal-cartoon cinematic style with two locked recurring characters,
+Sarah and Mike — and it ONLY exists on the `test` branch, which was never
+merged into `main`. If you're picking up this repo fresh and `main`/this
+worktree doesn't have `assets/cinematic_cast/`, you are looking at the
+PAUSED pipeline — check `git log --all --oneline | grep -i cinematic` and
+switch to (or branch off) `test` before doing any real channel work. See
+"## Cinematic pipeline (current, `test` branch)" further down for the full
+current workflow, including how to do a "style-remake" request (recreate a
+reference reel's animation style/hook formula with our own characters and
+original narration) end to end.
+
 ## Starting a new chat? Paste this to the new AI first
 
 > I'm continuing work on "Anti Broke" (stickfin), an autonomous personal-finance
 > Shorts channel. Read `llms.txt` at the repo root first, in full — it has the
 > architecture (also see README.md/SETUP.md) and everything fixed across every
-> session so far. Two things from the most recent session matter most before
-> you touch anything:
-> 1. Character art is a FIXED pose library (unchanged, never regenerate it
->    live) — props/pictures are now per-video Nano Banana generations, either
->    flat-vector (default) or photorealistic (`photoreal_props: true`). Read
->    "Prop art" below before writing a script with props, especially before
->    using photoreal mode — a real, unguarded generation returned a
->    trademarked Patek Philippe watch and a fabricated passport with a
->    synthetic face and real airline branding on the first attempt.
-> 2. `.github/workflows/publish-now.yml` and `upload-longform.yml` had a
+> session so far. Three things matter most before you touch anything:
+> 1. The channel's LIVE identity is the cinematic pipeline (Sarah/Mike,
+>    full-bleed photoreal-cartoon scenes) and it only exists on the `test`
+>    branch — `main` still has the older, paused flat-vector pipeline. Check
+>    which one you're actually looking at first. See "## Cinematic pipeline
+>    (current, `test` branch)" below.
+> 2. (Flat-vector / `main` only) Character art is a FIXED pose library
+>    (unchanged, never regenerate it live) — props/pictures are per-video
+>    Nano Banana generations, either flat-vector (default) or photorealistic
+>    (`photoreal_props: true`). Read "Prop art" below before writing a script
+>    with props, especially before using photoreal mode — a real, unguarded
+>    generation returned a trademarked Patek Philippe watch and a fabricated
+>    passport with a synthetic face and real airline branding on the first
+>    attempt.
+> 3. `.github/workflows/publish-now.yml` and `upload-longform.yml` had a
 >    shell-injection bug that silently stripped every `$` from a video's
->    title/description on the live post (fixed this session) — see "CI:
->    title/description shell injection" below. The first two videos published
->    before the fix likely still have corrupted descriptions live on YouTube/
->    IG/TikTok; nobody has gone back to re-edit those posts yet.
+>    title/description on the live post (fixed in an earlier session) — see
+>    "CI: title/description shell injection" below. The first two videos
+>    published before the fix likely still have corrupted descriptions live
+>    on YouTube/IG/TikTok; nobody has gone back to re-edit those posts yet.
 > Once you've read the whole file, tell me what you understand the current
 > state to be, then I'll tell you what I want to do today.
+
+## Cinematic pipeline (current, `test` branch) — style-remake workflow
+
+**Everything else in this file describes the PAUSED flat-vector pipeline.**
+As of 2026-09-17 the channel's live identity is the cinematic pipeline —
+Pixar/DreamWorks-grade photoreal-cartoon scenes, one full-bleed AI-generated
+scene per beat (the character IS the scene, no separate cutout/compositing
+layer), Ken Burns push-in on every scene-only shot, hard cuts roughly every
+5s. It exists ONLY on `test`. Multiple worktrees may already have `test`
+checked out (`git worktree list` to check) — branch off it instead of
+fighting over the checkout: `git checkout -b <name> test`.
+
+### Locked characters — identity lock is TEXT-driven, not automatic
+Two canonical cross-video reference images, reused by every script, never
+regenerated: `assets/cinematic_cast/sarah.png` (navy three-piece suit, red
+tie, long dark hair — the recurring host) and `assets/cinematic_cast/mike.png`
+(charcoal three-piece suit, short dark hair — second character, redesigned
+mid-project to be racially-ambiguous/curly hair/sharp jaw). A script's
+`cast:` block still needs a `look:` string per character (schema requires
+it, and it's the fallback if the canonical PNG is ever missing), but once
+the canonical file exists it's barely used — what actually matters is the
+scene `bg:` prompt TEXT: `assets.py`'s identity-lock only attaches a
+character's reference image to a scene if that character's NAME appears
+(word-boundary regex) somewhere in that scene's own `bg:` text. Forgetting
+to literally write "Sarah" or "Mike" into a scene description silently
+drops identity-lock on that one shot and the model free-invents a face.
+
+### Style-remake requests ("recreate this reel's style with our characters")
+Confirmed working end-to-end on a real 2026-09-21 session (see `bd3d384`,
+"The House Nobody Wanted Made Her Rich" — a real-estate BRRRR story styled
+after a reference IG reel, Sarah as the protagonist, fully original
+narration):
+- One `scenes.s_bNN.bg` per beat, script-level `cinematic: true`. Leave
+  `beat.cast` empty — only the script-level `cast:` block plus the bg text's
+  name-mention (above) matters for identity lock in cinematic mode.
+- `caption_style: title` + `title_card:` set to the hook line reproduces a
+  reference reel's "big bold centred hook text over the opening shot, then
+  word-by-word reveal captions after" formula almost exactly — this is the
+  existing "title" caption style, nothing new needed.
+- **Color grade has no global config knob.** There's no
+  `config.COLOR_GRADE` or per-script palette field. To lock in a specific
+  look (e.g. the hyper-vibrant/saturated/high-contrast "deep blue sky, warm
+  golden sunlight" grade requested and confirmed working this session),
+  write that language directly into EVERY scene's `bg:` prompt alongside
+  the framing/action description — repeat it beat to beat, don't assume it
+  carries over. `CINEMATIC_STYLE` in assets.py is a shared floor (dual-tone
+  lighting, no sterile/plain-white sets) but does not encode any specific
+  per-video palette on its own.
+- A long-form "story" Short (90-120s, ~20-25 beats, one clear visual per
+  beat) is legitimate and was the actual target this session, not a
+  mistake to trim down — see the QA gate note below.
+
+### Pre-publish visual QA workflow — do this BEFORE the expensive full build
+`assets_mod.plan_assets(script)` + `assets_mod.generate_assets(script, plan)`
+generates every character/scene still WITHOUT touching TTS/render/mux —
+cheap, fast way to review stills (especially hook/problem/payoff beats,
+i.e. the ones a human would actually want to approve) before committing to
+a full `tools.build_one` run. To force-regenerate one specific still after
+a bad generation, delete just that one cached PNG
+(`build/<slug>/assets/bg/s_bNN.png`) and re-run `generate_assets` — it
+skips anything that already exists, so this only touches the deleted file.
+Two real AI-generation defect classes hit this session, both fixed by
+tightening the scene prompt text and regenerating, not by code changes:
+- **Garbled/duplicated incidental text** on a text-bearing prop — a document
+  with one correct highlighted line but gibberish filler text elsewhere on
+  the page, or a heading rendered twice. Fix: explicitly tell the prompt the
+  REST of the page is blank/no other text, don't just ask for the one line
+  you actually want.
+- **Ground-texture tiling seams** on a paved/stone surface the model
+  invented unprompted (not even in the original text). Fix: explicitly
+  specify a smooth, continuous, unbroken surface.
+Also run the Gemini critique (`qa.check(script, run_critique=True)`) before
+publish, not just the objective checks — it caught a real authoring bug
+this session (an on-screen prop read "$190,000" while the narration said
+"$180,000", a genuine script mistake, not an AI-generation defect) that no
+amount of eyeballing stills in isolation would have caught.
+
+### Two pipeline bugs fixed this session (affect every future cinematic short)
+- `stickfin/music.py`: mood selection mapped `caption_style == "title"` to
+  "playful" background music. Wrong — `title` is the serious hook-card style
+  used by narrative shorts generally (this video, the BNPL trap video, etc),
+  not specifically a skit/banter format. Fixed to key off
+  `caption_style == "skit"` instead and fall through to the already-computed
+  tense/neutral signal otherwise (`_sections()`).
+- `stickfin/qa.py`: the short-format QA gate hard-blocked anything over 90s,
+  citing a stale "Instagram caps Reels at ~90s" comment. IG Reels support up
+  to 3 minutes now; widened the ceiling to 180s after a genuinely
+  in-spec 111s video got rejected for no real platform reason.
+
+### Publishing off `test`
+`media/<slug>.mp4` needs to exist on whatever branch
+`gh workflow run publish-now.yml --ref <branch>` is pointed at — for
+anything in the cinematic pipeline that's `test`, not `main`. Workflow:
+build on a feature branch off `test` → once approved,
+`git push origin <branch>:test` (fast-forward) → copy
+`build/<slug>/<slug>.mp4` into `media/` → commit → push again → dispatch
+the workflow with `--ref test`.
+
+**Bug, fixed 2026-09-21: `-f description="one long string"` silently ships an
+Instagram caption with no paragraph breaks.** Confirmed by the user on three
+live posts in a row before it was caught — every caption read as one dense
+wall of text with no blank lines between the hook/body/CTA/hashtags. Root
+cause wasn't a code bug (`publish.py`'s `buffer_post()` passes `text` straight
+through to Buffer's GraphQL API with no transformation, and the GH Actions env
+var itself was confirmed intact with correct spacing) — it was simply that
+every `-f description="..."` value handed to `gh workflow run` so far had been
+typed as ONE continuous sentence-string with zero `\n` characters in it, so
+there was never a real newline anywhere in the pipe for Buffer/Instagram to
+render. **Fix: stop using `-f`/`-F` for `description` entirely.** Use
+`gh workflow run publish-now.yml --ref test --json` and pipe in a JSON payload
+built with `python -c "import json; print(json.dumps({...}))"` (or equivalent)
+so `\n\n` paragraph breaks are properly embedded as real newline characters in
+the JSON string, e.g.:
+```
+python -c "import json; print(json.dumps({'slug': SLUG, 'title': TITLE,
+  'description': 'Hook line.\n\nBody sentence or two.\n\nFollow @antibrokee '
+  'for daily money insights.\n\n#Tag1 #Tag2 #Tag3'}))" | \
+  gh workflow run publish-now.yml --ref test --json
+```
+Write captions as real multi-paragraph text (hook → brief body → CTA →
+hashtags, each its own paragraph) every time, not one run-on sentence.
+
+### The default workflow now: user hands over a full script, verbatim
+Confirmed as the preferred going-forward pattern 2026-09-21 ("I like this
+workflow, make it I give script and you make video workflow") — distinct from
+the style-remake workflow above (which starts from a reference reel's STYLE,
+not its words). Here the user supplies the exact hook line and the full
+narration text, in order, and expects it built and published close to
+verbatim:
+- Map each numbered narration line to one beat (`say:` = that line, lightly
+  reworded ONLY for TTS flow if genuinely needed — a numbered list item with
+  an internal colon/dash structure, like "First: X. Second: Y.", usually
+  splits cleanly into one beat per sub-item instead of one giant beat, for the
+  same one-clear-visual-per-scene reason the style-remake section gives).
+- **Still fact-check any concrete, checkable claim** (a specific return
+  percent, an expense ratio, a company's market share, a dollar figure) via
+  WebSearch/WebFetch before building — this is non-negotiable regardless of
+  which workflow produced the script, per the channel's own "keep it
+  accurate" rule. Cross-reference against a SINGLE consistent same-day source
+  where possible (e.g. stockanalysis.com for multiple tickers) rather than
+  mixing snapshots from different dates, which is what produced the
+  inconsistent-looking numbers this session had to reconcile on the ETF
+  video. Correct stale/wrong figures rather than publishing them as given;
+  note what changed and why in the build commit message. Purely qualitative/
+  conceptual content (no verifiable external claim) doesn't need this step.
+- If the script's framing conflicts with `themes.yaml` (forward-looking buy
+  advice, a specific-security thesis), that's a real conflict to flag and get
+  an explicit decision on BEFORE building — see memory:
+  feedback-hot-stock-content-policy for the standing resolution (keep the
+  framing if the user says so, fact-check hard, disclaim "not financial
+  advice" in the caption). Don't silently rewrite the user's framing to fit
+  the policy, and don't silently ignore the policy either.
+- When asked to publish at a specific future clock time (not "now"): build,
+  QA, commit, and push everything to `test` immediately, but hold the actual
+  `gh workflow run publish-now.yml` dispatch. Schedule it with the `schedule`
+  skill / `RemoteTrigger` tool (`action: "create"`, `run_once_at` in RFC3339
+  UTC — convert the requested local time to UTC and re-verify current time
+  via `date -u` right before computing it, don't trust a stale reference
+  time), using the bridge environment for this project
+  (`env_01Ggh42FW6USJM6mnnEZ95LP` as of this session — confirm via the
+  `schedule` skill's environment list if it's ever renumbered) so the cloud
+  agent's `gh` call runs with this machine's real GitHub auth. The routine's
+  prompt must be fully self-contained (the cloud agent starts with zero
+  conversation context) — give it the exact command to run, including the
+  full JSON-payload description built the newline-safe way above, and tell it
+  to verify all three platform post ids came back afterward rather than just
+  trusting a clean exit code.
 
 ## Character art: fixed library, not per-video generation
 

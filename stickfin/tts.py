@@ -24,6 +24,25 @@ def _client():
     return texttospeech.TextToSpeechClient()
 
 
+_LOCALE_VOICE_RE = re.compile(r"^[a-z]{2}-[A-Z]{2}-")
+
+
+def _is_gemini_voice(voice: str) -> bool:
+    """True for a bare Gemini-TTS roster name (Aoede, Orus, ...), false for a
+    full standard Cloud TTS voice id (en-US-Journey-D, en-US-Chirp3-HD-Charon,
+    en-US-Wavenet-D, ...).
+
+    Deciding this from `config.TTS_MODEL.startswith("gemini")` alone -- the
+    old check -- ignores the actual voice being requested: since TTS_MODEL is
+    always a gemini-* model, EVERY voice silently took the Gemini-TTS branch
+    regardless of its name, including a real standard voice id like
+    "en-US-Journey-D" (whose last '-' segment, "D", isn't a real Gemini
+    roster name and would silently mis-synthesize). The locale prefix is a
+    reliable tell: a Gemini roster name is always a single bare word.
+    """
+    return not _LOCALE_VOICE_RE.match(voice)
+
+
 def _is_ssml_voice(voice: str) -> bool:
     low = voice.lower()
     return not any(k in low for k in ("chirp", "journey", "studio", "casual"))
@@ -33,14 +52,30 @@ def _esc(t: str) -> str:
     return t.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 
 
+_ELLIPSIS_RE = re.compile(r"\.{2,}")
+
+
+def _tts_text(text: str) -> str:
+    """Text as sent to the synthesiser -- NOT what captions/timing use.
+
+    A leading or trailing "..." is a script-writing device (a beat trailing
+    off into the next one) that reads fine on screen but is a confirmed
+    Gemini-TTS destabiliser: two separate published-video glitches (a
+    stuttered word, a mid-sentence restart) both landed on lines carrying an
+    ellipsis. Collapsing it to a comma keeps the same pacing cue without the
+    literal "..." token reaching the model.
+    """
+    return _ELLIPSIS_RE.sub(",", text).strip(" ,")
+
+
 def _synth_raw(client, text: str, voice: str, out_raw: Path, style: str = "") -> None:
     from google.cloud import texttospeech
 
+    text = _tts_text(text)
     model = config.TTS_MODEL
-    if model.startswith("gemini"):
-        # Gemini-TTS wants a bare roster name (Charon, Aoede, ...). Map any
-        # legacy "en-US-Chirp3-HD-Charon" style id down to its last segment.
-        gem_voice = voice.split("-")[-1] if "-" in voice else voice
+    if _is_gemini_voice(voice):
+        # Gemini-TTS wants a bare roster name (Charon, Aoede, ...).
+        gem_voice = voice
         # Gemini-TTS: plain text + a natural-language delivery prompt
         payload = texttospeech.SynthesisInput(
             text=text, prompt=(style or config.TTS_STYLE))
@@ -135,21 +170,29 @@ def _wps(path: Path, n_words: int, gap_s: float | None = None) -> float:
 
 
 def _polish_pace(path: Path, n_words: int, target: float | None = None,
-                 gap_s: float | None = None) -> float:
-    """Bring a beat to the format's target wps with a pitch-preserving atempo
-    (0.85x-1.28x). Gemini-TTS delivers this voice slow, so this is normally a
-    ~1.2x speed-up for short-form and a gentler nudge for long-form."""
+                 gap_s: float | None = None, lo: float | None = None,
+                 hi: float | None = None) -> float:
+    """Pitch-preserving atempo (0.85x-1.28x) correction for a take that's
+    OUTSIDE the comfortable (lo, hi) pace band -- NOT a push toward one exact
+    number. A take already inside the band is left alone: natural line-to-line
+    pace variation is real, good delivery (a punchy hook reads faster than a
+    longer explainer beat), and force-normalising every take toward a single
+    target made pace feel MORE inconsistent, not less (some lines audibly
+    sped up, some audibly slowed down) -- this only steps in for a genuinely
+    broken take (a stalled/runaway read the retry loop in synthesize()
+    couldn't fully fix)."""
     if n_words < 2:
         return _wps(path, n_words, gap_s)
     target = config.TTS_TARGET_WPS if target is None else target
+    lo = config.TTS_WPS_BAND[0] if lo is None else lo
+    hi = config.TTS_WPS_BAND[1] if hi is None else hi
     wps = _wps(path, n_words, gap_s)
-    factor = target / wps
-    if 0.97 <= factor <= 1.03:
+    if lo <= wps <= hi:
         return wps
     # Gemini-TTS runs slow with this voice, so the usual move is a ~1.2x speed-up;
     # verified clean by ear + critique. Cap at 1.28x (past that atempo warbles);
     # a slower raw take just lands a little under target, which is fine.
-    factor = min(1.28, max(0.85, round(factor, 3)))
+    factor = min(1.28, max(0.85, round(target / wps, 3)))
     tmp = path.with_suffix(".pace.wav")
     run_ffmpeg(["-i", path, "-af", f"atempo={factor}",
                 "-ar", config.TTS_SAMPLE_RATE, "-ac", "1", tmp],
@@ -195,7 +238,7 @@ def synthesize(script, force: bool = False) -> dict:
     lo_wps, hi_wps = config.tts_wps_band(fmt)
     target_wps = config.tts_target_wps(fmt)
     gap_s = config.beat_gap_s(fmt)
-    style_base = config.tts_style(fmt)
+    style_base = getattr(script, "tts_style", None) or config.tts_style(fmt)
     client = None
     entries = []
     for i, beat in enumerate(script.beats):
@@ -261,7 +304,8 @@ def synthesize(script, force: bool = False) -> dict:
                         print(f"    {beat.id}: take {take + 1} was {w:.2f} wps "
                               f"(want {lo_wps}-{hi_wps}), re-rolling")
                 best.replace(final)
-                w = _polish_pace(final, n_words, target=target_wps, gap_s=gap_s)
+                w = _polish_pace(final, n_words, target=target_wps, gap_s=gap_s,
+                                 lo=lo_wps, hi=hi_wps)
                 print(f"    {beat.id}: {w:.2f} wps")
             raw.unlink(missing_ok=True)
 

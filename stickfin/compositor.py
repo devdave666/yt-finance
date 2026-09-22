@@ -30,15 +30,69 @@ def _resolve(layer: dict, adir: Path) -> Path | None:
     return p if p.exists() else None
 
 
-def _composite_clip(shot: dict, adir: Path, fmt: str, out: Path) -> None:
+def _composite_clip(shot: dict, adir: Path, fmt: str, out: Path,
+                    cinematic: bool = False) -> None:
     cw, ch = config.canvas(fmt)
     fps, nf = config.FPS, int(shot["frames"])
+    dur_s = nf / fps
 
     inputs: list[str] = []
     if shot.get("scene"):
         bg = adir / "bg" / f"{shot['scene']}.png"
         inputs += ["-loop", "1", "-i", str(bg)]
-        chains = [f"[0:v]scale={cw}:{ch},setsar=1,fps={fps}[b0]"]
+        if cinematic and not shot["layers"]:
+            # A cinematic beat has no character/prop/chart layers to pop in --
+            # the bg IS the whole shot -- so a plain static hold reads dead.
+            # Give it the slow, continuous push-in described for this style
+            # (still images, motion added entirely via camera movement, not a
+            # full 3D render). Wires up config.ZOOM_RATE_PER_S/MAX_ZOOM, which
+            # nothing previously read.
+            #
+            # z MUST be computed as an absolute function of `on` (zoompan's
+            # own output-frame counter), NOT as a `zoom+step` accumulator --
+            # confirmed live (Dev: "there is no motion at all in the first
+            # frame") that the accumulator never actually advances past a
+            # few-pixel rounding difference when the source is a single
+            # looped still image (`-loop 1 -i file.png`): zoompan doesn't
+            # reliably persist `zoom` frame-to-frame from a looped stream the
+            # way it does from a real decoded video. Driving it off `on`
+            # instead has no such dependency and was verified frame-by-frame
+            # (first vs. last frame of a real shot) to actually change.
+            #
+            # The target/rate are sized off the WHOLE BEAT's duration
+            # (`beat_frames`), not just this hold's own frame count, and the
+            # `on` counter is offset by how many frames of the beat already
+            # played in an EARLIER hold (`hold_start_in_beat`). A beat whose
+            # line is long enough to need multiple holds still shows the
+            # exact same background on every hold (see timeline.py) -- without
+            # this, each hold is a separate ffmpeg process whose `on` restarts
+            # at 0, so the zoom visibly snapped back to 1.0 and restarted at
+            # every cut instead of continuing (Dev: "zoom... repeats if it
+            # reaches the end"). Sizing off the per-hold duration also made
+            # short holds of a long beat zoom much faster than intended
+            # (Dev: "some zoom ins are way too fast") since each hold's target
+            # was computed as if it were the whole shot.
+            beat_frames = int(shot.get("beat_frames", nf))
+            hold_offset = int(shot.get("hold_start_in_beat", 0))
+            beat_dur_s = beat_frames / fps
+            gain = config.ZOOM_MAX_GAIN * beat_dur_s / (beat_dur_s + config.ZOOM_HALF_SATURATION_S)
+            target = 1.0 + gain
+            rate = gain / max(beat_frames, 1)
+            # Pre-upscale well past the canvas size before zoompan crops+
+            # scales every frame -- without this the crop position rounds to
+            # whole SOURCE pixels each frame, and at this rate that rounding
+            # step is coarse enough to show up as a visible micro-jitter/shake
+            # (Dev: "there is a little shake in the motion"). Cropping from a
+            # much larger canvas gives the same rounding sub-pixel headroom at
+            # the final output size, so it disappears.
+            up_w, up_h = cw * 4, ch * 4
+            chains = [
+                f"[0:v]scale={up_w}:{up_h}:flags=lanczos,setsar=1,"
+                f"zoompan=z='min(1+{rate:.6f}*(on+{hold_offset})\\,{target:.4f})':d=1:"
+                f"x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':s={cw}x{ch}:"
+                f"fps={fps}[b0]"]
+        else:
+            chains = [f"[0:v]scale={cw}:{ch},setsar=1,fps={fps}[b0]"]
     else:
         inputs += ["-f", "lavfi", "-i", f"color=c=white:s={cw}x{ch}:r={fps}"]
         chains = ["[0:v]setsar=1[b0]"]
@@ -65,7 +119,6 @@ def _composite_clip(shot: dict, adir: Path, fmt: str, out: Path) -> None:
     centers = [bx + bw / 2 for bx, _, bw, _ in placements]
 
     pop = max(config.POP_IN_S, 0.001)
-    dur_s = nf / fps
     shadow_kinds = {"character", "prop", "chart", "cutout"}
     idx, last, char_seen = 1, "b0", 0
     for i, ((layer, ap, _wh), (x, y, w, h)) in enumerate(zip(resolved, placements)):
@@ -165,7 +218,8 @@ def render_shots(script, timeline: dict) -> Path:
         if shot["kind"] == "live":
             _live_clip(shot, script.fmt, clip)
         else:
-            _composite_clip(shot, adir, script.fmt, clip)
+            _composite_clip(shot, adir, script.fmt, clip,
+                            cinematic=script.cinematic)
         paths.append(clip)
 
     if config.VEO_HOOK and paths:

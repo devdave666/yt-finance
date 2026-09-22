@@ -115,8 +115,11 @@ def check(script, run_critique: bool = True) -> QAResult:
     # the Shorts window would reject every long-form video outright. The short
     # window itself is no longer a tight scroll-stopper target -- scripts now
     # run as long as the story genuinely needs, so this only enforces the real
-    # platform ceiling: Instagram stops treating a video as a Reel past ~90s.
-    lo_s, hi_s = (150.0, 1500.0) if script.fmt == "wide" else (12.0, 90.0)
+    # platform ceiling: Instagram Reels currently top out at 3 minutes (was
+    # ~90s at an earlier point, which is why this used to be a tighter 90s cap
+    # -- confirmed stale when a genuine 90-120s narrative short, built exactly
+    # to spec, got hard-blocked at 111s for no real platform reason).
+    lo_s, hi_s = (150.0, 1500.0) if script.fmt == "wide" else (12.0, 180.0)
     total = narration["total_s"]
     if not (lo_s <= total <= hi_s):
         res.blockers.append(
@@ -136,16 +139,22 @@ def check(script, run_critique: bool = True) -> QAResult:
         res.blockers.append("no rendered video")
 
     # ---- pace consistency (the big one) ----
+    # Thresholds widened alongside config.TTS_WPS_BAND (2.0-4.2, a 2.1x sanity
+    # range) -- tts.py no longer force-normalises every take toward one exact
+    # wps, so natural line-to-line variation within that band is expected,
+    # good delivery now, not a defect. These only need to catch a spread
+    # BEYOND what the (now wide) band itself allows -- i.e. a real outlier
+    # take that slipped through the retry loop.
     spread = narration.get("wps_spread", 1.0)
-    if spread > 1.8:
+    if spread > 2.3:
         wps = ", ".join(f"{b['id']}:{b['wps']}" for b in narration["beats"] if b.get("wps"))
         res.blockers.append(f"speech pace jumps around ({spread}x spread) -- {wps}")
-    elif spread > 1.55:
+    elif spread > 2.0:
         res.warnings.append(f"speech pace a bit uneven ({spread}x)")
 
     for b in narration["beats"]:
         w = b.get("wps")
-        if w and (w < 2.0 or w > 3.9):
+        if w and (w < 1.8 or w > 4.4):
             res.warnings.append(f"beat {b['id']} at {w} wps (outside natural range)")
         if b.get("wps") and (b["speech_end_s"] - b["speech_start_s"]) < 0.25:
             res.blockers.append(f"beat {b['id']} has words but no detected speech")

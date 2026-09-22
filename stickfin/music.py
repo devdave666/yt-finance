@@ -86,10 +86,14 @@ def _sections(script, narration: dict) -> list[dict]:
             sections[-1]["tense"] = True
         t += d
 
-    is_skit = script.caption_style == "title"
     for i, sec in enumerate(sections):
         if not is_wide:
-            sec["mood"] = "playful" if is_skit else "neutral"
+            if script.caption_style == "skit":
+                sec["mood"] = "playful"
+            elif sec["tense"]:
+                sec["mood"] = "tense"
+            else:
+                sec["mood"] = "neutral"
         elif i == len(sections) - 1:
             sec["mood"] = "resolve"
         elif sec["tense"]:

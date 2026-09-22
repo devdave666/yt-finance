@@ -1,0 +1,83 @@
+title: Stop Moneymaxxing The Wrong Thing
+slug: 2026-09-19-stop-moneymaxxing-savings-account
+format: short
+caption_style: cinematic
+cinematic: true
+narrator:
+  voice: Aoede
+tts_style: You're talking directly to a friend about money -- warm, natural, conversational
+  pace. Real pauses between thoughts, natural emphasis on the words that matter, like
+  you genuinely mean it. Not a pitch, not brisk news-anchor energy -- unhurried and
+  sincere. Read the line exactly once, word for word, and stop at the end -- never
+  repeat or restart a word or phrase.
+cast:
+  sarah:
+    anchor: center
+    voice: Aoede
+    look: 'Sarah, the channel''s recurring host: a sharp, confident woman with long
+      dark hair, wearing a tailored navy three-piece suit, a red silk tie, a crisp
+      white dress shirt, and gold accents (a wristwatch, a ring) -- authority and
+      wealth, rendered in the channel''s premium cinematic style. A small lime-green
+      circular brand patch sits discreetly on her left lapel.'
+scenes:
+  s_b01:
+    bg: 'Extreme close-up, low angle, dramatic lighting. Sarah holds a phone toward
+      the camera showing a banking app balance screen, a small label beneath the balance
+      reading "INTEREST: ALMOST NOTHING". Her expression is serious, direct eye contact
+      with camera.'
+  s_b02:
+    bg: Close-up on Sarah's face, serious and direct, arms crossed, cool blue lighting,
+      standing in a sleek modern office.
+  s_b03:
+    bg: Wide shot. Sarah stands beside a large wall-mounted screen facing the camera,
+      displaying a simple rising red line graph labeled "COST OF LIVING" climbing
+      upward. Cool colour grade.
+  s_b04:
+    bg: Medium shot, low angle. Sarah points directly at the camera, confident half-smile,
+      warm-to-cool dual lighting, modern office backdrop.
+  s_b05:
+    bg: Close-up, warm lighting. Sarah holds up a small card reading "3-MONTH BUFFER"
+      toward the camera, calm and reassuring expression.
+  s_b06:
+    bg: 'Wide shot. Sarah stands well to one side, her whole face and body clearly
+      visible and unobstructed, gesturing toward a large wall-mounted screen positioned
+      beside her (not behind or above her head) facing the camera, displaying a clean
+      two-line graphic: "3-MONTH BUFFER -> SAFE PLACE" on the first line and "EVERYTHING
+      ELSE -> PUT TO WORK" on the second line, bold and legible. Warm gold lighting.'
+  s_b07:
+    bg: Medium shot, warm lighting, soft golden-hour glow through a window. Sarah
+      smiles gently, optimistic, forward-looking expression.
+  s_b08:
+    bg: Same setting, cooler lighting shift. Sarah's expression turns more serious
+      and contemplative, a slight knowing look toward camera.
+  s_b09:
+    bg: Eye-level medium shot, direct to camera. Sarah leans in slightly, genuinely
+      curious and inviting expression, warm inviting lighting.
+beats:
+- id: b01
+  scene: s_b01
+  say: Your savings account is making you poorer.
+- id: b02
+  scene: s_b02
+  say: Banks pay you almost nothing in interest.
+- id: b03
+  scene: s_b03
+  say: While inflation quietly eats your money every year.
+- id: b04
+  scene: s_b04
+  say: Stop moneymaxxing the wrong thing.
+- id: b05
+  scene: s_b05
+  say: Keep three months of expenses somewhere safe.
+- id: b06
+  scene: s_b06
+  say: Put everything else to work, where it actually grows.
+- id: b07
+  scene: s_b07
+  say: Your future self will either thank you,
+- id: b08
+  scene: s_b08
+  say: or wonder why you waited so long.
+- id: b09
+  scene: s_b09
+  say: So, how much cash are you sitting on right now?

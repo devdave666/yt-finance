@@ -1,0 +1,89 @@
+title: Stop Asking ChatGPT For Money Advice
+slug: 2026-09-19-stop-asking-chatgpt-money-advice
+format: short
+caption_style: title
+title_card: STOP ASKING CHATGPT FOR MONEY ADVICE.
+cinematic: true
+narrator:
+  voice: Aoede
+tts_style: You're talking directly to a friend about money -- warm, natural, conversational
+  pace. Real pauses between thoughts, natural emphasis on the words that matter, like
+  you genuinely mean it. Not a pitch, not brisk news-anchor energy -- unhurried and
+  sincere. Read the line exactly once, word for word, and stop at the end -- never
+  repeat or restart a word or phrase.
+cast:
+  sarah:
+    anchor: center
+    voice: Aoede
+    look: 'Sarah, the channel''s recurring host: a sharp, confident woman with long
+      dark hair, wearing a tailored navy three-piece suit, a red silk tie, a crisp
+      white dress shirt, and gold accents (a wristwatch, a ring) -- authority and
+      wealth, rendered in the channel''s premium cinematic style. A small lime-green
+      circular brand patch sits discreetly on her left lapel.'
+scenes:
+  s_b01:
+    bg: Close-up, low angle. Sarah sits at her desk holding up a phone toward the
+      camera showing a chat-app screen with a bold, colourful answer bubble on it
+      (no legible text, just a generic chat UI), her expression skeptical and serious,
+      direct eye contact with camera. Warm desk lamp light, cool blue evening light
+      through the window behind her.
+  s_b02:
+    bg: 'Medium shot. Sarah stands beside a large wall-mounted screen facing the camera,
+      her face clearly visible beside it (not behind or overlapped by it), displaying
+      bold text: "57%" above the label "WOULD ACT WITHOUT CHECKING". Cool blue-toned
+      office.'
+  s_b03:
+    bg: Extreme close-up on the same wall-mounted screen from the previous shot, framed
+      tighter on the "57%" figure and label. Cool blue light.
+  s_b04:
+    bg: 'Wide shot. Sarah stands well to one side, face fully visible, gesturing toward
+      a large wall-mounted screen beside her displaying bold text: "NEARLY 1 IN 4"
+      above a small warning-triangle icon. Warm-to-cool dual lighting.'
+  s_b05:
+    bg: Close-up on Sarah's face, serious and concerned expression, cool lighting,
+      standing in her office.
+  s_b06:
+    bg: Medium shot, low angle. Sarah stands with arms crossed, one eyebrow slightly
+      raised, skeptical and knowing expression, warm-to-cool dual lighting, modern
+      office backdrop.
+  s_b07:
+    bg: Extreme close-up on a printed financial document on a desk, numbers visible
+      but out of sharp focus/generic, a hand circling one section in red pen. Warm
+      desk-lamp light.
+  s_b08:
+    bg: 'Wide shot. Sarah stands well to one side, face and body fully visible and
+      unobstructed, gesturing toward a large wall-mounted screen beside her (not behind
+      or above her head) displaying a clean two-line graphic: "USE AI TO LEARN" on
+      the first line and "NEVER TO DECIDE" on the second line, bold and legible. Warm
+      gold lighting.'
+  s_b09:
+    bg: Eye-level medium shot, direct to camera. Sarah leans in slightly, genuinely
+      curious and inviting expression, warm inviting lighting, soft office background.
+beats:
+- id: b01
+  scene: s_b01
+  say: Stop asking ChatGPT for money advice.
+- id: b02
+  scene: s_b02
+  say: A new study found 57% of people
+- id: b03
+  scene: s_b03
+  say: would act on a chatbot's money guidance without double-checking it.
+- id: b04
+  scene: s_b04
+  say: And nearly 1 in 4 say a chatbot
+- id: b05
+  scene: s_b05
+  say: already gave them wrong financial advice.
+- id: b06
+  scene: s_b06
+  say: AI sounds confident, even when it's guessing,
+- id: b07
+  scene: s_b07
+  say: and with money, a confident guess can cost you thousands.
+- id: b08
+  scene: s_b08
+  say: Use AI to learn. Never to decide.
+- id: b09
+  scene: s_b09
+  say: Have you ever caught it giving you bad advice?

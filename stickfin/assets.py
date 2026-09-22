@@ -59,6 +59,57 @@ CHAR_FLOOR = (
 # Flat mid-grey keys out cleanly against both black outlines and white fills.
 MATTE_BG = "on a completely flat solid #8a8a8a grey background, no gradient, no shadow, no floor line, no horizon"
 
+# The channel's LOCKED house style since 2026-09-17 (see memory:
+# project-cinematic-pivot -- supersedes the old plain-background-only flat-
+# vector look, which is paused not deleted). A full-bleed photoreal cinematic
+# still per beat -- the character IS in the scene, so there's no separate
+# cutout/compositing step for it (see generate_assets' bg branch below).
+CINEMATIC_STYLE = (
+    "Premium 3D animated style -- Pixar/DreamWorks polish mixed with "
+    "cinematic realism. Highly detailed surface textures: crisp suit fabric "
+    "weave, tailored lines, expressive facial expressions and hand gestures "
+    "(pointing, holding documents). High-contrast dual-tone lighting: rich "
+    "warm light (gold lamps, mahogany wood, fireplace embers, glowing vault "
+    "interiors) juxtaposed with cool blue backdrops (dusk cityscapes through "
+    "windows, dark blue accent walls, metallic vaults). A richly detailed, "
+    "GROUNDED, realistic environment representing institutional wealth -- "
+    "real furniture, real documents, real signage, not a symbolic or "
+    "storybook object standing in for an idea (no glowing treasure chests "
+    "for a company, no mechanical funnels spitting out coins for a merger of "
+    "funds -- show the literal real-world object or document instead: a "
+    "filing cabinet, a folder, a bank statement, a wire transfer screen). "
+    "EVERY environment must be visually rich and eye-catching, in warm "
+    "mahogany/gold or cool marble/steel tones -- NEVER a bare, sterile, or "
+    "plain-white/grey set (no plain white desks, walls, or blank white "
+    "screens/panels used as generic set dressing); even a clean modern space "
+    "needs real material texture, colour, and background detail. Any prop "
+    "bearing text (a document title, a dollar figure, a stamped seal, a "
+    "sign, a screen) renders ONLY the exact words given for it below -- if "
+    "no text is specified for an object, it carries NO text or lettering at "
+    "all, never an invented label. This applies just as strictly to an "
+    "INCIDENTAL background prop that was never mentioned as text-bearing at "
+    "all -- a notebook, a wall plaque, a whiteboard, a loose paper on a desk. "
+    "None of these may show invented text (a fake meeting agenda, an "
+    "unrelated department name, an unrelated business heading) just because "
+    "a real notebook page would normally have writing on it -- render it "
+    "blank, blurred, or angled away instead. Rendered text is large, bold, "
+    "correctly spelled, and each word appears exactly once -- never a "
+    "duplicated or garbled word. If the character is shown using a personal "
+    "device (a laptop, phone, or tablet) whose screen displays text/numbers the viewer "
+    "needs to read, compose the shot from an angle where that screen "
+    "actually faces the camera (e.g. beside/behind the character looking "
+    "over their shoulder) -- a screen cannot simultaneously face the "
+    "character typing on it head-on AND face the camera head-on; when the "
+    "character is shown frontally at a desk, put any readable text on a "
+    "large wall-mounted monitor, framed document, or printed sign facing the "
+    "camera instead of on their personal device's screen. Built for a 9:16 "
+    "vertical frame: the character or focus object sits in the upper and "
+    "middle thirds. The lower third stays free of busy activity for caption "
+    "text, but is never a flat, empty, undetailed gap -- it still shows real "
+    "environment (floor, desk edge, furniture, wall base) continuing "
+    "naturally into frame."
+)
+
 
 def slug(text: str) -> str:
     return re.sub(r"[^a-z0-9]+", "-", text.lower()).strip("-")[:48] or "x"
@@ -175,6 +226,7 @@ def plan_assets(script) -> dict:
     plan = {
         "slug": script.slug,
         "fmt": script.fmt,
+        "cinematic": script.cinematic,
         "scenes": scenes,
         "characters": characters,
         "poses": poses,
@@ -246,6 +298,20 @@ def _pil_or_none(response):
 # --------------------------------------------------------------------------
 CHAR_LIBRARY_DIR = Path("assets/char_library")
 _VOICE_TO_LIBCHAR = {"Orus": "host", "Aoede": "second"}
+
+# Persistent, cross-VIDEO cast reference for the cinematic style (Sarah,
+# Mike, ...). Each script build lives in its own build/<slug>/ dir, so
+# without this a character's reference sheet -- and therefore their whole
+# appearance -- was being regenerated FROM SCRATCH (text only) for every new
+# video, with nothing guaranteeing video N's Sarah looks like video N+1's
+# Sarah. Confirmed as a real problem (Dev: a recurring male character was
+# Black in every scene but one, where he was White -- that's scene-to-scene
+# drift within a single video; this directory additionally locks the
+# canonical look ACROSS videos, which is the "no exceptions" bar Dev asked
+# for). The first time a cast name is ever built, its sheet is generated and
+# saved here permanently; every later video reuses this exact file instead
+# of rolling a fresh interpretation of the text description.
+CINEMATIC_CAST_DIR = Path("assets/cinematic_cast")
 
 # keyword tags per library pose, used to match a beat's freeform "pose,
 # expression" text to the closest fixed still. Not exact -- a stylised
@@ -661,29 +727,16 @@ def generate_assets(script, plan: dict, force: bool = False) -> None:
 
     client = _client()
     cfg = _cfg(script.fmt)
-
-    # ---- backgrounds ----
-    for name, sc in plan["scenes"].items():
-        out = a / "bg" / f"{name}.png"
-        if out.exists() and not force:
-            continue
-        if not sc["bg"]:
-            _flat_bg(sc["color"] or "#ffffff", cw, ch).save(out)
-            print(f"  bg {name} (flat {sc['color'] or '#ffffff'})")
-            continue
-        resp = _generate(client, [
-            f"{STYLE_FLOOR}\n\n{sc['bg']}\n\nFull-bleed background filling a "
-            f"{config.aspect_ratio(script.fmt)} "
-            f"{'landscape' if script.fmt == 'wide' else 'vertical'} frame. No "
-            "characters, no people, no text or captions. Leave the lower-middle "
-            "area uncluttered for characters to stand in front of."], cfg)
-        img = ImageOps.fit(_pil_from(resp), (cw, ch), method=Image.LANCZOS)
-        img.save(out)
-        print(f"  bg {name}")
+    cinematic = bool(plan.get("cinematic"))
 
     # ---- character reference sheets ----
-    # A figure that collapses into a solid black blob (no clothing detail
-    # visible) poisons every pose, so retry until real colour/detail shows.
+    # Generated BEFORE backgrounds: a cinematic scene conditions its full-frame
+    # generation on this image for identity-lock (same mechanism the flat-vector
+    # pose loop below uses), so the sheet has to exist first. A figure that
+    # collapses into a solid black blob (no clothing detail visible) poisons
+    # every pose in the flat-vector style, so retry until real colour/detail
+    # shows -- not a meaningful failure mode for the photoreal cinematic style,
+    # so that retry is skipped there.
     LINE_LOCK = (
         "The figure matches the reference sheet's exact outfit, colour "
         "palette, hairstyle, and proportions every time -- same jacket/hoodie, "
@@ -696,24 +749,44 @@ def generate_assets(script, plan: dict, force: bool = False) -> None:
     sheets = {}
     for name, c in plan["characters"].items():
         libchar = _VOICE_TO_LIBCHAR.get(script.cast[name].voice)
-        if libchar is not None and (CHAR_LIBRARY_DIR / libchar).is_dir():
-            # every pose for this character will come from the fixed library
-            # (see the poses loop below) -- the reference sheet is only ever
-            # used as an identity-lock input to a live generation call, so
-            # skip spending one on a sheet nothing will reference.
+        if not cinematic and libchar is not None and (CHAR_LIBRARY_DIR / libchar).is_dir():
+            # every pose for this character will come from the fixed FLAT-
+            # VECTOR library (see the poses loop below) -- the reference sheet
+            # is only ever used as an identity-lock input to a live generation
+            # call, so skip spending one on a sheet nothing will reference.
+            # Cinematic mode never touches that library (it has no poses at
+            # all, just a bg-conditioning sheet), so this short-circuit would
+            # otherwise silently skip the ONE sheet a cinematic script needs,
+            # just because its voice happens to collide with a flat-vector
+            # library character (e.g. "Aoede").
             continue
         out = a / "char" / f"_{name}.png"
+        canonical = CINEMATIC_CAST_DIR / f"{name}.png"
+        if cinematic and canonical.exists() and not force:
+            # reuse the one true cross-video reference instead of rolling a
+            # fresh interpretation of the text description for this build
+            shutil.copyfile(canonical, out)
+            sheets[name] = Image.open(out)
+            print(f"  char sheet {name}  (canonical: {canonical})")
+            continue
         if not out.exists() or force:
-            prompt = (f"{STYLE_FLOOR}\n{CHAR_FLOOR}\n{LINE_LOCK}\n\n"
-                      f"CHARACTER: {c['look']}\n\nDraw a reference sheet: ONE "
-                      f"single full-body figure only, three-quarter turned "
-                      f"view (facing slightly to its right, matching how "
-                      f"every pose will be drawn), {MATTE_BG}. EXACTLY ONE "
-                      f"figure in the frame -- no second view, no front-view "
-                      f"copy standing beside it, no other characters, no "
-                      f"text.")
+            if cinematic:
+                prompt = (
+                    f"{CINEMATIC_STYLE}\n\nCHARACTER: {c['look']}\n\nFull-body "
+                    "character reference portrait, three-quarter turned view, "
+                    "neutral softly-lit studio background, sharp focus, high "
+                    "detail. ONE person only, no props, no other people, no text.")
+            else:
+                prompt = (f"{STYLE_FLOOR}\n{CHAR_FLOOR}\n{LINE_LOCK}\n\n"
+                          f"CHARACTER: {c['look']}\n\nDraw a reference sheet: ONE "
+                          f"single full-body figure only, three-quarter turned "
+                          f"view (facing slightly to its right, matching how "
+                          f"every pose will be drawn), {MATTE_BG}. EXACTLY ONE "
+                          f"figure in the frame -- no second view, no front-view "
+                          f"copy standing beside it, no other characters, no "
+                          f"text.")
             img = _pil_or_none(_generate(client, [prompt], cfg))
-            if img is not None and _solidity(img) > 0.40:
+            if img is not None and not cinematic and _solidity(img) > 0.40:
                 alt = _pil_or_none(_generate(client, [
                     prompt + "\n\nThe last drawing came back as a solid black "
                     "silhouette with no clothing colour or detail visible. "
@@ -723,8 +796,78 @@ def generate_assets(script, plan: dict, force: bool = False) -> None:
             if img is None:
                 raise RuntimeError(f"char sheet {name}: no image returned")
             img.save(out)
-            print(f"  char sheet {name} (solidity {_solidity(img):.2f})")
+            if cinematic:
+                # lock this in as the canonical cross-video reference so
+                # every future build of every future script reuses THIS
+                # exact image instead of rolling a new one
+                CINEMATIC_CAST_DIR.mkdir(parents=True, exist_ok=True)
+                img.save(canonical)
+            tag = "" if cinematic else f" (solidity {_solidity(img):.2f})"
+            print(f"  char sheet {name}{tag}")
         sheets[name] = Image.open(out)
+
+    # ---- backgrounds ----
+    for name, sc in plan["scenes"].items():
+        out = a / "bg" / f"{name}.png"
+        if out.exists() and not force:
+            continue
+        if not sc["bg"]:
+            _flat_bg(sc["color"] or "#ffffff", cw, ch).save(out)
+            print(f"  bg {name} (flat {sc['color'] or '#ffffff'})")
+            continue
+        if cinematic:
+            # the character IS the scene here (no separate cutout composited
+            # on top later), so -- unlike the flat-vector branch -- people are
+            # welcome in frame. Any cast member named in the scene's own prompt
+            # text gets their reference sheet attached for identity-lock,
+            # exactly like the pose-generation call below does.
+            refs = [sheets[n] for n in plan["characters"] if n in sheets
+                    and re.search(rf"\b{re.escape(n)}\b", sc["bg"], re.I)]
+            # Explicit, repeated, no-exceptions wording -- confirmed live that
+            # a softer "match their face, hair, and outfit" instruction still
+            # let a recurring character's apparent race/ethnicity drift scene
+            # to scene (same video: he read as Black in most scenes, White in
+            # one). Naming race/ethnicity explicitly as something that must
+            # NOT change is the fix, not a vaguer "stay on-model" phrasing.
+            if len(refs) == 1:
+                lock_note = (
+                    " CHARACTER LOCK: the attached reference image is this "
+                    "scene's character -- match their exact face, skin tone, "
+                    "ethnicity, hair texture and colour, and outfit. Do NOT "
+                    "lighten, darken, or otherwise change their apparent "
+                    "race or ethnicity, and do not substitute a different-"
+                    "looking person. This is the SAME person in every single "
+                    "scene of this video -- zero variation allowed.")
+            elif refs:
+                lock_note = (
+                    " CHARACTER LOCK: the attached reference images are this "
+                    "scene's recurring characters, one image per person -- "
+                    "match each one's exact face, skin tone, ethnicity, hair "
+                    "texture and colour, and outfit. Do NOT lighten, darken, "
+                    "or otherwise change anyone's apparent race or ethnicity, "
+                    "and do not substitute a different-looking person for "
+                    "either of them. These are the SAME people in every "
+                    "single scene of this video -- zero variation allowed.")
+            else:
+                lock_note = ""
+            contents = [
+                f"{sc['bg']}\n\n{CINEMATIC_STYLE}\n\nCinematic still, full-bleed, "
+                f"filling a {config.aspect_ratio(script.fmt)} "
+                f"{'landscape' if script.fmt == 'wide' else 'vertical'} frame. "
+                "No text, no captions, no borders, no watermark." + lock_note,
+                *refs,
+            ]
+            resp = _generate(client, contents, cfg)
+        else:
+            resp = _generate(client, [
+                f"{STYLE_FLOOR}\n\n{sc['bg']}\n\nFull-bleed background filling a "
+                f"{config.aspect_ratio(script.fmt)} "
+                f"{'landscape' if script.fmt == 'wide' else 'vertical'} frame. No "
+                "characters, no people, no text or captions. Leave the lower-middle "
+                "area uncluttered for characters to stand in front of."], cfg)
+        img = ImageOps.fit(_pil_from(resp), (cw, ch), method=Image.LANCZOS)
+        img.save(out)
+        print(f"  bg {name}")
 
     # ---- poses (transparent) ----
     for key, spec in plan["poses"].items():

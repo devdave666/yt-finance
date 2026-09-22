@@ -1,0 +1,109 @@
+title: Three ETFs That Have Crushed The S&P 500
+slug: 2026-09-21-three-etfs-beat-sp500
+format: short
+caption_style: title
+title_card: THREE ETFS THAT BEAT THE S&P 500
+cinematic: true
+narrator:
+  voice: Aoede
+cast:
+  sarah:
+    anchor: center
+    voice: Aoede
+    look: 'Sarah, the channel''s recurring host: a sharp, confident woman with long
+      dark hair, wearing a tailored navy three-piece suit, a red silk tie, a crisp
+      white dress shirt, and gold accents (a wristwatch, a ring) -- authority and
+      wealth, rendered in the channel''s premium cinematic style. A small lime-green
+      circular brand patch sits discreetly on her left lapel.'
+scenes:
+  s_b01:
+    bg: Wide low-angle shot. Sarah stands in a dim, moody trading-floor-style
+      room, an enormous wall screen behind her glowing with three upward stock
+      chart lines in vivid green, one climbing well above the other two.
+      Dramatic rim lighting, high contrast, saturated cool-blue tones with a
+      streak of warm gold light across her face.
+  s_b02:
+    bg: 'Close-up on a sleek tablet screen held in Sarah''s hand, showing a
+      plain graphic with one line of text: "S&P 500: +17.28%". The rest of the
+      screen is blank, plain app background -- no other numbers, labels, or
+      text anywhere. Warm ambient light, vivid saturated color.'
+  s_b03:
+    bg: Medium shot. Sarah stands beside a huge backlit wall screen displaying
+      a glowing grid of small square tiles representing stocks, a cluster of
+      them pulsing brighter blue than the rest. Deep saturated blue lighting,
+      high contrast, sharp rim light on Sarah.
+  s_b04:
+    bg: Extreme close-up on a glowing circular calendar graphic divided into
+      four equal quarters, one quarter lit up bright green in sequence. Deep
+      saturated blue background, high contrast, vivid color.
+  s_b05:
+    bg: 'Extreme close-up on a clean stat card floating on a dark background,
+      two lines only: "EXPENSE: 0.13%" and "1-YR RETURN: 25.71%". Nothing else
+      on the card -- no other numbers, labels, or text. Vivid green accent
+      glow, high contrast.'
+  s_b06:
+    bg: Medium shot. Sarah gestures toward a different huge wall screen showing
+      a wider glowing grid of stock tiles, larger and more numerous than the
+      previous screen, a broad cluster pulsing brighter violet-blue. Deep
+      saturated blue-violet lighting, high contrast.
+  s_b07:
+    bg: 'Extreme close-up on a clean stat card floating on a dark background,
+      two lines only: "EXPENSE: 0.15%" and "1-YR RETURN: 23.48%". Nothing else
+      on the card -- no other numbers, labels, or text. Vivid green accent
+      glow, high contrast.'
+  s_b08:
+    bg: Wide shot. Sarah stands in front of a huge wall screen glowing with
+      abstract microchip and circuit-board patterns, no logos or brand marks,
+      warm gold light mixed with cool blue circuit glow, vivid saturated
+      color, high contrast.
+  s_b09:
+    bg: 'Extreme close-up on a clean stat card floating on a dark background,
+      three lines only: "EXPENSE: 0.09%", "LOWEST OF THE THREE", and "1-YR
+      RETURN: 35.06%". Nothing else on the card -- no other numbers or text.
+      Vivid green accent glow, high contrast.'
+  s_b10:
+    bg: Medium shot, eye-level. Sarah faces the camera with both hands empty
+      and free, one gesturing warmly outward, confident smile, a softly
+      blurred vivid blue-and-gold cityscape at dusk behind her, deep
+      saturated sky, high contrast. No papers, documents, phone, or any other
+      prop in frame or on any nearby surface.
+beats:
+- id: b01
+  scene: s_b01
+  say: Three ETFs that beat the S&P 500, and they have genuinely crushed it.
+- id: b02
+  scene: s_b02
+  say: The S&P 500 gained seventeen point two eight percent over the past year,
+    but these three left it in the dust.
+- id: b03
+  scene: s_b03
+  say: 'Number one: SPMO. It holds the 100 stocks in the S&P 500 showing the
+    strongest momentum right now.'
+- id: b04
+  scene: s_b04
+  say: It rebalances every single quarter to stay current.
+- id: b05
+  scene: s_b05
+  say: Its expense ratio is just zero point one three percent, and its one
+    year return sits at twenty five point seven one percent.
+- id: b06
+  scene: s_b06
+  say: 'Number two: MTUM. It targets the large and mid-cap U.S. stocks with
+    the fastest momentum across the market, rebalancing regularly so you''re
+    always riding the strongest trends.'
+- id: b07
+  scene: s_b07
+  say: Its expense ratio is zero point one five percent, and its one year
+    return comes in at twenty three point four eight percent.
+- id: b08
+  scene: s_b08
+  say: 'Number three: VGT. It''s loaded with tech giants -- mostly
+    semiconductor makers and software leaders like Apple, Microsoft, and
+    NVIDIA.'
+- id: b09
+  scene: s_b09
+  say: Its expense ratio is the lowest of the three at zero point zero nine
+    percent, and its one year return hit thirty five point zero six percent.
+- id: b10
+  scene: s_b10
+  say: Follow Anti Broke for daily money insights.

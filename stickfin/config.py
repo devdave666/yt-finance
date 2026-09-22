@@ -109,15 +109,28 @@ TTS_STYLE = os.environ.get("STICKFIN_TTS_STYLE", (
     "little skeptical, faintly amused at how rigged the fine print is. Brisk and "
     "clear -- a confident clip, keep it moving. Hold that same brisk pace from "
     "the first word to the last: never rush a single phrase and never let one "
-    "drag out. Enunciate the numbers. No hype, no goofiness, no sing-song."
+    "drag out. Enunciate the numbers. No hype, no goofiness, no sing-song. Read "
+    "the line exactly once, word for word, and stop at the end -- never repeat "
+    "or restart a word or phrase."
 ))
 TTS_SAMPLE_RATE = 48000
 TTS_TARGET_LUFS = -15.0
 TTS_SPEAKING_RATE = 1.22       # base pace hint (Gemini-TTS mostly ignores it and
                               # delivers ~2.4 wps; _polish_pace does the brisk-ening)
-TTS_TARGET_WPS = 3.05         # ~183 wpm: brisk short-form narration
-TTS_WPS_BAND = (2.3, 3.6)    # re-synth only a genuinely broken take (dragged/rushed);
-                             # a normal ~2.4 wps take is fine, _polish_pace speeds it up
+TTS_TARGET_WPS = 3.05         # ~183 wpm: preferred pace, used only to pick the best
+                             # of several failed takes and as the correction target
+                             # for a take that lands OUTSIDE TTS_WPS_BAND below
+# Deliberately wide: this used to be a tight (2.3, 3.6) band with _polish_pace
+# then force-correcting almost every take toward the exact TTS_TARGET_WPS
+# number regardless -- flagged by Dev as making pace feel inconsistent
+# (sometimes obviously sped up, sometimes obviously slowed down) rather than
+# more consistent. Natural line-to-line pace variation (a punchy hook read
+# faster, a longer explainer beat read a touch slower) is real, good
+# delivery, not something to iron flat. This band is now a SANITY check for a
+# genuinely broken take (Gemini-TTS occasionally produces a 0.3-0.9 wps
+# runaway/stalled read) -- only a take outside it gets time-stretched at all.
+TTS_WPS_BAND = (2.0, 4.2)
+
 BEAT_GAP_S = 0.04
 TTS_TRIM_SILENCE = True      # strip leading/trailing silence from each beat clip
 
@@ -126,7 +139,7 @@ TTS_TRIM_SILENCE = True      # strip leading/trailing silence from each beat cli
 # reads as breathless over dozens of beats. Calmer target, a real (small)
 # breath between beats, and a delivery prompt without the scroll-stopping urgency.
 LONGFORM_TARGET_WPS = 2.62    # ~157 wpm: measured documentary-explainer pace
-LONGFORM_WPS_BAND = (2.1, 3.1)
+LONGFORM_WPS_BAND = (1.8, 3.6)   # sanity band only -- see TTS_WPS_BAND above
 LONGFORM_BEAT_GAP_S = 0.13
 # NEVER put a duration or a length in this prompt. Gemini-TTS treats the
 # prompt as a delivery instruction and an earlier version of this string
@@ -255,5 +268,17 @@ def subtitle_band_frac(canvas_h: int) -> float:
 CAP_SPOKEN = "&H0042B37C"     # #7CB342 brand green (ASS is &HBBGGRR)
 CAP_PENDING = "&H00FFFFFF"    # white
 CAP_OUTLINE = "&H00181818"    # near-black
-ZOOM_RATE_PER_S = 0.05
-MAX_ZOOM = 1.25
+# Ken Burns push-in for a cinematic scene-only shot (compositor.py). Total
+# zoom GAIN for a beat is a function of that beat's own full duration (across
+# however many holds it's split into), not a fixed rate -- a fixed %/s rate
+# either finishes early and freezes for a long beat, or whips too fast for a
+# short one; Dev caught both ("some zoom ins are way too fast and repeats if
+# the zoom reaches the end... make sure if speech is small zoom is not super
+# fast"). gain(duration) = ZOOM_MAX_GAIN * duration / (duration +
+# ZOOM_HALF_SATURATION_S) -- a saturating curve: near 0 for a very short
+# beat (gentle, not a whip), asymptotically approaching ZOOM_MAX_GAIN for a
+# long one, and by construction (rate = gain / duration) ALWAYS reaches
+# exactly `1 + gain` on the beat's own last frame, never before -- so it can
+# never finish early and hold static either.
+ZOOM_MAX_GAIN = 0.35            # asymptotic max zoom (35%) for a very long beat
+ZOOM_HALF_SATURATION_S = 2.5    # beat duration at which gain reaches half of max

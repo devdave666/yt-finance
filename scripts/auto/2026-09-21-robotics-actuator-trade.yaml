@@ -1,0 +1,130 @@
+title: You Missed SanDisk. Don't Miss What's Coming Next.
+slug: 2026-09-21-robotics-actuator-trade
+format: short
+caption_style: title
+title_card: YOU MISSED SANDISK. DON'T MISS WHAT'S COMING NEXT.
+cinematic: true
+narrator:
+  voice: Aoede
+cast:
+  sarah:
+    anchor: center
+    voice: Aoede
+    look: 'Sarah, the channel''s recurring host: a sharp, confident woman with long
+      dark hair, wearing a tailored navy three-piece suit, a red silk tie, a crisp
+      white dress shirt, and gold accents (a wristwatch, a ring) -- authority and
+      wealth, rendered in the channel''s premium cinematic style. A small lime-green
+      circular brand patch sits discreetly on her left lapel.'
+scenes:
+  s_b01:
+    bg: Extreme close-up, low angle. Sarah stands in a dim, moody trading-floor-style
+      room, an enormous wall screen behind her glowing with a steep upward stock
+      chart line in vivid green against deep navy. Dramatic rim lighting, high
+      contrast, saturated cool-blue tones with a streak of warm gold light across
+      her face.
+  s_b02:
+    bg: 'Close-up on a sleek phone screen held in Sarah''s hand, showing a plain
+      investment-app graphic with two lines of text: "$1,000" and, below a bold
+      green upward arrow, "$25,000". The rest of the screen is blank, plain app
+      background -- no other numbers, labels, or text anywhere. Warm ambient
+      light, vivid saturated color.'
+  s_b03:
+    bg: Medium shot. Sarah stands before a huge backlit wall screen where large
+      glowing text "AI" dissolves and a new glowing label "ROBOTICS" rises up
+      from underneath it. Deep saturated blue-to-violet lighting, high contrast,
+      sharp rim light on Sarah.
+  s_b04:
+    bg: 'Wide shot of a sleek, modern tech-conference stage with a massive curved
+      screen glowing with abstract circuitry patterns and bold text: "THE NEXT
+      STAGE OF AI". Dramatic spotlight beams cut through haze, vivid saturated
+      blue and gold stage lighting. No people visible on the stage itself.'
+  s_b05:
+    bg: Extreme close-up, macro shot on a gleaming chrome robotic joint actuator
+      -- precision metal gears and a rotating shaft catching sharp dramatic
+      light, deep black background, vivid blue rim lighting on the metal, high
+      contrast reflections.
+  s_b06:
+    bg: Wide shot. An exploded-view arrangement of a humanoid robot's mechanical
+      skeleton laid out on a dark workbench, dozens of small chrome joint
+      actuators glowing with a vivid blue rim light, dramatic overhead spotlight,
+      high-contrast saturated lighting.
+  s_b07:
+    bg: Wide shot of a vast, brightly lit robotics factory assembly line, rows
+      of unfinished humanoid robot frames along the line, workers in clean
+      generic uniforms, vivid cool industrial blue lighting mixed with warm
+      welding sparks in the background, high contrast.
+  s_b08:
+    bg: Medium shot inside a precision-parts factory, rows of small mechanical
+      actuator components moving along a conveyor, warm red and gold factory
+      lighting mixed with cool steel-blue machine glow, vivid saturated color,
+      high contrast.
+  s_b09:
+    bg: Extreme close-up, macro shot inside a pristine precision-engineering
+      lab -- a small intricate gear mechanism held in a gloved hand under
+      bright clinical light, vivid cool white-blue lighting with one warm
+      accent light, sharp reflections, high contrast.
+  s_b10:
+    bg: Wide shot inside a rare-earth magnet processing facility, glowing
+      orange-hot metal being poured in the background, stacks of dark magnetic
+      blocks in the foreground. Vivid high-contrast lighting -- deep warm amber
+      glow against cool steel-blue machinery.
+  s_b11:
+    bg: Tight close-up, eye-level. Sarah looks directly into camera with a
+      confident, knowing smile, rich warm gold lighting on her face, a blurred
+      glowing blue factory backdrop behind her, vivid saturated color, high
+      contrast.
+  s_b12:
+    bg: Medium shot, eye-level. Sarah faces the camera with both hands empty
+      and free, one gesturing warmly outward, confident smile, a softly
+      blurred vivid blue-and-gold cityscape at dusk behind her, deep
+      saturated sky, high contrast. No papers, documents, phone, or any other
+      prop in frame or on any nearby surface.
+beats:
+- id: b01
+  scene: s_b01
+  say: You missed SanDisk. Don't miss what's coming next.
+- id: b02
+  scene: s_b02
+  say: If you'd put one thousand dollars into SanDisk about a year ago, it would
+    be worth roughly twenty five thousand dollars today.
+- id: b03
+  scene: s_b03
+  say: And the next big opportunity isn't AI itself. It's the layer underneath
+    -- robotics.
+- id: b04
+  scene: s_b04
+  say: NVIDIA's CEO has already called robotics the next stage of the AI trade.
+- id: b05
+  scene: s_b05
+  say: Here's the part everyone's overlooking -- actuators. They're the muscles
+    and joints that let a robot move with nanometer precision.
+- id: b06
+  scene: s_b06
+  say: One advanced humanoid robot needs dozens of them, and actuators can make
+    up as much as seventy percent of the total cost to build a single robot.
+- id: b07
+  scene: s_b07
+  say: If Tesla scales Optimus production the way it's planned, analysts expect
+    spending on actuators to run into the billions.
+- id: b08
+  scene: s_b08
+  say: Three suppliers dominate this market. First, China's Sanhua Intelligent
+    Controls -- reportedly locked in for a six hundred eighty five million dollar
+    actuator order from Tesla.
+- id: b09
+  scene: s_b09
+  say: Second, Japan's Harmonic Drive Systems -- the company that invented the
+    precision gearing nearly every robot joint on Earth still depends on.
+- id: b10
+  scene: s_b10
+  say: Third, America's MP Materials. Their magnets are the foundation, because
+    a single humanoid robot can carry significantly more rare earth magnet
+    content than an entire EV.
+- id: b11
+  scene: s_b11
+  say: MP Materials isn't just part of the robotics trade. It essentially is
+    the robotics trade.
+  emphasis: true
+- id: b12
+  scene: s_b12
+  say: Follow Anti Broke for daily money insights.

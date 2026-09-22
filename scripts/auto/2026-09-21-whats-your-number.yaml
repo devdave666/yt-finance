@@ -1,0 +1,129 @@
+title: What's Your Number?
+slug: 2026-09-21-whats-your-number
+format: short
+caption_style: title
+title_card: WHAT'S YOUR NUMBER?
+cinematic: true
+narrator:
+  voice: Aoede
+cast:
+  sarah:
+    anchor: center
+    voice: Aoede
+    look: 'Sarah, the channel''s recurring host: a sharp, confident woman with long
+      dark hair, wearing a tailored navy three-piece suit, a red silk tie, a crisp
+      white dress shirt, and gold accents (a wristwatch, a ring) -- authority and
+      wealth, rendered in the channel''s premium cinematic style. A small lime-green
+      circular brand patch sits discreetly on her left lapel.'
+scenes:
+  s_b01:
+    bg: Tight close-up, eye-level. Sarah looks directly into camera with a calm,
+      probing expression under a single dramatic overhead light, the room
+      behind her in deep shadow. Her navy suit and red tie stay clearly and
+      accurately colored, lit enough to read correctly -- only the background
+      is near-black, not her outfit. Vivid, high-contrast, saturated warm
+      gold light on her face and upper body.
+  s_b02:
+    bg: Close-up, eye-level. Sarah gives a small knowing smile, arms loosely
+      crossed, moody dim office behind her with a single warm desk lamp glow
+      contrasted against cool blue shadow. Vivid saturated color, high
+      contrast.
+  s_b03:
+    bg: Close-up on a wooden desk. A handwritten notepad lies open beside a
+      small stack of bills and a credit card, warm desk-lamp light pooling
+      over the surface, the rest of the room in soft cool-blue shadow. Vivid,
+      high contrast. The notepad page is blank -- no visible writing or
+      numbers on it.
+  s_b04:
+    bg: Medium shot. Sarah looks down at the same notepad on the desk, serious
+      and thoughtful expression, warm lamp light on her face fading into cool
+      shadow behind her. Vivid saturated color, high contrast.
+  s_b05:
+    bg: Extreme close-up on a small stack of paper bills fanned out on a dark
+      desk, cool blue-toned lighting with one sharp warm highlight, dramatic
+      shallow focus, vivid high contrast.
+  s_b06:
+    bg: Extreme close-up on a hand holding a pen, the tip just touching down
+      onto an otherwise completely blank notepad page -- no writing, marks,
+      or scribbles anywhere on the page yet, just the pen tip making first
+      contact. Warm golden desk light, vivid saturated color, shallow depth
+      of field.
+  s_b07:
+    bg: Wide shot. Sarah sits at a warmly lit desk with a second, fresh
+      notepad in front of her, a small framed family photo (faces not
+      detailed, generic) visible at the edge of the desk, rich warm gold
+      lighting filling the room. Vivid, high contrast. The notepad page is
+      blank -- no visible writing or numbers.
+  s_b08:
+    bg: Extreme close-up on two stacks of paper cash side by side on a dark
+      desk -- one short, modest stack, and one dramatically taller stack
+      beside it glowing with warm golden rim light. Deep black background,
+      vivid high-contrast color, sharp dramatic lighting.
+  s_b09:
+    bg: Wide shot. Sarah stands at a tall window looking out over a glowing
+      city skyline at dusk, arms loosely at her sides, thoughtful expression.
+      Deep saturated blue sky, warm gold window light on her silhouette,
+      high contrast.
+  s_b10:
+    bg: Medium shot, low angle. Sarah strides forward with a determined
+      expression, warm golden light flooding from ahead of her, deep blue
+      shadow behind, vivid high-contrast motion energy.
+  s_b11:
+    bg: Tight close-up, eye-level. Sarah looks directly into camera with a
+      calm, resolute expression, a closed notepad tucked under one arm, rich
+      warm gold lighting, vivid saturated color, high contrast.
+  s_b12:
+    bg: Medium shot, eye-level. Sarah faces the camera with both hands empty
+      and free, one gesturing warmly outward, confident smile, a softly
+      blurred vivid blue-and-gold cityscape at dusk behind her, deep
+      saturated sky, high contrast. No papers, documents, phone, or any other
+      prop in frame or on any nearby surface.
+beats:
+- id: b01
+  scene: s_b01
+  say: What's your number? The one that would make all the money stress go
+    away.
+- id: b02
+  scene: s_b02
+  say: Whatever you just said -- or whatever you just thought -- it's too
+    small. Here's how I know.
+- id: b03
+  scene: s_b03
+  say: 'Most people answer with the number that makes the pain stop: pay off
+    the credit cards, pay off the car or the mortgage, keep six months of
+    reserves in the bank.'
+- id: b04
+  scene: s_b04
+  say: That's not your number. That's your relief number -- and you picked it
+    scared.
+- id: b05
+  scene: s_b05
+  say: You picked the smallest amount that gets the collectors off the phone,
+    because you don't believe the bigger one is for people like you.
+- id: b06
+  scene: s_b06
+  say: 'So do two things. First: write down that relief number.'
+- id: b07
+  scene: s_b07
+  say: 'Second: write down the number where you never think about money
+    again -- where your kids'' school, your parents'' house, and the next
+    twenty years of your life are completely handled.'
+- id: b08
+  scene: s_b08
+  say: That second one is your number, and it's probably five to ten times
+    the first.
+- id: b09
+  scene: s_b09
+  say: Now look at the gap and ask one simple question -- what would somebody
+    who already has that second number be doing this month that I'm not?
+- id: b10
+  scene: s_b10
+  say: Then go do it.
+- id: b11
+  scene: s_b11
+  say: The number you were carrying was small enough to keep you scared, and
+    big enough to keep you stuck. But the real one has a plan.
+  emphasis: true
+- id: b12
+  scene: s_b12
+  say: Follow Anti Broke for daily money insights.
